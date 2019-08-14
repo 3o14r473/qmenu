@@ -196,7 +196,8 @@ fqvm_preferences() {
        name);; # ?
 
        netvm) 
-       
+         
+         # List netvm's via 'qvm-ls'
          local value_selected=`echo -e "(Default)\n(None)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
 	   grep '|...N....$' | cut -d '|' -f1)" |\
 	   dmenu -l 50 -p "Select netvm for $target_qube" $dmenu_fmc`
@@ -409,7 +410,9 @@ fqvm_pci() {
 
          if [ "$answer" = "Yes" ]; then
 
-           local bdf_count=`echo "$list_pci" | awk '{ print $1 }' |\
+           
+           # Check if there are more functions that belong to the same device  
+	   local bdf_count=`echo "$list_pci" | awk '{ print $1 }' |\
 	     grep $(echo $device_bdf | sed 's/\..*//') | wc -l` 
 
 	   if [ "$bdf_count" -gt 1 ]; then 
@@ -459,6 +462,8 @@ fqvm_firewall() {
 
    if [ -n "$rule_selected" ]; then
          
+     # This will equal "NO" if the user selects the top row,
+     # instead of any rule
      if [ "$rulenumber_selected" != "NO" ]; then 
 	    
        local option=`echo -e "Add new rule above rule $rulenumber_selected\nRemove rule $rulenumber_selected" |\
@@ -650,6 +655,8 @@ fqvm_service() {
 
    if [ -n "$service" ]; then
 
+     # If the service has already been selected,
+     # give option to unset it
      if qvm-service $target_qube --list |\
        grep -w $service; then local unset="\nUnset"; fi
          
@@ -794,13 +801,13 @@ fqvm_usb() {
 
 
 fqvm_keyboard() {
-
- # 'qmenu-vm' does not get informed about the installed layouts by the vm itself
- # so there is a chance that the layout is missing inside the vm.
- # Getting the info from the vm itself would have security implications
- # so we wont switch to use that method
+ 
  if [ -n "$LAYOUT" ]; then unset LAYOUT; fi
     
+ # 'qmenu-vm' does not get informed about the installed layouts by the vm itself
+ # so there is a chance that the selected layout is missing inside the vm.
+ # Getting the info from the vm itself though would have security implications
+ # so we wont switch to use that method
  local LAYOUT+=$(ls /usr/share/X11/xkb/symbols |\
    dmenu -l 50 -p "$target_qube:" $dmenu_fmc)
  
@@ -956,6 +963,7 @@ fdom0_preferences() {
 
      clockvm)
 
+       # List netvm's via 'qvm-ls'
        local value_selected=`echo -e "(None)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select new ClockVM" $dmenu_d0`
@@ -1024,6 +1032,7 @@ fdom0_preferences() {
 
      default_netvm)
 
+       # List netvm's via 'qvm-ls'
        local value_selected=`echo -e "(None)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
 	 grep '|...N....$' | cut -d '|' -f1)" |\
 	 dmenu -l 50 -p "Select netvm for $target_qube" $dmenu_d0`
@@ -1172,6 +1181,7 @@ fdom0_preferences() {
 
      updatevm) 
 
+       # List netvm's via 'qvm-ls'
        local value_selected=`echo -e "(None)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select new UpdateVM" $dmenu_d0`
