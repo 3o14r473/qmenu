@@ -1,6 +1,6 @@
 #!/bin/bash
 
-fqvm_settings_cli() {
+fqvm_preferences() {
 
  local property=0
 
@@ -1243,7 +1243,7 @@ while true; do
 
         correct_qube_label
             
-        # Note that '-m 0' option in 'dmenu' is very important
+        # Note that the '-m 0' option in 'dmenu' is important
         # for security as it restricts 'qmenu-vm' to monitor 0
         dmenu_fmc="-f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1"
 
@@ -1260,69 +1260,111 @@ while true; do
 
           case $chosefrom in
 
-         Applications) fqvm_applications;;
-		
-	         Boot) qvm-start --skip-if-running $target_qube&;; 
+            Applications) 
 	    
-	     Bootfrom) qubes-vm-boot-from-device $target_qube;;
-		    
-	       Clone*) fqvm_clone;;
-
-	      Command) fqvm_run;;
+	      fqvm_applications;;
 		
-		 Disk) fqvm_disk;;
+	    Boot) 
+	    
+	      qvm-start --skip-if-running $target_qube&;; 
+	    
+	    Bootfrom) 
+	    
+	      qubes-vm-boot-from-device $target_qube;;
+		    
+	    Clone*) 
+	    
+	      fqvm_clone;;
+
+	    Command) 
+	    
+	      fqvm_run;;
+		
+	    Disk) 
+	    
+	      fqvm_disk;;
 		   
-	     Firewall) fqvm_firewall;;
+	    Firewall) 
+	    
+	      fqvm_firewall;;
 		    
-		 GUI*) qubes-vm-settings $target_qube;;
+	    GUI*) 
+	    
+	      qubes-vm-settings $target_qube;;
 
-	     Keyboard) fqvm_keyboard;;
+	    Keyboard) 
+	    
+	      fqvm_keyboard;;
 		    
-		 Kill) answer=`echo -e "No\nYes" |\
-		         dmenu -i -p "Kill $target_qube?" $dmenu_fmc`
+	    Kill) 
+	    
+	      answer=`echo -e "No\nYes" |\
+		dmenu -i -p "Kill $target_qube?" $dmenu_fmc`
 			 
-		       if [ "$answer" = "Yes" ]; then 
+	      if [ "$answer" = "Yes" ]; then 
 		       
-		         qvm-kill $target_qube& fi;;
+		qvm-kill $target_qube& fi;;
 		    
-		Pause) answer=`echo -e "No\nYes" |\
-		         dmenu -i -p "Pause $target_qube?" $dmenu_fmc`
+	    
+	    Pause) 
+	    
+	      answer=`echo -e "No\nYes" |\
+		dmenu -i -p "Pause $target_qube?" $dmenu_fmc`
 			 
-		       if [ "$answer" = "Yes" ]; then
+	      if [ "$answer" = "Yes" ]; then
 		
-		         qvm-pause $target_qube& fi;;
+		qvm-pause $target_qube& fi;;
 
-		 PCI*) fqvm_pci;;
+	    
+	    PCI*) 
+	    
+	      fqvm_pci;;
 		     
-	  Preferences) fqvm_settings_cli;; 
+	    Preferences) 
+	    
+	      fqvm_preferences;; 
 
-	       Reboot) answer=`echo -e "No\nYes" |\
-		         dmenu -i -p "Reboot $target_qube?" $dmenu_fmc`
+	    Reboot) 
+	    
+	      answer=`echo -e "No\nYes" |\
+	        dmenu -i -p "Reboot $target_qube?" $dmenu_fmc`
 			 
-		       if [ "$answer" = "Yes" ]; then
+	      if [ "$answer" = "Yes" ]; then
 	       
-	                 if qvm-check --running $target_qube &>/dev/null; then 
+	        if qvm-check --running $target_qube &>/dev/null; then 
 
-                           $(qvm-shutdown --wait $target_qube && qvm-start $target_qube)&
-			 fi
-		       fi;;
+                  $(qvm-shutdown --wait $target_qube && qvm-start $target_qube)&
+		fi
+	      fi;;
 	     
-	       Remove) fqvm_remove;;  
+	    
+	    Remove) 
+	    
+	      fqvm_remove;;  
 
-            Services*) fqvm_service;;
+            Services*) 
+	    
+	      fqvm_service;;
 
-	     Shutdown) answer=`echo -e "No\nYes" |\
-		         dmenu -i -p "Shutdown $target_qube?" $dmenu_fmc`
+	    Shutdown) 
+	    
+	      answer=`echo -e "No\nYes" |\
+		dmenu -i -p "Shutdown $target_qube?" $dmenu_fmc`
 			 
-		       if [ "$answer" = "Yes" ]; then
+	      if [ "$answer" = "Yes" ]; then
 	     
-	                 qvm-shutdown $target_qube& fi;;     
+	        qvm-shutdown $target_qube& fi;;     
 
-              Unpause) qvm-unpause $target_qube&;;
+            
+	    Unpause) 
+	    
+	      qvm-unpause $target_qube&;;
 
-	          USB) fqvm_usb;;
+	    USB) 
+	    
+	      fqvm_usb;;
 
-                    *)
+            *)
           esac
         done
       fi
