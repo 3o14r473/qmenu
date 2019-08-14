@@ -14,6 +14,8 @@ fqvm_settings_cli() {
 
      case $property in
 
+       auto_cleanup);; # ?
+
        autostart) 
        
          local value_selected=`echo -e "False\nTrue" |\
@@ -23,8 +25,6 @@ fqvm_settings_cli() {
 		          
 	   qvm-prefs --set $target_qube $property $value_selected; fi;;
 
-
-       backup_timestamp);; # !
 
        debug) 
        
@@ -74,12 +74,6 @@ fqvm_settings_cli() {
 	   qvm-prefs --set $target_qube $property $value_selected; fi;;
 
 
-       default_user);; # !
-
-       gateway);; # !
- 
-       gateway6);; # !
-
        include_in_backups) 
        
          local value_selected=`echo -e "False\nTrue" |\
@@ -89,12 +83,6 @@ fqvm_settings_cli() {
 			  
 	   qvm-prefs --set $target_qube $property $value_selected; fi;;
 
-
-       installed_by_rpm);; # !
-
-       ip);; # !
-
-       ip6);; # !
 
        kernel) 
        
@@ -129,8 +117,6 @@ fqvm_settings_cli() {
 	     qvm-prefs --set $target_qube $property "$value_selected"; fi
 	 fi;;
 
-
-       klass);; # !
 
        label) 
        
@@ -173,8 +159,6 @@ fqvm_settings_cli() {
 	   fi
 	 fi;;
 
-
-       management_dispvm);; # !
 
        maxmem) 
        
@@ -241,8 +225,6 @@ fqvm_settings_cli() {
 	   qvm-prefs --set $target_qube $property $value_selected; fi;;
 
 
-       qid);; # !
-
        qrexec_timeout) 
       
          local value_selected=`echo "--default" |\
@@ -278,12 +260,6 @@ fqvm_settings_cli() {
 	     qvm-prefs --set $target_qube $property $value_selected; fi
          fi;;
 
-
-       start_time);; # !
-
-       stubdom_mem);; # !
-
-       stubdom_xid);; # !
 
        template) 
        
@@ -321,7 +297,6 @@ fqvm_settings_cli() {
 
        updateable);; # ?
 
-       uuid);; # !
 
        vcpus) 
        
@@ -352,21 +327,9 @@ fqvm_settings_cli() {
 	   qvm-prefs --set $target_qube $property $value_selected; fi;;
 
 
-     visible_gateway);; # !
-
-    visible_gateway6);; # !
-
-          visible_ip);; # !
-
-	 visible_ip6);; # !
-
-     visible_netmask);; # !
-
-		 xid);; # !
-
-   	           *)
-         esac
-     fi
+       *)
+     esac
+   fi
  done
 }
 
@@ -1043,7 +1006,7 @@ fdom0_preferences() {
 
      default_kernel)
 
-       local value_selected=`qubes-prefs --get default_kernel |\
+       local value_selected=`true |\
 	 dmenu -p "Enter the kernel that is to be used as default"\
          $dmenu_d0`
 
@@ -1199,7 +1162,7 @@ fdom0_preferences() {
 
      stats_interval) 
 
-       local value_selected=`qubes-prefs --get stats_interval  |\
+       local value_selected=`true  |\
          dmenu -p "Enter interval in seconds for VM stats reporting" $dmenu_d0`
 
        if [ -n "$stats_interval" ]; then
