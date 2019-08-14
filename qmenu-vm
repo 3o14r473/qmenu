@@ -697,7 +697,7 @@ fqvm_service() {
 fqvm_disk() {
  
  # If $target_qube is template or standalone, give option to extend root storage 
- if [[ "$(qvm-ls -O flags $target_qube | sed '2q;d' | cut -c 1)" =~ ^(t|s)$ ]]; then
+ if [[ "$(qvm-ls -O flags $target_qube | sed '2q;d' | cut -c 1)" =~ ^(t|S)$ ]]; then
 
    local volume=`echo -e "Root\nPrivate" |\
      dmenu -l 2 -i -p "$target_qube:" $dmenu_fmc`
