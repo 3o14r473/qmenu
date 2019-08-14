@@ -1,0 +1,70 @@
+if qvm-check -q --running "$qube"; then
+
+	echo Go back... | dmenu -p "$qube needs to be powered off, in order to attach or detach PCI devices." > /dev/null 2>&1
+else
+	list_pci=$(qvm-pci)
+
+	qvm-prefs "$qube" maxmem | grep -q ^0 ||
+
+		answer=$(printf 'Continue anyways\nDisable dynamic memory balancing' | dmenu -l 2 -i -p "Dynamic memory balancing is enabled in $qube, some devices might not work!" | cut -f1 -d\ )
+
+		[ "$answer" = Disable ] && qvm-prefs "$qube" maxmem 0
+
+	qvm-prefs "$qube" virt_mode | grep -q pvh &&
+
+		answer=$(printf 'Continue anyways\nChange to another virtualisation mode' | dmenu -l 2 -i -p "$qube is using PVH for its virtualisation mode, which does not support PCI passthrough!" | cut -f1 -d\ )
+
+		if [ "$answer" = Change ]; then
+
+			virtmode=$(printf 'HVM\nPV' | dmenu -l 2 -i -p "Select virtualisation mode for $qube:") &&
+
+				qvm-prefs "$qube" virt_mode "$virtmode"
+		fi
+
+	device=1
+
+	while [ -n "$device" ]; do
+
+		device=$(echo "$list_pci" | dmenu -l 30 -p "$qube:")
+
+		if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
+
+			device_src=$(echo "$device" | cut -f1 -d\ | sed 's/:.*//')
+			device_bdf=$(echo "$device" | cut -f1 -d\ | sed 's/.*://')
+
+			if echo "$device" | grep -q " $qube$\\| $qube (no-strict-reset=True)$\\| $qube (permissive=True)$"; then
+
+				if nyprompt "Detach \"$device_bdf\" from $qube?"; then
+
+					qvm-pci detach "$qube" "$device_src":"$device_bdf" ||
+
+						echo Go back... | dmenu -p "Error: Failed to detach \"$device_bdf\" from $qube!" > /dev/null 2>&1
+
+					list_pci=$(qvm-pci)
+				fi
+			else
+				if nyprompt "Attach \"$device_bdf\" to $qube?"; then
+
+					# Check if there is more than one function
+					# that belongs to the same device.
+					bdf_count=$(echo "$list_pci" | cut -f1 -d\  | grep -c $(echo "$device_bdf" | sed 's/\..*//'))
+
+					if [ "$bdf_count" -gt 1 ]; then
+
+						[ -n "$pci_option" ] && unset pci_option
+
+							answer=$(printf 'No, attach without this option\nYes' | dmenu -i -p "\"$device_bdf\" is most likely to be attached with the option 'no-strict-reset' enabled. Do not enable this option if you are unaware of the security implications! Do you want to attach \"$device_bdf\" with the option 'no-strict-reset' set to true?")
+
+						[ "$answer" = Yes ] && pci_option='-o no-strict-reset=True'
+					fi
+
+					qvm-pci attach --persistent $pci_option "$qube" "$device_src:$device_bdf" ||
+
+						echo Go back... | dmenu -p "Error: Failed to attach '$device_bdf' to $qube!" > /dev/null 2>&1
+
+					list_pci=$(qvm-pci)
+				fi
+			fi
+		fi
+	done
+fi

@@ -1,0 +1,81 @@
+rulenumber=1
+
+while [ -n "$rulenumber" ]; do
+
+	rulenumber=$(qvm-firewall "$qube" list | dmenu -l 50 -p "$qube:" | cut -f1 -d\ )
+
+	if [ "$(echo "$rulenumber" | wc -w)" -eq 1 ]; then
+
+		# This will equal "NO" if the user selects the top row,
+		# instead of any existing rule.
+		if [ "$rulenumber" != NO ]; then
+
+			option=$(printf "Add new rule above rule $rulenumber\nRemove rule $rulenumber" | dmenu -i -l 2 -p "$qube:" | cut -f1 -d\ )
+		else
+			option=Add
+		fi
+
+		if [ "$option" = Remove ]; then
+
+			nyprompt "Remove rule $rulenumber?" &&
+
+				qvm-firewall "$qube" del --rule-no "$rulenumber"
+
+		elif [ "$option" = Add ]; then
+
+			[ -n "$RULEARGS" ] && unset RULEARGS
+
+			action=$(printf 'Accept\nDrop' | dmenu -i -l 2 -p "Select action for the new firewall rule:" | awk '{print tolower($0)}')
+
+			if [ -n "$action" ]; then
+
+				# Prompt the user to escape matches they want to leave empty. Leaving a match empty by pressing <Return> will prevent the rule from being created.
+				echo Continue... | dmenu -p 'You will now be prompted to select the matches for the new rule. Please skip matches that you want to leave empty by escaping with <Escape> or <C-c>.' > /dev/null 2>&1
+
+				RULEARGS="$action"
+
+				specialtarget=$(: | dmenu -p "ACTION=$RULEARGS <specialtarget>") &&
+
+					RULEARGS="$RULEARGS SPECIALTARGET=$specialtarget"
+
+				dsthost=$(: | dmenu -p "ACTION=$RULEARGS <dsthost>") &&
+
+					RULEARGS="$RULEARGS DSTHOST=$dsthost"
+
+				proto=$(printf 'tcp\nudp\nicmp' | dmenu -l 3 -p "ACTION=$RULEARGS <proto>") &&
+
+					RULEARGS="$RULEARGS PROTO=$proto"
+
+				if [ "$proto" = tcp ] || [ "$proto" = udp ]; then
+
+					dstports=$(: | dmenu -p "ACTION=$RULEARGS <dstports>") &&
+
+						RULEARGS="$RULEARGS DSTPORTS=$dstports"
+
+				elif [ "$proto" = icmp ]; then
+
+					icmptype=$(: | dmenu -p "ACTION=$RULEARGS <icmptype>") &&
+
+						RULEARGS="$RULEARGS ICMPTYPE=$icmptype"
+				fi
+
+				comment=$(: | dmenu -p "ACTION=$RULEARGS <comment>") &&
+
+					RULEARGS="$RULEARGS COMMENT=$comment"
+
+				if nyprompt "Add the following rule to $qube? {{ ACTION=$RULEARGS }}"; then
+
+					[ -n "$beforerule" ] && unset beforerule
+
+					[ "$rulenumber" != NO ] && beforerule=$(echo --before "$rulenumber")
+
+					RULEARGS=$(echo "$RULEARGS" | awk '{print tolower($0)}')
+
+					qvm-firewall "$qube" add $beforerule $RULEARGS ||
+
+						echo Go back... | dmenu -p 'Error: Failed to add firewall rule! See 'qvm-firewall --help' for more information.' > /dev/null 2>&1
+				fi
+			fi
+		fi
+	fi
+done

@@ -1,0 +1,113 @@
+#!/bin/sh
+
+get_qube_label() {
+
+qube_label=$(grep -s "^$(qvm-prefs "$qube" label)=" "$HOME"/.config/qmenu.conf | cut -d= -f2)
+
+[ -z "$qube_label" ] && qube_label='#000000'
+}
+
+
+case $1 in
+
+	--all);;
+
+	--focused)
+
+		qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME | cut -f2 -d\")
+
+		[ "$qube" = '_QUBES_VMNAME:  not found.' ] && exit 1;;
+
+	*)
+
+		printf "Usage: $0 [OPTION]\nList and manage your connected devices via dmenu.\n\n --all\n --focused\n\n"
+
+		[ "$1" = --help ] && exit 0; exit 2
+esac
+
+qube_list=$(qvm-ls --no-spinner --running -O name,label |\
+	grep -v '^dom0 \|^sys-usb' |\
+	sed '1d; s/ red/ 1\@ /g; s/ orange/ 2\@ /g; s/ yellow/ 3\@ /g; s/ green/ 4\@ /g; s/ gray/ 5\@ /g; s/ blue/ 6\@ /g; s/ purple/ 7\@ /g; s/ black/ 8\@ /g' |\
+	sort -k2,2 |\
+	sed 's/ 1\@ / red/g; s/ 2\@ / orange/g; s/ 3\@ / yellow/g; s/ 4\@ / green/g; s/ 5\@ / gray/g; s/ 6\@ / blue/g; s/ 7\@ / purple/g; s/ 8\@ / black/g')
+
+device=1
+
+while [ -n "$device" ]; do
+
+	device=$(echo "$(qvm-block ls | sed -e 's/^/|block| /' & qvm-device mic ls | sed -e 's/^/|mic| /' & qvm-usb ls | sed -e 's/^/|usb| /')" | sort -r -k1,2 | dmenu -l 32)
+
+	device_type=$(echo "$device" | cut -d\| -f2)
+
+	if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
+
+		device_id=$(echo "$device" | cut -f2 -d\ )
+
+		if [ "$device_type" = block ]; then
+
+			device_name=$(echo "$device" | awk '{print $3,$4}')
+			holding_qube=$(echo "$device" | awk '{print $5}')
+		else
+			device_name=$(echo "$device" | awk '{print $3}')
+			holding_qube=$(echo "$device" | awk '{print $4}')
+		fi
+
+		if [ -z "$holding_qube" ]; then
+
+			if [ "$1" = --all ]; then
+
+				qube=$(echo "$qube_list" | dmenu -p "attach to:" -l 32 | cut -f1 -d\ )
+			fi
+
+			if [ -n "$qube" ]; then
+
+				get_qube_label
+
+				prompt=$(printf 'No\nYes' | dmenu -sb "$qube_label" -i -p "Attach '$device_name' to $qube?")
+
+				if [ "$prompt" = Yes ]; then
+
+					qvm-device "$device_type" attach -q "$qube" "$device_id" && exit 0
+
+					echo Quit... | dmenu -p "Error: Failed to attach device!" > /dev/null 2>&1
+
+					exit 2
+				fi
+			fi
+
+		elif [ "$1" = --all ] || [ "$holding_qube" = "$qube" ]; then
+
+			get_qube_label
+
+			prompt=$(printf 'No\nYes' | dmenu -sb "$qube_label" -i\
+				-p "Detach '$device_name' from $holding_qube?")
+
+			if [ "$prompt" = Yes ]; then
+
+				qvm-device "$device_type" detach -q "$holding_qube" "$device_id" && exit 0
+
+				echo Quit... | dmenu -p "Error: Failed to detach device!" > /dev/null 2>&1
+
+				exit 2
+			fi
+		else
+			get_qube_label
+
+			prompt=$(printf 'No\nYes' | dmenu -sb "$qube_label" -i\
+				-p "Detach '$device_name' from $holding_qube and attach it to $qube?")
+
+			if [ "$prompt" = Yes ]; then
+
+				qvm-device "$device_type" detach -q "$holding_qube" "$device_id" &&
+
+					qvm-device "$device_type" attach -q "$qube" "$device_id" && exit 0
+
+				echo Quit... | dmenu -p "Error: Failed to handle device!" > /dev/null 2>1&
+
+				exit 2
+			fi
+		fi
+	fi
+done
+
+exit 1

@@ -1,0 +1,16 @@
+if [ "$qube" = dom0 ]; then
+
+	logs=/var/log/xen/console/hypervisor.log
+else
+	logs="/var/log/xen/console/guest-$qube.log\n/var/log/xen/console/guest-$qube-dm.log\n/var/log/qubes/guid.$qube.log\n/var/log/qubes/qrexec.$qube.log"
+fi
+
+entry=1
+
+while [ -n "$entry" ]; do
+
+	if entry=$(printf "$logs" | dmenu -i -l 4 -p "$qube:"); then
+
+		qubes-log-viewer "$entry"
+	fi
+done

@@ -1,0 +1,161 @@
+#!/bin/sh
+
+fmenu_dom0() (
+
+while :; do
+
+	chosefrom=$(printf 'Global preferences\nLogs\nNew qube\nNotes\nProperty Manager' | dmenu -l 5 -i -p "dom0:")
+
+	case $chosefrom in
+
+		Global*) . /lib/qmenu_vm/fqubes_prefs;;
+
+		Logs) . /lib/qmenu_vm/fqubes_logs;;
+
+		New*) . /lib/qmenu_vm/fqvm_create;;
+
+		Notes) . /lib/qmenu_vm/f_notes;;
+
+		Property*) . /lib/qmenu_vm/fq_pm;;
+
+		*) exit
+	esac
+done
+)
+
+fmenu_domu() (
+
+dmenu() (
+
+command dmenu -sb "$qube_label" "$@"
+)
+
+qube_label=$(grep -s "^$(qvm-prefs "$qube" label)=" "$HOME"/.config/qmenu.conf | cut -d= -f2)
+
+[ -z "$qube_label" ] && qube_label='#000000'
+
+while :; do
+
+	chosefrom=$(printf 'Applications\nAudio input devices\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nNotes\nPause\nPCI devices\nPreferences\nReboot\nRemove\nScreenshot\nServices\nShutdown\nTags\nUnpause\nUSB devices' | dmenu -l 24 -i -p "$qube:")
+
+	case $chosefrom in
+
+		Applications) . /lib/qmenu_vm/fqvm_appmenus;;
+
+		Audio*|Block*|USB*) . /lib/qmenu_vm/fqvm_device;;
+
+		Boot) qvm-start --skip-if-running "$qube"&;;
+
+		Bootfrom) qubes-vm-boot-from-device "$qube";;
+
+		Clone) . /lib/qmenu_vm/fqvm_clone;;
+
+		Command) . /lib/qmenu_vm/fqvm_run;;
+
+		Disk) . /lib/qmenu_vm/fqvm_volume;;
+
+		Firewall) . /lib/qmenu_vm/fqvm_firewall;;
+
+		Keyboard) . /lib/qmenu_vm/fq_keyboard;;
+
+		Kill) nyprompt "Kill $qube?" && (qvm-kill "$qube"&);;
+
+		Logs) . /lib/qmenu_vm/fqubes_logs;;
+
+		Notes) . /lib/qmenu_vm/f_notes;;
+
+		Pause) nyprompt "Pause $qube?" && (qvm-pause "$qube"&);;
+
+		PCI*) . /lib/qmenu_vm/fqvm_pci;;
+
+		Preferences) . /lib/qmenu_vm/fqvm_prefs;;
+
+		Reboot)	nyprompt "Reboot $qube?" && qvm-check -q --running "$qube" && (qvm-shutdown --wait "$qube" && qvm-start "$qube"&);;
+
+		Remove) . /lib/qmenu_vm/fqvm_remove;;
+
+		Screenshot) . /lib/qmenu_vm/f_screenshot;;
+
+		Services) . /lib/qmenu_vm/fqvm_service;;
+
+		Shutdown) nyprompt "Shutdown $qube?" && (qvm-shutdown "$qube"&);;
+
+		Tags) . /lib/qmenu_vm/fqvm_tags;;
+
+		Unpause) qvm-unpause "$qube"&;;
+
+		*) exit
+	esac
+done
+)
+
+get_list() {
+
+case $1 in
+
+	mgmt_disptemp) flags='|a.....D.$';;
+
+	netvm) flags='|...N....$';;
+
+	template) flags='|t.......$'
+esac
+
+list=$(qvm-ls --raw-data -O name,flags | grep "$flags" | cut -d '|' -f1)
+}
+
+nyprompt() (
+
+[ "$(printf 'No\nYes' | dmenu -i -p "$1")" = Yes ]
+)
+
+
+case $1 in
+
+	--all|--halted|--paused|--running|--tags=*)
+
+		while :; do
+
+			# Load 'qvm-ls' into a variable so that the list doesnt
+			# need to be reloaded after every user operation.
+			qube_list=$(qvm-ls --no-spinner "$1" -O name,state,label,maxmem,class,template,netvm,default_dispvm,ip,priv-max,priv-curr,priv-used,root-max,root-curr,root-used,kernel | sed 's/ LABEL/ 0\@ /g; s/ red/ 1\@ /g; s/ orange/ 2\@ /g; s/ yellow/ 3\@ /g; s/ green/ 4\@ /g; s/ gray/ 5\@ /g; s/ blue/ 6\@ /g; s/ purple/ 7\@ /g; s/ black/ 8\@ /g' | sort -k3,3 | sed 's/ 0\@ / LABEL/g; s/ 1\@ / red/g; s/ 2\@ / orange/g; s/ 3\@ / yellow/g; s/ 4\@ / green/g; s/ 5\@ / gray/g; s/ 6\@ / blue/g; s/ 7\@ / purple/g; s/ 8\@ / black/g')
+
+			# Get out of the while loop and reload the list by loading 'qvm-ls' again
+			# into $qube_list, whenever the user selects the 'qvm-ls' top row (NAME).
+			# Essentially making the top row a refresh button.
+			while [ "$qubes" != NAME ]; do
+
+				qubes=$(echo "$qube_list" | dmenu -l 50 | cut -f1 -d\ )
+
+				[ -z "$qubes" ] && exit 1
+
+				for qube in $qubes; do
+
+					if [ "$qube" = dom0 ]; then fmenu_dom0
+					elif [ "$qube" != NAME ]; then fmenu_domu
+					fi
+				done
+			done
+
+			unset qubes
+		done;;
+
+	--focused)
+
+		qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME | cut -d\" -f2)
+
+		if [ "$qube" = '_QUBES_VMNAME:  not found.' ]; then qube=dom0; fmenu_dom0; else fmenu_domu; fi;;
+
+	--qube=*)
+
+		qube=$(echo "$1" | cut -d= -f2)
+
+		if [ "$qube" = dom0 ]; then fmenu_dom0; else fmenu_domu; fi;;
+
+	*)
+
+		printf "Usage: $0 [OPTION]\nList, manage and configure your qubes via dmenu.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n"
+
+		[ "$1" = --help ] && exit 0; exit 2
+esac
+
+exit 1

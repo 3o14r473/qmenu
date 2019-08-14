@@ -1,0 +1,26 @@
+qube_class=$(qvm-ls --raw-data -O flags "$qube" | cut -c 1)
+
+if [ "$qube_class" = t ] || [ "$qube_class" = s ] || [ "$qube_class" = S ]; then
+
+	volume=$(printf 'Root\nPrivate' | dmenu -l 2 -i -p "$qube:" | awk '{print tolower($0)}')
+else
+	volume=private
+fi
+
+if [ -n "$volume" ]; then
+
+	current_storage=$(( $(qvm-volume info "$qube:$volume" size) / 1048576 ))
+
+	mebibyte=$(echo "$current_storage" | dmenu -p "Enter the maximum size of $volume storage in MiB to be allocated to $qube:") &&
+
+		if [ "$mebibyte" -gt "$current_storage" ]; then
+
+			byte=$(( mebibyte * 1048576 ))
+
+			nyprompt "Increase the maximum $volume storage size of $qube from $current_storage MiB to $mebibyte MiB?" &&
+
+				(qvm-volume extend "$qube:$volume" "$byte"&)
+		else
+			echo Go back... | dmenu -p "Warning: Unable to decrease the maximum $volume storage!" > /dev/null 2>&1
+		fi
+fi

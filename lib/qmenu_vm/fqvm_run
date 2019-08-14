@@ -1,0 +1,14 @@
+if user=$(printf 'Default user\nRoot' | dmenu -i -l 2 -p "Run commands as:"); then
+
+	[ "$user" = Root ] && as_root='-u root' && user=# || user=$
+
+	commandtr=1
+
+	while [ -n "$commandtr" ]; do
+
+		if commandtr=$(: | dmenu -p "[@$qube]$user"); then
+
+			qvm-run -q $as_root "$qube" "$commandtr"&
+ 		fi
+	done
+fi

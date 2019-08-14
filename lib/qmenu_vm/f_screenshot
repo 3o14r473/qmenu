@@ -1,0 +1,18 @@
+err="qmenu-vm - Error: Failed to take a screenshot! Please make sure that 'scrot' is installed inside $qube."
+
+target=$(printf 'Focused window\nAll visible windows' | dmenu -l 2 -i -p "$qube:" | cut -f1 -d\ )
+
+if [ "$target" = Focused ]; then
+
+	if [ "$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME | cut -d\" -f2)" = "$qube" ]; then
+
+		(qvm-run -q "$qube" 'scrot -q 100 -u $HOME/Pictures/screenshot' || notify-send -u normal "$err")&
+	else
+			echo 'Go back...' | dmenu -p "Warning: Unable to take a screenshot. Please focus a window belonging to $qube." > /dev/null 2>&1
+	fi
+
+elif [ "$target" = All ]; then
+
+	(qvm-run -q "$qube" 'scrot -q 100 $HOME/Pictures/screenshot' || notify-send -u normal "$err")&
+fi
+

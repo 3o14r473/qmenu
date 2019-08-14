@@ -1,0 +1,39 @@
+clone_name=$(: | dmenu -p "Enter the name for the clone of $qube:") &&
+
+	option=1
+
+	while [ -n "$option" ]; do
+
+		option=$(printf 'Create the clone\nAdvanced options' | dmenu -i -l 2 -p "$qube:" | cut -f1 -d\ )
+
+		if [ "$option" = Advanced ]; then
+
+			option_adv=1
+
+			while [ -n "$option_adv" ]; do
+
+				option_adv=$(printf 'Class\nPool' | dmenu -i -l 2 -p "$clone_name($qube):")
+
+				if [ "$option_adv" = Class ]; then
+
+					class=$(printf 'AppVM\nDispVM\nStandaloneVM\nTemplateVM' | dmenu -i -l 4 -p "Choose a class for $clone_name:") &&
+
+						class="-C $class"
+
+				elif [ "$option_adv" = Pool ]; then
+
+					pool=$(qvm-pool --list | sed '1d' | dmenu -i -l 10 -p "Select a pool for $clone_name:" | cut -f1 -d\ ) &&
+
+						pool="-P $pool"
+				fi
+			done
+
+		elif [ "$option" = Create ]; then
+
+			unset option
+
+			cp -n "$HOME/.local/share/qubes-notes/$qube" "$HOME/.local/share/qubes-notes/$clone_name"
+
+			qvm-clone $class $pool "$qube" "$clone_name"&
+		fi
+	done

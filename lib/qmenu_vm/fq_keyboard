@@ -1,0 +1,12 @@
+LAYOUT=$(ls /usr/share/X11/xkb/symbols | dmenu -l 50 -p "$qube:") &&
+
+if [ -n "$LAYOUT" ]; then
+
+	[ -d /usr/share/X11/xkb/symbols/"$LAYOUT" ] && LAYOUT="$LAYOUT/"$(ls /usr/share/X11/xkb/symbols/"$LAYOUT" | dmenu -l 50 -p "$qube:")
+
+	$(qvm-run -q "$qube" "setxkbmap $LAYOUT" || notify-send -u normal "Error: Failed to set keyboard layout to '$LAYOUT' in $qube! Please check if the selected layout is missing inside the qube itself.")&
+
+		# 'qmenu-vm' does not get informed about the available layouts by the vm itself,
+		# so it is possible that the selected layout is missing inside the vm.
+		# However, getting the info from the vm itself would pose an unneccesary high risk.
+fi
