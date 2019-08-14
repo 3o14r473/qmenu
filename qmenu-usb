@@ -1,0 +1,91 @@
+#!/bin/dash
+
+get_qube_label() {
+
+ qube_label=`echo "$vm_list" | grep -w $target_qube | awk '{ print $2 }'`
+ 
+ # Change black, yellow and green to a more readable color if needed 
+ if [ "$qube_label" = "black" ]; then
+
+   qube_label='#373737'
+
+ # Change only if dark theme is selected
+ elif [ "$theme_1" = "#ffffff" ]; then
+
+   if [ "$qube_label" = "yellow" ]; then 
+	
+     qube_label='#cdcd00'
+    
+   elif [ "$qube_label" = "green" ]; then
+
+     qube_label='#00b300'
+   fi
+ fi
+}
+
+
+if [ "$1"  = "--light-theme" ]; then
+
+  theme_0='#ffffff'
+  theme_1='#000000'
+else
+	
+  theme_0='#000000'
+  theme_1='#ffffff'
+fi
+
+usb_list=`qvm-usb`
+
+vm_list=`qvm-ls --no-spinner --running -O NAME,LABEL`
+
+device=`echo "$usb_list" | dmenu -l 16 -f -m 0 -nb $theme_0\
+  -nf $theme_1 -sb $theme_1 -sf $theme_0`
+
+device_id=`echo $device | awk '{ print $1 }'`
+
+device_name=`echo $device | awk '{ print $2 }'`
+
+if [ -n "$device" ]; then
+
+  target_qube=`echo "$usb_list" | grep $device_id | awk '{ print $3 }'`
+
+  if [ -z "$target_qube" ]; then
+    
+    target_qube=`echo "$vm_list" | grep -v -w dom0 |\
+      sed '1d' | dmenu -p "attach to:" -l 32 -f -m 0\
+      -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0 |\
+      awk '{ print $1 }'`    
+    
+    if [ -n "$target_qube" ]; then
+
+      get_qube_label 
+
+      prompt=`echo "No\nYes" |\
+	dmenu -i -p "Attach $device_name to $target_qube?"\
+	-f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1`
+    
+      if [ "$prompt" = "Yes" ]; then
+
+	if ! qvm-usb attach $target_qube $device_id; then exit 2; fi	
+	
+	exit 0
+      fi
+    fi 
+  else
+    
+    get_qube_label
+
+    prompt=`echo "No\nYes" |\
+      dmenu -i -p "Detach $device_name from $target_qube?"\
+      -f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1`
+    
+    if [ "$prompt" = "Yes" ]; then
+
+      if ! qvm-usb detach $target_qube $device_id; then exit 2; fi
+	
+      exit 0
+    fi
+  fi
+fi
+
+exit 1
