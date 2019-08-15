@@ -1245,13 +1245,22 @@ rearrange_qube_list() {
 }
 
 
-if [ -z "$1" ]; then
+show_qubes=$1
+
+if [ -z "$show_qubes" ]; then
 
   echo -e "Error: Please append one of the following:\
  '--all', '--tags=TAG', '--running', '--paused', '--halted' or whatever"
 
   exit 2
-fi 
+
+# 'qvm-ls --all' will not list dom0 for some reason.
+# Because of this, we will output $1 into a variable
+# and unset it when '--all' is given
+elif [ "$show_qubes" = "--all"]; then
+
+  unset show_qubes
+fi
 
 if [ "$2" = "--light-theme" ]; then
 
@@ -1267,7 +1276,7 @@ while true; do
     
   # Load 'qvm-ls' into a variable so that it doesnt 
   # need to reload again after every user operation
-  qube_list=`qvm-ls --no-spinner $1 -O NAME,STATE,LABEL,CLASS\
+  qube_list=`qvm-ls --no-spinner $show_qubes -O NAME,STATE,LABEL,CLASS\
 ,TEMPLATE,NETVM,IP,GATEWAY,PRIV-MAX,PRIV-CURR,PRIV-USED,ROOT-MAX\
 ,ROOT-CURR,ROOT-USED,KERNEL,KERNELOPTS`
 
