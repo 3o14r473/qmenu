@@ -278,6 +278,7 @@ fqvm_preferences() {
 	     $dmenu_fmc &>/dev/null 
 	 else
 
+           # List templatevm's via 'qvm-ls'
 	   local value_selected=`echo -e "(Default)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
 	     grep '|t.......$' | cut -d '|' -f1)" |\
 	     dmenu -l 50 -p "Select template for $target_qube" $dmenu_fmc`
@@ -414,7 +415,8 @@ fqvm_pci() {
 
          if [ "$answer" = "Yes" ]; then
            
-           # Check if there are more functions that belong to the same device  
+           # Check if there are more than one functions
+	   # that belong to the same device
 	   local bdf_count=`echo "$list_pci" | awk '{ print $1 }' |\
 	     grep $(echo $device_bdf | sed 's/\..*//') | wc -l` 
 
@@ -582,7 +584,8 @@ fqvm_applications() {
  
  while [ -n "$option" ]; do
 	
-   local option=`echo -e "Add\nRemove" | dmenu -i -l 2 -p "$target_qube:" $dmenu_fmc`
+   local option=`echo -e "Add\nRemove" |\
+     dmenu -i -l 2 -p "$target_qube:" $dmenu_fmc`
 
    if [ "$option" = "Add" ]; then  
 
@@ -809,8 +812,8 @@ fqvm_keyboard() {
     
  # 'qmenu-vm' does not get informed about the installed layouts by the vm itself
  # so there is a chance that the selected layout is missing inside the vm.
- # Getting the info from the vm itself though would have security implications
- # so we wont switch to use that method
+ # Getting the info from the vm itself however would have security implications
+ # so we will not switch to use that method
  local LAYOUT+=$(ls /usr/share/X11/xkb/symbols |\
    dmenu -l 50 -p "$target_qube:" $dmenu_fmc)
  
@@ -1128,6 +1131,7 @@ fdom0_preferences() {
 
      default_template)
 
+       # List templatevm's via 'qvm-ls'
        local value_selected=`qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
          grep '|t.......$' | cut -d '|' -f1 |\
          dmenu -l 50 -p "Select default template for" $dmenu_d0`
