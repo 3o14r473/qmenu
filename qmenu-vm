@@ -12,9 +12,7 @@ fqvm_preferences() {
 
    if [ -n "$property" ]; then
 
-     case $property in
-
-       auto_cleanup);; # ?
+     case $property in       
 
        autostart) 
        
@@ -74,6 +72,17 @@ fqvm_preferences() {
 	   qvm-prefs --set $target_qube $property $value_selected; fi;;
 
 
+       default_user)
+
+	 local value_selected=`echo "--default" |\
+	   dmenu -p "Enter the name of the default user for $target_qube"\
+	   $dmenu_fmc`
+
+         if [ -n "$value_selected" ]; then 
+			  
+	   qvm-prefs --set $target_qube $property $value_selected; fi;;
+       
+       
        include_in_backups) 
        
          local value_selected=`echo -e "False\nTrue" |\
@@ -193,8 +202,6 @@ fqvm_preferences() {
 	 fi;;
 
 
-       name);; # ?
-
        netvm) 
          
          # List netvm's via 'qvm-ls'
@@ -294,9 +301,6 @@ fqvm_preferences() {
          if [ -n "$value_selected" ]; then 
 			    
 	   qvm-prefs --set $target_qube $property $value_selected; fi;;
-
-
-       updateable);; # ?
 
 
        vcpus) 
@@ -409,7 +413,6 @@ fqvm_pci() {
 	   dmenu -i -p "Attach \"$device_bdf\" to $target_qube?" $dmenu_fmc`
 
          if [ "$answer" = "Yes" ]; then
-
            
            # Check if there are more functions that belong to the same device  
 	   local bdf_count=`echo "$list_pci" | awk '{ print $1 }' |\
@@ -463,7 +466,7 @@ fqvm_firewall() {
    if [ -n "$rule_selected" ]; then
          
      # This will equal "NO" if the user selects the top row,
-     # instead of any rule
+     # instead of any existing rule
      if [ "$rulenumber_selected" != "NO" ]; then 
 	    
        local option=`echo -e "Add new rule above rule $rulenumber_selected\nRemove rule $rulenumber_selected" |\
@@ -655,7 +658,7 @@ fqvm_service() {
 
    if [ -n "$service" ]; then
 
-     # If the service has already been selected,
+     # If the service has already been added to the list,
      # give option to unset it
      if qvm-service $target_qube --list |\
        grep -w $service; then local unset="\nUnset"; fi
@@ -1222,14 +1225,14 @@ fi
 while true; do
     
   # Load 'qvm-ls' into a variable so that it doesnt 
-  # need to load again after every user operation
+  # need to reload again after every user operation
   qube_list=`qvm-ls --no-spinner $1 -O NAME,STATE,LABEL,CLASS\
 ,TEMPLATE,NETVM,IP,GATEWAY,PRIV-MAX,PRIV-CURR,PRIV-USED,ROOT-MAX\
 ,ROOT-CURR,ROOT-USED,KERNEL,KERNELOPTS`
 
   if [ -n "$target_qube" ]; then unset target_qube; fi 
 
-  # Get out of while loop and refresh 'qvm-ls' by loading it again
+  # Get out of the while loop and refresh 'qvm-ls' by loading it again
   # into $qube_list whenever the user selects the 'qvm-ls' top row
   while [ "$target_qube" != "NAME" ]; do
 
