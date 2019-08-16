@@ -134,12 +134,10 @@ fqvm_preferences() {
        
          local value_selected=`echo -e "Purple\nBlue\nGreen\nYellow\nOrange\nRed\nGray\nBlack" |\
 	   dmenu -i -l 8 -p "Select label for $target_qube" $dmenu_fmc`
-			   	  
-	 local value_selected="${value_selected,}"
 
 	 if [ -n "$value_selected" ]; then
 
-	   qvm-prefs --set $target_qube $property $value_selected
+	   qvm-prefs --set $target_qube $property ${value_selected,}
 
 	   qube_label=`qvm-ls $target_qube -O LABEL | sed -e '1d'`
 
@@ -687,8 +685,9 @@ fqvm_service() {
 
      # If the service has already been added to the list,
      # give option to unset it
-     if qvm-service $target_qube --list |\
-       grep -w $service; then local unset="\nUnset"
+     if qvm-service $target_qube --list | grep -w $service; then
+	 
+       local unset="\nUnset"
      fi
          
      local value=`echo -e "Disable\nEnable$unset" |\
@@ -989,9 +988,7 @@ fdom0_preferences() {
 
        if [ -n "$value_selected" ]; then
 
-         local $value_selected="${value_selected,}"
-
-         qubes-prefs $property $value_selected; fi;;
+         qubes-prefs $property ${value_selected,}; fi;;
 
 
      clockvm)
