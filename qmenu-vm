@@ -145,7 +145,7 @@ fqvm_preferences() {
 
 	   correct_qube_label
 
-           dmenu_fmc="-m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1"
+           dmenu_fmc="-f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1"
 	 fi;;
 
 
@@ -1321,7 +1321,7 @@ while true; do
 
       if [ "$target_qube" = "dom0" ]; then
 
-        dmenu_d0="-m 0 -nb #d3d3d3 -nf #000000 -sb #ffffff -sf #000000"
+        dmenu_d0="-f -m 0 -nb #d3d3d3 -nf #000000 -sb #ffffff -sf #000000"
 
 	fdom0_preferences
       else
