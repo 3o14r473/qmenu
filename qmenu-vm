@@ -911,6 +911,16 @@ fqvm_clone() {
 }
 
 
+fqvm_run() {
+
+ local command=`true |\
+   dmenu -p "Enter the command that is to be run in $target_qube" $dmenu_fmc`
+
+ if [ -n "$command" ]; then qvm-run $target_qube $command& fi
+}
+
+
+
 correct_qube_label() {
 
  # Change black, yellow and green to a more readable color if needed
@@ -932,14 +942,6 @@ correct_qube_label() {
  fi
 }
 
-
-fqvm_run() {
-
- local command=`true |\
-   dmenu -p "Enter the command that is to be run in $target_qube" $dmenu_fmc`
-
- if [ -n "$command" ]; then qvm-run $target_qube $command& fi
-}
 
 
 fdom0_preferences() {
@@ -1248,9 +1250,9 @@ if [ -z "$show_qubes" ]; then
 
   exit 2
 
-# 'qvm-ls --all' will not list dom0 for some reason.
-# Because of this, we will output $1 into a variable
-# and unset it when '--all' is given
+# 'qvm-ls --all' will not list dom0 because of a bug.
+# As a workaround, we will output $1 into a variable
+# and unset it when '--all' is used
 elif [ "$show_qubes" = "--all" ]; then
 
   unset show_qubes
