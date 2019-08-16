@@ -2,28 +2,28 @@
 
 rearrange_qube_list() {
  
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "$(echo "$qube_list" |\
    awk '$2 == "purple"')"`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$2 == "blue"')"`
  
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$2 == "gray"')"`
    
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$2 == "green"')"`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$2 == "yellow"')"`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$2 == "orange"')"`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$2 == "red"')"`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$2 == "black"')"`
 
  # Remove blank lines 

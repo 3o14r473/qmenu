@@ -1206,31 +1206,31 @@ rearrange_qube_list() {
 
  local QUBE_LIST_REARRANGED+=`echo "$qube_list" | grep -w NAME`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$3 == "purple"')"`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$3 == "blue"')"`
  
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$3 == "gray"')"`
    
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$3 == "green"')"`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$3 == "yellow"')"`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$3 == "orange"')"`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$3 == "red"')"`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$3 == "black"' | grep -w -v 'dom0')"`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "\n$qube_list" |\
+ local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$1 == "dom0"')"`
 
  # "\n" will create blank lines if an option 
