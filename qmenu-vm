@@ -65,7 +65,8 @@ fqvm_preferences() {
 
 	 elif [ "$value_selected" = "(Default)" ]; then
 
-	   local value_selected="--default"; fi
+	   local value_selected="--default"
+	 fi
 
 	 if [ -n "$value_selected" ]; then 
 			  
@@ -106,7 +107,8 @@ fqvm_preferences() {
 
 	   if [ "$answer_selected" = "Yes" ]; then
 			    
-	     qvm-prefs --set $target_qube $property "$value_selected"; fi
+	     qvm-prefs --set $target_qube $property "$value_selected"
+	   fi
 	 fi;;
 
 
@@ -123,7 +125,8 @@ fqvm_preferences() {
 
 	   if [ "$answer_selected" = "Yes" ]; then 
 			      
-	     qvm-prefs --set $target_qube $property "$value_selected"; fi
+	     qvm-prefs --set $target_qube $property "$value_selected"
+	   fi
 	 fi;;
 
 
@@ -183,7 +186,8 @@ fqvm_preferences() {
 
 	   if [ "$answer_selected" = "Yes" ]; then 
 	       
-	     qvm-prefs --set $target_qube $property $value_selected; fi
+	     qvm-prefs --set $target_qube $property $value_selected
+	   fi
 	 fi;;
 
 
@@ -198,7 +202,10 @@ fqvm_preferences() {
 	   local answer_selected=`echo -e "No\nYes" |\
 	     dmenu -i -p "Set initial memory of $target_qube to $value_selected MB?" $dmenu_fmc`
 
-	   if [ "$answer_selected" = "Yes" ]; then qvm-prefs --set $target_qube $property $value_selected; fi
+	   if [ "$answer_selected" = "Yes" ]; then
+	      
+	     qvm-prefs --set $target_qube $property $value_selected
+	   fi
 	 fi;;
 
 
@@ -215,7 +222,8 @@ fqvm_preferences() {
 
 	 elif [ "$value_selected" = "(Default)" ]; then
 
-	   local value_selected="--default"; fi
+	   local value_selected="--default"
+	 fi
 
 	 if [ -n "$value_selected" ]; then 
 			  
@@ -247,7 +255,8 @@ fqvm_preferences() {
 
 	   if [ "$answer_selected" = "Yes" ]; then 
 			    
-	     qvm-prefs --set $target_qube $property $value_selected; fi
+	     qvm-prefs --set $target_qube $property $value_selected
+	   fi
 	 fi;;
 
 
@@ -265,7 +274,8 @@ fqvm_preferences() {
 
 	   if [ "$answer_selected" = "Yes" ]; then 
 			    
-	     qvm-prefs --set $target_qube $property $value_selected; fi
+	     qvm-prefs --set $target_qube $property $value_selected
+	   fi
          fi;;
 
 
@@ -285,11 +295,13 @@ fqvm_preferences() {
 
 	   if [ "$value_selected" = "(Default)" ]; then
 
-	   local value_selected="--default"; fi
+	     local value_selected="--default"
+	   fi
 
            if [ -n "$value_selected" ]; then 
 			      
-	     qvm-prefs --set $target_qube $property $value_selected; fi
+	     qvm-prefs --set $target_qube $property $value_selected
+	   fi
 	 fi;;
 
 
@@ -318,7 +330,8 @@ fqvm_preferences() {
 
 	   if [ "$answer_selected" = "Yes" ]; then 
 			  
-	     qvm-prefs --set $target_qube $property $value_selected; fi
+	     qvm-prefs --set $target_qube $property $value_selected
+	   fi
 	 fi;;
 
 
@@ -376,7 +389,8 @@ fqvm_pci() {
 
        if [ -n "$virtmode_selected" ]; then 
 	 
-	 qvm-prefs --set $target_qube virt_mode $virtmode_selected; fi
+	 qvm-prefs --set $target_qube virt_mode $virtmode_selected
+       fi
      fi
    fi
      
@@ -424,18 +438,19 @@ fqvm_pci() {
 
 	     if [ -n "$pci_option" ]; then unset pci_option; fi
 
-	       local nsrt_prompt=`echo -e "\"$device_bdf\" is most likely to be"\
-	         " attached with the option 'no-strict-reset' enabled."\
-		 " Please be aware of the security implications!"\
-		 " Do you want to attach \"$device_bdf\""\
-		 " with the option 'no-strict-reset' set to true?"`
+	     local nsrt_prompt=`echo -e "\"$device_bdf\" is most likely to be"\
+	       " attached with the option 'no-strict-reset' enabled."\
+	       " Please be aware of the security implications!"\
+	       " Do you want to attach \"$device_bdf\""\
+	       " with the option 'no-strict-reset' set to true?"`
 
-	       local answer_nsrt=`echo -e "No\nYes" |\
-		 dmenu -i -p "$nsrt_prompt" $dmenu_fmc`
+	     local answer_nsrt=`echo -e "No\nYes" |\
+	       dmenu -i -p "$nsrt_prompt" $dmenu_fmc`
 
 	     if [ "$answer_nsrt" = "Yes" ]; then 
 		 
-	       local pci_option="-o no-strict-reset=True"; fi
+	       local pci_option="-o no-strict-reset=True"
+	     fi
      	   fi
 
            if ! qvm-pci attach --persistent $pci_option $target_qube $device_src:$device_bdf; then 
@@ -485,7 +500,8 @@ fqvm_firewall() {
 
        if [ "$answer" = "Yes" ]; then 
 	   
-	 qvm-firewall $target_qube del --rule-no $rulenumber_selected; fi
+	 qvm-firewall $target_qube del --rule-no $rulenumber_selected
+       fi
 
      elif [ "$option" = "Add" ]; then	
 	
@@ -496,82 +512,90 @@ fqvm_firewall() {
        
        local RULEARGS+="${action,,} "
 
-         if [ -n "$action" ]; then 
+       if [ -n "$action" ]; then 
 
-           local specialtarget=`true |\
-	     dmenu -p "ACTION=${RULEARGS[@]} <specialtarget>" $dmenu_fmc`
+         local specialtarget=`true |\
+	   dmenu -p "ACTION=${RULEARGS[@]} <specialtarget>" $dmenu_fmc`
              
-	     if [ -n "$specialtarget" ]; then 
+	 if [ -n "$specialtarget" ]; then 
 		 
-	      local RULEARGS+="SPECIALTARGET=$specialtarget "; fi
+	   local RULEARGS+="SPECIALTARGET=$specialtarget "
+	 fi
 		
-	   local dsthost=`true |\
-	     dmenu -p "ACTION=${RULEARGS[@]} <dsthost>" $dmenu_fmc`
+	 local dsthost=`true |\
+	   dmenu -p "ACTION=${RULEARGS[@]} <dsthost>" $dmenu_fmc`
                  
-	     if [ -n "$dsthost" ]; then 
+	 if [ -n "$dsthost" ]; then 
 		 
-	       local RULEARGS+="DSTHOST=$dsthost "; fi
+	   local RULEARGS+="DSTHOST=$dsthost "
+	 fi
 
-           local proto=`true |\
-	     dmenu -p "ACTION=${RULEARGS[@]} <proto>" $dmenu_fmc`
+         local proto=`true |\
+	   dmenu -p "ACTION=${RULEARGS[@]} <proto>" $dmenu_fmc`
                  
-	   if [ -n "$proto" ]; then 
+	 if [ -n "$proto" ]; then 
 	       
-	     local RULEARGS+="PROTO=$proto "; fi
+	   local RULEARGS+="PROTO=$proto "
+	 fi
 
-           if [[ "$proto" =~ ^(tcp|udp)$ ]]; then
+         if [[ "$proto" =~ ^(tcp|udp)$ ]]; then
 
-	     local dstports=`true |\
-	       dmenu -p "ACTION=${RULEARGS[@]} <dstports>" $dmenu_fmc`
+	   local dstports=`true |\
+	     dmenu -p "ACTION=${RULEARGS[@]} <dstports>" $dmenu_fmc`
 	             
-	     if [ -n "$dstports" ]; then
+	   if [ -n "$dstports" ]; then
 		  
-	       local RULEARGS+="DSTPORTS=$dstports "; fi
+	     local RULEARGS+="DSTPORTS=$dstports "
+	   fi
 
-           elif [ "$proto" = "icmp" ]; then
+         elif [ "$proto" = "icmp" ]; then
 
-	     local icmptype=`true |\
-	       dmenu -p "ACTION=${RULEARGS[@]} <icmptype>" $dmenu_fmc`
+	   local icmptype=`true |\
+	     dmenu -p "ACTION=${RULEARGS[@]} <icmptype>" $dmenu_fmc`
 	             
-	     if [ -n "$icmptype" ]; then
+	   if [ -n "$icmptype" ]; then
 		     
-	       local RULEARGS+="ICMPTYPE=$icmptype "; fi
-           fi
-
-           local expire=`true |\
-	     dmenu -p "ACTION=${RULEARGS[@]} <expire>" $dmenu_fmc`
-             
-	   if [ -n "$expire" ]; then
-	       
-	     local RULEARGS+="EXPIRE=$expire "; fi
-
-           local comment=`true |\
-	     dmenu -p "ACTION=${RULEARGS[@]} <comment>" $dmenu_fmc`
-                 
-	   if [ -n "$comment" ]; then
-	       
-	     local RULEARGS+="COMMENT=$comment"; fi
-        
-             local answer=`echo -e "No\nYes" |\
-	       dmenu -i -p "Add the following rule to $target_qube? {{ ACTION=${RULEARGS[@]} }}"\
-	       $dmenu_fmc` 
-
-             if [ "$answer" = "Yes" ]; then
-
-	       if [ -n "$beforerule" ]; then unset beforerule; fi
-
-		 if [ "$rulenumber_selected" != "NO" ]; then 
-			 
-		   local beforerule=`echo --before $rulenumber_selected`; fi
-
-                   if ! qvm-firewall $target_qube add $beforerule ${RULEARGS[@],,}; then
-
-                     echo "Go back..." | dmenu -i $dmenu_fmc\
-	               -p "Error: Failed to add firewall rule! See 'qvm-firewall --help' for more information."\
-                       &>/dev/null
-	           fi
-	     fi
+	     local RULEARGS+="ICMPTYPE=$icmptype "
+	   fi
          fi
+
+         local expire=`true |\
+	   dmenu -p "ACTION=${RULEARGS[@]} <expire>" $dmenu_fmc`
+             
+	 if [ -n "$expire" ]; then
+	       
+	   local RULEARGS+="EXPIRE=$expire "
+	 fi
+
+         local comment=`true |\
+	   dmenu -p "ACTION=${RULEARGS[@]} <comment>" $dmenu_fmc`
+                 
+	 if [ -n "$comment" ]; then
+	       
+	   local RULEARGS+="COMMENT=$comment"
+	 fi
+        
+         local answer=`echo -e "No\nYes" |\
+	   dmenu -i -p "Add the following rule to $target_qube? {{ ACTION=${RULEARGS[@]} }}"\
+	   $dmenu_fmc` 
+
+         if [ "$answer" = "Yes" ]; then
+
+	   if [ -n "$beforerule" ]; then unset beforerule; fi
+
+	   if [ "$rulenumber_selected" != "NO" ]; then 
+			 
+	     local beforerule=`echo --before $rulenumber_selected`
+	   fi
+
+           if ! qvm-firewall $target_qube add $beforerule ${RULEARGS[@],,}; then
+
+             echo "Go back..." | dmenu -i $dmenu_fmc\
+	       -p "Error: Failed to add firewall rule! See 'qvm-firewall --help' for more information."\
+               &>/dev/null
+	   fi
+	 fi
+       fi
      fi
    fi
  done
@@ -664,7 +688,8 @@ fqvm_service() {
      # If the service has already been added to the list,
      # give option to unset it
      if qvm-service $target_qube --list |\
-       grep -w $service; then local unset="\nUnset"; fi
+       grep -w $service; then local unset="\nUnset"
+     fi
          
      local value=`echo -e "Disable\nEnable$unset" |\
        dmenu -l 3 -i -p "Select value for '$service'" $dmenu_fmc`
@@ -734,7 +759,8 @@ fqvm_disk() {
 
        if [ "$answer" = "Yes" ]; then
 	   
-	 qvm-volume extend $target_qube:$volume $byte& fi
+	 qvm-volume extend $target_qube:$volume $byte&
+       fi
      else 
 	     
        echo "Go back..." |\
@@ -861,15 +887,16 @@ fqvm_remove() {
        dmenu -i -p "Are you sure you want to remove $target_qube permanently?"\
        $dmenu_fmc`
 
-   if [ "$confirmation_semifinal" = "Yes" ]; then
+     if [ "$confirmation_semifinal" = "Yes" ]; then
 
-     local confirmation_final=`echo -e "No\nYes" |
-       dmenu -i -p "Are you really sure you want to remove $target_qube permanently?"\
-       $dmenu_fmc`
+       local confirmation_final=`echo -e "No\nYes" |
+         dmenu -i -p "Are you really sure you want to remove $target_qube permanently?"\
+         $dmenu_fmc`
 
-     if [ "$confirmation_final" = "Yes" ]; then
+       if [ "$confirmation_final" = "Yes" ]; then
 	 
-       qvm-remove -f $target_qube& fi
+         qvm-remove -f $target_qube&
+       fi
      fi
    fi
  fi
@@ -896,9 +923,7 @@ fqvm_clone() {
          dmenu -i -l 10 -p "Select the pool to use for the new clone of $target_qube"\
          $dmenu_fmc | awk '{ print $1 }'`
 
-       if [ -n "$pool" ]; then
-
-	 local pool="-P $pool"; fi
+       if [ -n "$pool" ]; then local pool="-P $pool"; fi
    
      elif [ "$option" = "Create" ]; then
 
@@ -1009,7 +1034,8 @@ fdom0_preferences() {
 
        if [ "$value_selected" = "(None)" ]; then 
        
-	 local value_selected="none"; fi
+	 local value_selected="none"
+       fi
 
        if [ -n "$value_selected" ]; then 
 			  
@@ -1030,7 +1056,8 @@ fdom0_preferences() {
 
          if [ "$answer_selected" = "Yes" ]; then
 			    
-	   qubes-prefs --set $property "$value_selected"; fi
+	   qubes-prefs --set $property "$value_selected"
+	 fi
        fi;;
 
 
