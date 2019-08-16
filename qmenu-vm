@@ -970,15 +970,11 @@ fdom0_preferences() {
      clockvm)
 
        # List netvm's via 'qvm-ls'
-       local value_selected=`echo -e "(None)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+       local value_selected=`echo -e "$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select new ClockVM" $dmenu_d0`
 
-       if [ "$value_selected" = "(None)" ]; then
-
-         local value_selected=''; fi
-
-         if [ -n "$value_selected" ]; then
+       if [ -n "$value_selected" ]; then
 
          qubes-prefs --set $property $value_selected; fi;;
  
@@ -1011,11 +1007,11 @@ fdom0_preferences() {
 
        if [ "$value_selected" = "(None)" ]; then 
        
-	 local value_selected=''; fi
+	 local value_selected="none"; fi
 
-	 if [ -n "$value_selected" ]; then 
+       if [ -n "$value_selected" ]; then 
 			  
-	   qubes-prefs --set $property $value_selected; fi;;
+	 qubes-prefs --set $property $value_selected; fi;;
 
 
      default_kernel)
@@ -1039,13 +1035,9 @@ fdom0_preferences() {
      default_netvm)
 
        # List netvm's via 'qvm-ls'
-       local value_selected=`echo -e "(None)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+       local value_selected=`echo -e "$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
 	 grep '|...N....$' | cut -d '|' -f1)" |\
 	 dmenu -l 50 -p "Select netvm for $target_qube" $dmenu_d0`
-
-       if [ "$value_selected" = "(None)" ]; then 
-			  
-         local value_selected=''; fi
 
        if [ -n "$value_selected" ]; then 
 			  
@@ -1163,17 +1155,13 @@ fdom0_preferences() {
            fi
          done 
 
-         local value_selected=`echo -e "(None)\n${LIST_OF_DISPTEMP[@]}\n" |\
+         local value_selected=`echo -e "${LIST_OF_DISPTEMP[@]}\n" |\
            dmenu -l 50 -p "Select management dispvm"\
 	   $dmenu_d0`
 
-         if [ "$value_selected" = "(None)" ]; then 
-       
-	   local value_selected=''; fi
-
-	   if [ -n "$value_selected" ]; then
+	 if [ -n "$value_selected" ]; then
 			  
-	     qubes-prefs --set $property $value_selected; fi;;
+	   qubes-prefs --set $property $value_selected; fi;;
 
 
      stats_interval) 
@@ -1189,17 +1177,23 @@ fdom0_preferences() {
      updatevm) 
 
        # List netvm's via 'qvm-ls'
-       local value_selected=`echo -e "(None)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+       local value_selected=`echo -e "$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select new UpdateVM" $dmenu_d0`
 
-       if [ "$value_selected" = "(None)" ]; then
-
-         local value_selected=''; fi
-
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set $property $value_selected; fi;;
+	 if qvm-check --running $value_selected &>/dev/null; then
+
+	   qubes-prefs --set $property $value_selected
+	 else
+
+	   echo "Go back..." |\
+	     dmenu -p "$value_selected needs to be running!"\
+	     $dmenu_d0 &>/dev/null
+	 fi
+       fi;;
+
 
      *)
    esac
@@ -1257,7 +1251,7 @@ if [ -z "$show_qubes" ]; then
 # 'qvm-ls --all' will not list dom0 for some reason.
 # Because of this, we will output $1 into a variable
 # and unset it when '--all' is given
-elif [ "$show_qubes" = "--all"]; then
+elif [ "$show_qubes" = "--all" ]; then
 
   unset show_qubes
 fi
