@@ -1277,7 +1277,7 @@ while true; do
   # Load 'qvm-ls' into a variable so that it doesnt 
   # need to reload again after every user operation
   qube_list=`qvm-ls --no-spinner $show_qubes -O NAME,STATE,LABEL,CLASS\
-,TEMPLATE,NETVM,IP,GATEWAY,PRIV-MAX,PRIV-CURR,PRIV-USED,ROOT-MAX\
+,TEMPLATE,NETVM,IP,PRIV-MAX,PRIV-CURR,PRIV-USED,ROOT-MAX\
 ,ROOT-CURR,ROOT-USED,KERNEL,KERNELOPTS`
 
   rearrange_qube_list
