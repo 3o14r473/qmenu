@@ -1,4 +1,4 @@
-#!/bin/dash
+#!/bin/bash
 
 get_qube_label() {
 
@@ -60,7 +60,7 @@ if [ -n "$device" ]; then
 
       get_qube_label 
 
-      prompt=`echo "No\nYes" |\
+      prompt=`echo -e "No\nYes" |\
 	dmenu -i -p "Attach $device_name to $target_qube?"\
 	-f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1`
     
@@ -75,7 +75,7 @@ if [ -n "$device" ]; then
     
     get_qube_label
 
-    prompt=`echo "No\nYes" |\
+    prompt=`echo -e "No\nYes" |\
       dmenu -i -p "Detach $device_name from $target_qube?"\
       -f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1`
     
