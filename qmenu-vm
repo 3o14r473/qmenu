@@ -780,9 +780,9 @@ fqvm_usb() {
      $dmenu_fmc &>/dev/null 
  else
     
-   local usb_list=`qvm-usb`
+   local devices_list=`qvm-usb`
 
-   local device=`echo "$usb_list" | dmenu -l 16 -p "$target_qube:" $dmenu_fmc`
+   local device=`echo "$devices_list" | dmenu -l 16 -p "$target_qube:" $dmenu_fmc`
 
    local device_id=`echo $device | awk '{ print $1 }'`
 
@@ -790,7 +790,7 @@ fqvm_usb() {
 
    if [ -n "$device" ]; then
 
-     local holds_qube=`echo "$usb_list" | grep $device_id | awk '{ print $3 }'`
+     local holds_qube=`echo "$devices_list" | grep $device_id | awk '{ print $3 }'`
 
      if [ -z "$holds_qube" ]; then 
 
@@ -824,6 +824,66 @@ fqvm_usb() {
          qvm-usb detach $holds_qube $device_id
 
          qvm-usb attach $target_qube $device_id
+       fi
+     fi
+   fi
+ fi
+}
+
+
+fqvm_blck() {
+
+ if ! qvm-check --running $target_qube &>/dev/null; then 
+
+   echo "Go back..." |\
+     dmenu -p "$target_qube needs to be running, in order to attach block devices"\
+     $dmenu_fmc &>/dev/null 
+ else
+    
+   local devices_list=`qvm-block`
+
+   local device=`echo "$devices_list" | dmenu -l 16 -p "$target_qube:" $dmenu_fmc`
+
+   local device_id=`echo $device | awk '{ print $1 }'`
+
+   local device_name=`echo $device | awk '{ print $2 $3 }'`
+
+   if [ -n "$device" ]; then
+
+     local holds_qube=`echo "$devices_list" | grep $device_id | awk '{ print $4 }'`
+
+     if [ -z "$holds_qube" ]; then 
+
+       local answer=`echo -e "No\nYes" |\
+         dmenu -i -p "Attach $device_name to $target_qube?"\
+         $dmenu_fmc`
+    
+       if [ "$answer" = "Yes" ]; then
+
+         qvm-block attach $target_qube $device_id
+       fi 
+
+     elif [ "$holds_qube" = "$target_qube" ]; then 
+
+       local answer=`echo -e "No\nYes" |\
+         dmenu -i -p "Detach $device_name from $target_qube?"\
+         $dmenu_fmc`
+    
+       if [ "$answer" = "Yes" ]; then
+
+         qvm-block detach $holds_qube $device_id
+       fi
+     else
+   
+       local answer=`echo -e "No\nYes" |\
+         dmenu -i -p "Detach $device_name from $holds_qube and attach it to $target_qube?"\
+         $dmenu_fmc`
+    
+       if [ "$answer" = "Yes" ]; then
+
+         qvm-block detach $holds_qube $device_id
+
+         qvm-block attach $target_qube $device_id
        fi
      fi
    fi
@@ -1336,11 +1396,11 @@ while true; do
 
         while [ -n "$chosefrom" ]; do
 	    
-          chosefrom=`echo -e "Applications\nBoot\nBootfrom\nClone"\
-			     "\nCommand\nDisk\nFirewall\nGUI"\
-			     "\nKeyboard\nKill\nPause\nPCI"\
-			     "\nPreferences\nReboot\nRemove\nServices"\
-			     "\nShutdown\nUnpause\nUSB" |\
+          chosefrom=`echo -e "Applications\nBlocks\nBoot\nBootfrom"\
+			     "\nClone\nCommand\nDisk\nFirewall"\
+			     "\nGUI\nKeyboard\nKill\nPause"\
+			     "\nPCI\nPreferences\nReboot\nRemove"\
+			     "\nServices\nShutdown\nUnpause\nUSB" |\
 	                     dmenu -l 19 -i -p "$target_qube:" $dmenu_fmc`
 
           case $chosefrom in
@@ -1348,16 +1408,20 @@ while true; do
             Applications) 
 	    
 	      fqvm_applications;;
+
+	    Blocks)
+
+	      fqvm_blck;;
 		
 	    Boot) 
 	    
 	      qvm-start --skip-if-running $target_qube&;; 
 	    
-	    Bootfrom) 
+	    Bootfrom*) 
 	    
 	      qubes-vm-boot-from-device $target_qube;;
 		    
-	    Clone*) 
+	    Clone) 
 	    
 	      fqvm_clone;;
 
@@ -1369,11 +1433,11 @@ while true; do
 	    
 	      fqvm_disk;;
 		   
-	    Firewall) 
+	    Firewall*) 
 	    
 	      fqvm_firewall;;
 		    
-	    GUI*) 
+	    GUI) 
 	    
 	      qubes-vm-settings $target_qube;;
 
@@ -1391,7 +1455,7 @@ while true; do
 		qvm-kill $target_qube& fi;;
 		    
 	    
-	    Pause) 
+	    Pause*) 
 	    
 	      answer=`echo -e "No\nYes" |\
 		dmenu -i -p "Pause $target_qube?" $dmenu_fmc`
@@ -1401,7 +1465,7 @@ while true; do
 		qvm-pause $target_qube& fi;;
 
 	    
-	    PCI*) 
+	    PCI) 
 	    
 	      fqvm_pci;;
 		     
@@ -1423,7 +1487,7 @@ while true; do
 	      fi;;
 	     
 	    
-	    Remove) 
+	    Remove*) 
 	    
 	      fqvm_remove;;  
 
