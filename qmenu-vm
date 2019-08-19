@@ -36,9 +36,7 @@ fqvm_preferences() {
 
        default_dispvm) 
 	  
-         if [ -n "${LIST_OF_DISPTEMP}" ]; then 
-	  
-	   unset LIST_OF_DISPTEMP; fi 
+         if [ -n "${LIST_OF_DISPTEMP}" ]; then unset LIST_OF_DISPTEMP; fi 
 
 	 # [mediocre] Look up disposable templates
 	 for n in `qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
@@ -1034,9 +1032,7 @@ fdom0_preferences() {
 
      default_dispvm)
 
-       if [ -n "${LIST_OF_DISPTEMP}" ]; then
-
-	 unset LIST_OF_DISPTEMP; fi
+       if [ -n "${LIST_OF_DISPTEMP}" ]; then unset LIST_OF_DISPTEMP; fi
 
        # [mediocre] Look up disposable templates
        for n in `qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
@@ -1190,9 +1186,7 @@ fdom0_preferences() {
 
      management_dispvm)
 
-       if [ -n "${LIST_OF_DISPTEMP}" ]; then
-
-	 unset LIST_OF_DISPTEMP; fi
+       if [ -n "${LIST_OF_DISPTEMP}" ]; then unset LIST_OF_DISPTEMP; fi
 
          # [mediocre] Look up disposable templates
          for n in `qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
