@@ -74,8 +74,7 @@ case $1 in
   --all)
 
     device_type=`echo -e "Audio input\nBlock\nUSB" |\
-      dmenu -i -l 3 -p "Select device type:"\
-      $dmenu_fmc | awk '{ print $1 }'`;;
+      dmenu -i -l 3 $dmenu_fmc | awk '{ print $1 }'`;;
 
   --audio-input)
 
