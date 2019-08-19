@@ -11,7 +11,7 @@ Selecting the top row, instead of any qube, will reload the list.
     --paused
     --halted
 
-# qmenu-dvcs
+# qmenu-dv
 Manage your connected devices in QubesOS via [dmenu](https://tools.suckless.org/dmenu/).
 
     Usage: qmenu-dv [OPTION] (--light-theme)
