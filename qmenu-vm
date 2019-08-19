@@ -600,6 +600,95 @@ fqvm_firewall() {
 }
 
 
+fqvm_devices() {
+
+ if ! qvm-check --running $target_qube &>/dev/null; then 
+
+   echo "Go back..." |\
+     dmenu -p "$target_qube needs to be running, in order to attach devices"\
+     $dmenu_fmc &>/dev/null 
+ else
+
+   # Depending on the device type, we have to 
+   # 'awk' different fields later on
+   if [ "$chosefrom" = "Audio" ]; then
+
+     local device_type="device mic"
+  
+     local awk_devicename0=2
+     local awk_devicename1=10
+     local awk_targetqube=3
+
+   elif [ "$chosefrom" = "Block" ]; then
+
+     local device_type="${chosefrom,}"
+
+     local awk_devicename0=2
+     local awk_devicename1=3
+     local awk_targetqube=4
+
+   elif [ "$chosefrom" = "USB" ]; then
+
+     local device_type="${chosefrom,,}"
+
+     local awk_devicename0=2
+     local awk_devicename1=10
+     local awk_targetqube=3
+fi
+    
+   local devices_list=`qvm-$device_type`
+
+   local device=`echo "$devices_list" |\
+     dmenu -l 16 -p "$target_qube:" $dmenu_fmc`
+
+   local device_id=`echo $device | awk '{ print $1 }'`
+
+   local device_name=`echo $device |\
+     awk '{ print $'$awk_devicename0'$'$awk_devicename1' }'`
+
+   if [ -n "$device" ]; then
+
+     local holds_qube=`echo "$devices_list" | grep $device_id |\
+       awk '{ print $'$awk_targetqube' }'`
+
+     if [ -z "$holds_qube" ]; then 
+
+       local answer=`echo -e "No\nYes" |\
+         dmenu -i -p "Attach $device_name to $target_qube?"\
+         $dmenu_fmc`
+    
+       if [ "$answer" = "Yes" ]; then
+
+         qvm-$device_type attach $target_qube $device_id&
+       fi 
+
+     elif [ "$holds_qube" = "$target_qube" ]; then 
+
+       local answer=`echo -e "No\nYes" |\
+         dmenu -i -p "Detach $device_name from $target_qube?"\
+         $dmenu_fmc`
+    
+       if [ "$answer" = "Yes" ]; then
+
+         qvm-$device_type detach $holds_qube $device_id&
+       fi
+     else
+   
+       local answer=`echo -e "No\nYes" |\
+         dmenu -i -p "Detach $device_name from $holds_qube and attach it to $target_qube?"\
+         $dmenu_fmc`
+    
+       if [ "$answer" = "Yes" ]; then
+
+         $(qvm-$device_type detach $holds_qube $device_id &&
+           qvm-$device_type attach $target_qube $device_id)&
+       fi
+     fi
+   fi
+ fi
+}
+
+
 fqvm_applications() {
 
  local option=0	
@@ -765,126 +854,6 @@ fqvm_disk() {
        echo "Go back..." |\
 	 dmenu -p "Error: Can only increase the maximum $volume storage!"\
 	 $dmenu_fmc &>/dev/null
-     fi
-   fi
- fi
-}
-
-
-fqvm_usb() {
-
- if ! qvm-check --running $target_qube &>/dev/null; then 
-
-   echo "Go back..." |\
-     dmenu -p "$target_qube needs to be running, in order to attach USB devices"\
-     $dmenu_fmc &>/dev/null 
- else
-    
-   local devices_list=`qvm-usb`
-
-   local device=`echo "$devices_list" | dmenu -l 16 -p "$target_qube:" $dmenu_fmc`
-
-   local device_id=`echo $device | awk '{ print $1 }'`
-
-   local device_name=`echo $device | awk '{ print $2 }'`
-
-   if [ -n "$device" ]; then
-
-     local holds_qube=`echo "$devices_list" | grep $device_id | awk '{ print $3 }'`
-
-     if [ -z "$holds_qube" ]; then 
-
-       local answer=`echo -e "No\nYes" |\
-         dmenu -i -p "Attach $device_name to $target_qube?"\
-         $dmenu_fmc`
-    
-       if [ "$answer" = "Yes" ]; then
-
-         qvm-usb attach $target_qube $device_id
-       fi 
-
-     elif [ "$holds_qube" = "$target_qube" ]; then 
-
-       local answer=`echo -e "No\nYes" |\
-         dmenu -i -p "Detach $device_name from $target_qube?"\
-         $dmenu_fmc`
-    
-       if [ "$answer" = "Yes" ]; then
-
-         qvm-usb detach $holds_qube $device_id
-       fi
-     else
-   
-       local answer=`echo -e "No\nYes" |\
-         dmenu -i -p "Detach $device_name from $holds_qube and attach it to $target_qube?"\
-         $dmenu_fmc`
-    
-       if [ "$answer" = "Yes" ]; then
-
-         qvm-usb detach $holds_qube $device_id
-
-         qvm-usb attach $target_qube $device_id
-       fi
-     fi
-   fi
- fi
-}
-
-
-fqvm_blck() {
-
- if ! qvm-check --running $target_qube &>/dev/null; then 
-
-   echo "Go back..." |\
-     dmenu -p "$target_qube needs to be running, in order to attach block devices"\
-     $dmenu_fmc &>/dev/null 
- else
-    
-   local devices_list=`qvm-block`
-
-   local device=`echo "$devices_list" | dmenu -l 16 -p "$target_qube:" $dmenu_fmc`
-
-   local device_id=`echo $device | awk '{ print $1 }'`
-
-   local device_name=`echo $device | awk '{ print $2 $3 }'`
-
-   if [ -n "$device" ]; then
-
-     local holds_qube=`echo "$devices_list" | grep $device_id | awk '{ print $4 }'`
-
-     if [ -z "$holds_qube" ]; then 
-
-       local answer=`echo -e "No\nYes" |\
-         dmenu -i -p "Attach $device_name to $target_qube?"\
-         $dmenu_fmc`
-    
-       if [ "$answer" = "Yes" ]; then
-
-         qvm-block attach $target_qube $device_id
-       fi 
-
-     elif [ "$holds_qube" = "$target_qube" ]; then 
-
-       local answer=`echo -e "No\nYes" |\
-         dmenu -i -p "Detach $device_name from $target_qube?"\
-         $dmenu_fmc`
-    
-       if [ "$answer" = "Yes" ]; then
-
-         qvm-block detach $holds_qube $device_id
-       fi
-     else
-   
-       local answer=`echo -e "No\nYes" |\
-         dmenu -i -p "Detach $device_name from $holds_qube and attach it to $target_qube?"\
-         $dmenu_fmc`
-    
-       if [ "$answer" = "Yes" ]; then
-
-         qvm-block detach $holds_qube $device_id
-
-         qvm-block attach $target_qube $device_id
-       fi
      fi
    fi
  fi
@@ -1389,19 +1358,21 @@ while true; do
         correct_qube_label
             
         # Note that the '-m 0' option in 'dmenu' is important
-        # for security as it restricts 'qmenu-vm' to monitor 0
+        # for security as it restricts it to monitor 0
         dmenu_fmc="-m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1"
 
         chosefrom=0
 
         while [ -n "$chosefrom" ]; do
 	    
-          chosefrom=`echo -e "Applications\nBlocks\nBoot\nBootfrom"\
-			     "\nClone\nCommand\nDisk\nFirewall"\
-			     "\nGUI\nKeyboard\nKill\nPause"\
-			     "\nPCI\nPreferences\nReboot\nRemove"\
-			     "\nServices\nShutdown\nUnpause\nUSB" |\
-	                     dmenu -l 19 -i -p "$target_qube:" $dmenu_fmc`
+          chosefrom=`echo -e "Applications\nAudio input\nBlock devices\nBoot"\
+			     "\nBootfrom\nClone\nCommand\nDisk"\
+			     "\nFirewall\nGUI\nKeyboard\nKill"\
+			     "\nPause\nPCI\nPreferences\nReboot"\
+			     "\nRemove\nServices\nShutdown\nUnpause"\
+			     "\nUSB" |\
+	                     dmenu -l 21 -i -p "$target_qube:" $dmenu_fmc |\
+			     awk '{ print $1 }'`
 
           case $chosefrom in
 
@@ -1409,15 +1380,19 @@ while true; do
 	    
 	      fqvm_applications;;
 
-	    Blocks)
+	    Audio)
 
-	      fqvm_blck;;
+	      fqvm_devices;;
+
+	    Block)
+
+	      fqvm_devices;;
 		
-	    Boot) 
+	    Boot*) 
 	    
 	      qvm-start --skip-if-running $target_qube&;; 
 	    
-	    Bootfrom*) 
+	    Bootfrom) 
 	    
 	      qubes-vm-boot-from-device $target_qube;;
 		    
@@ -1429,11 +1404,11 @@ while true; do
 	    
 	      fqvm_run;;
 		
-	    Disk) 
+	    Disk*) 
 	    
 	      fqvm_disk;;
 		   
-	    Firewall*) 
+	    Firewall) 
 	    
 	      fqvm_firewall;;
 		    
@@ -1445,7 +1420,7 @@ while true; do
 	    
 	      fqvm_keyboard;;
 		    
-	    Kill) 
+	    Kill*) 
 	    
 	      answer=`echo -e "No\nYes" |\
 		dmenu -i -p "Kill $target_qube?" $dmenu_fmc`
@@ -1455,7 +1430,7 @@ while true; do
 		qvm-kill $target_qube& fi;;
 		    
 	    
-	    Pause*) 
+	    Pause) 
 	    
 	      answer=`echo -e "No\nYes" |\
 		dmenu -i -p "Pause $target_qube?" $dmenu_fmc`
@@ -1473,7 +1448,7 @@ while true; do
 	    
 	      fqvm_preferences;; 
 
-	    Reboot) 
+	    Reboot*) 
 	    
 	      answer=`echo -e "No\nYes" |\
 	        dmenu -i -p "Reboot $target_qube?" $dmenu_fmc`
@@ -1487,11 +1462,11 @@ while true; do
 	      fi;;
 	     
 	    
-	    Remove*) 
+	    Remove) 
 	    
 	      fqvm_remove;;  
 
-            Services*) 
+            Services) 
 	    
 	      fqvm_service;;
 
@@ -1505,13 +1480,13 @@ while true; do
 	        qvm-shutdown $target_qube& fi;;     
 
             
-	    Unpause) 
+	    Unpause*) 
 	    
 	      qvm-unpause $target_qube&;;
 
 	    USB) 
 	    
-	      fqvm_usb;;
+	      fqvm_devices;;
 
             *)
           esac
