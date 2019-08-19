@@ -860,8 +860,6 @@ fqvm_disk() {
 
 fqvm_keyboard() {
  
- if [ -n "$LAYOUT" ]; then unset LAYOUT; fi
-    
  # 'qmenu-vm' does not get informed about the installed layouts by the vm itself
  # so there is a chance that the selected layout is missing inside the vm.
  # Getting the info from the vm itself however would have security implications
