@@ -130,18 +130,26 @@ fqvm_preferences() {
 
        label) 
        
-         local value_selected=`echo -e "Purple\nBlue\nGreen\nYellow\nOrange\nRed\nGray\nBlack" |\
-	   dmenu -i -l 8 -p "Select label for $target_qube" $dmenu_fmc`
+         if qvm-check --running $target_qube &>/dev/null; then
 
-	 if [ -n "$value_selected" ]; then
+	   echo "Go back..." |\
+	     dmenu -p "$target_qube needs to be powered off, in order to change its label"\
+	     $dmenu_fmc &>/dev/null 
+	 else
+	   
+	   local value_selected=`echo -e "Purple\nBlue\nGreen\nYellow\nOrange\nRed\nGray\nBlack" |\
+	     dmenu -i -l 8 -p "Select label for $target_qube" $dmenu_fmc`
 
-	   qvm-prefs --set $target_qube $property ${value_selected,}
+	   if [ -n "$value_selected" ]; then
 
-	   qube_label=`qvm-ls $target_qube -O LABEL | sed -e '1d'`
+	     qvm-prefs --set $target_qube $property ${value_selected,}
 
-	   correct_qube_label
+	     qube_label=`qvm-ls $target_qube -O LABEL | sed -e '1d'`
 
-           dmenu_fmc="-f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1"
+	     correct_qube_label
+
+             dmenu_fmc="-f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1"
+	   fi
 	 fi;;
 
 
