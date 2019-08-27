@@ -26,7 +26,7 @@ rearrange_qube_list() {
  local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
    awk '$2 == "black"')"`
 
- # Remove blank lines 
+ # Remove blank lines.
  qube_list=`echo -e "$QUBE_LIST_REARRANGED" | sed "{/^$/d;}"`
 }
 
@@ -35,12 +35,12 @@ get_qube_label() {
 
  qube_label=`echo "$qube_list" | grep -w $target_qube | awk '{ print $2 }'`
  
- # Change black, yellow and green to a more readable color if needed 
+ # Change black, yellow and green to a more readable color if needed.
  if [ "$qube_label" = "black" ]; then
 
    qube_label='#373737'
 
- # Change only if dark theme is selected
+ # Change only if dark theme is selected.
  elif [ "$theme_1" = "#ffffff" ]; then
 
    if [ "$qube_label" = "yellow" ]; then 
@@ -66,7 +66,7 @@ else
 fi
 
 # Note that the '-m 0' option in 'dmenu' is important
-# for security as it restricts it to monitor 0
+# for security as it restricts it to monitor 0.
 dmenu_fmc="-f -m 0 -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0"
 
 case $1 in
@@ -95,7 +95,7 @@ case $1 in
 esac
 
 # Depending on the device type, we have to 
-# 'awk' different fields later on
+# 'awk' different fields later on.
 if [ "$device_type" = "Audio" ]; then
 
   device_type="device mic"
