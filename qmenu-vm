@@ -1359,7 +1359,7 @@ while true; do
             
         # Note that the '-m 0' option in 'dmenu' is important
         # for security, as it restricts it to monitor 0.
-        dmenu_fmc="-m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1"
+        dmenu_fmc="-f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1"
 
         chosefrom=0
 
