@@ -1388,7 +1388,7 @@ while true; do
 
 	      fqvm_devices;;
 		
-	    Boot*) 
+	    Boot) 
 	    
 	      qvm-start --skip-if-running $target_qube&;; 
 	    
@@ -1404,7 +1404,7 @@ while true; do
 	    
 	      fqvm_run;;
 		
-	    Disk*) 
+	    Disk) 
 	    
 	      fqvm_disk;;
 		   
@@ -1420,7 +1420,7 @@ while true; do
 	    
 	      fqvm_keyboard;;
 		    
-	    Kill*) 
+	    Kill) 
 	    
 	      answer=`echo -e "No\nYes" |\
 		dmenu -i -p "Kill $target_qube?" $dmenu_fmc`
@@ -1448,7 +1448,7 @@ while true; do
 	    
 	      fqvm_preferences;; 
 
-	    Reboot*) 
+	    Reboot) 
 	    
 	      answer=`echo -e "No\nYes" |\
 	        dmenu -i -p "Reboot $target_qube?" $dmenu_fmc`
@@ -1480,7 +1480,7 @@ while true; do
 	        qvm-shutdown $target_qube& fi;;     
 
             
-	    Unpause*) 
+	    Unpause) 
 	    
 	      qvm-unpause $target_qube&;;
 
