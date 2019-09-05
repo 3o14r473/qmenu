@@ -747,7 +747,7 @@ fqvm_applications() {
          local whitespace_app=`cat $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list |\
            grep -n $application | cut -c 1`
 
-         local whitespace_app=`expr $whitespace_app - 1`
+         local whitespace_app=$((whitespace_app - 1))
 
          sed -i "${whitespace_app}{/^$/d;}" $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
          sed -i "/$application/d" $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
