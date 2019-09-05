@@ -54,7 +54,7 @@ fqvm_preferences() {
            fi
          done 
 
-         local value_selected=`echo -e "(Default)\n(None)\n${LIST_OF_DISPTEMP[@]}\n" |\
+         local value_selected=`echo -e "(Default)\n(None)\n${LIST_OF_DISPTEMP[*]}" |\
            dmenu -l 50 -p "Select default dispvm for $target_qube" $dmenu_fmc`
 
          if [ "$value_selected" = "(None)" ]; then 
@@ -519,7 +519,7 @@ fqvm_firewall() {
        if [ -n "$action" ]; then 
 
          local specialtarget=`true |\
-           dmenu -p "ACTION=${RULEARGS[@]} <specialtarget>" $dmenu_fmc`
+           dmenu -p "ACTION=${RULEARGS[*]} <specialtarget>" $dmenu_fmc`
              
          if [ -n "$specialtarget" ]; then 
                  
@@ -527,7 +527,7 @@ fqvm_firewall() {
          fi
                 
          local dsthost=`true |\
-           dmenu -p "ACTION=${RULEARGS[@]} <dsthost>" $dmenu_fmc`
+           dmenu -p "ACTION=${RULEARGS[*]} <dsthost>" $dmenu_fmc`
                  
          if [ -n "$dsthost" ]; then 
                  
@@ -535,7 +535,7 @@ fqvm_firewall() {
          fi
 
          local proto=`true |\
-           dmenu -p "ACTION=${RULEARGS[@]} <proto>" $dmenu_fmc`
+           dmenu -p "ACTION=${RULEARGS[*]} <proto>" $dmenu_fmc`
                  
          if [ -n "$proto" ]; then 
                
@@ -545,7 +545,7 @@ fqvm_firewall() {
          if [[ "$proto" =~ ^(tcp|udp)$ ]]; then
 
            local dstports=`true |\
-             dmenu -p "ACTION=${RULEARGS[@]} <dstports>" $dmenu_fmc`
+             dmenu -p "ACTION=${RULEARGS[*]} <dstports>" $dmenu_fmc`
                      
            if [ -n "$dstports" ]; then
                   
@@ -555,7 +555,7 @@ fqvm_firewall() {
          elif [ "$proto" = "icmp" ]; then
 
            local icmptype=`true |\
-             dmenu -p "ACTION=${RULEARGS[@]} <icmptype>" $dmenu_fmc`
+             dmenu -p "ACTION=${RULEARGS[*]} <icmptype>" $dmenu_fmc`
                      
            if [ -n "$icmptype" ]; then
                      
@@ -564,7 +564,7 @@ fqvm_firewall() {
          fi
 
          local expire=`true |\
-           dmenu -p "ACTION=${RULEARGS[@]} <expire>" $dmenu_fmc`
+           dmenu -p "ACTION=${RULEARGS[*]} <expire>" $dmenu_fmc`
              
          if [ -n "$expire" ]; then
                
@@ -572,7 +572,7 @@ fqvm_firewall() {
          fi
 
          local comment=`true |\
-           dmenu -p "ACTION=${RULEARGS[@]} <comment>" $dmenu_fmc`
+           dmenu -p "ACTION=${RULEARGS[*]} <comment>" $dmenu_fmc`
                  
          if [ -n "$comment" ]; then
                
@@ -580,7 +580,7 @@ fqvm_firewall() {
          fi
         
          local answer=`echo -e "No\nYes" |\
-           dmenu -i -p "Add the following rule to $target_qube? {{ ACTION=${RULEARGS[@]} }}"\
+           dmenu -i -p "Add the following rule to $target_qube? {{ ACTION=${RULEARGS[*]} }}"\
            $dmenu_fmc` 
 
          if [ "$answer" = "Yes" ]; then
@@ -592,7 +592,7 @@ fqvm_firewall() {
              local beforerule=`echo --before $rulenumber_selected`
            fi
 
-           if ! qvm-firewall $target_qube add $beforerule ${RULEARGS[@],,}; then
+           if ! qvm-firewall $target_qube add $beforerule ${RULEARGS[*],,}; then
 
              echo "Go back..." | dmenu -i $dmenu_fmc\
                -p "Error: Failed to add firewall rule! See 'qvm-firewall --help' for more information."\
@@ -1056,7 +1056,7 @@ fdom0_preferences() {
          fi
        done 
 
-       local value_selected=`echo -e "(None)\n${LIST_OF_DISPTEMP[@]}\n" |\
+       local value_selected=`echo -e "(None)\n${LIST_OF_DISPTEMP[*]}" |\
          dmenu -l 50 -p "Select default dispvm"\
          $dmenu_d0`
 
@@ -1210,7 +1210,7 @@ fdom0_preferences() {
            fi
          done 
 
-         local value_selected=`echo -e "${LIST_OF_DISPTEMP[@]}\n" |\
+         local value_selected=`echo -e "${LIST_OF_DISPTEMP[*]}" |\
            dmenu -l 50 -p "Select management dispvm"\
            $dmenu_d0`
 
