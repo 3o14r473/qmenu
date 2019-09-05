@@ -1042,7 +1042,7 @@ fdom0_preferences() {
          if `qvm-prefs --get $n template_for_dispvms |\
            grep True &>/dev/null`; then
 
-             LIST_OF_DISPTEMP+=("\n"$n)
+             LIST_OF_DISPTEMP+="\n"$n
            fi
        done 
 
@@ -1193,9 +1193,9 @@ fdom0_preferences() {
 
              if [ -z "$LIST_OF_DISPTEMP" ] 
                
-               then  LIST_OF_DISPTEMP+=($n)
+               then  LIST_OF_DISPTEMP+=$n
            
-               else LIST_OF_DISPTEMP+=("\n"$n)
+               else LIST_OF_DISPTEMP+="\n"$n
              fi
            fi
          done 
