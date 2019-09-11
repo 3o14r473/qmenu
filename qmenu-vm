@@ -45,8 +45,8 @@ fqvm_preferences() {
            if `qvm-prefs --get $n template_for_dispvms |\
              grep True &>/dev/null`; then
 
-               local LIST_OF_DISPTEMP+="\n"$n
-             fi
+             local LIST_OF_DISPTEMP+="\n"$n
+           fi
          done 
 
          local value_selected=`echo -e "(Default)\n(None)${LIST_OF_DISPTEMP[*]}" |\
@@ -1042,8 +1042,8 @@ fdom0_preferences() {
          if `qvm-prefs --get $n template_for_dispvms |\
            grep True &>/dev/null`; then
 
-             LIST_OF_DISPTEMP+="\n"$n
-           fi
+           LIST_OF_DISPTEMP+="\n"$n
+         fi
        done 
 
        local value_selected=`echo -e "(None)${LIST_OF_DISPTEMP[*]}" |\
