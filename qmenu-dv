@@ -104,7 +104,7 @@ else
   exit 2
 fi
 
-qube_list=`qvm-ls --no-spinner --running -O NAME,LABEL`
+qube_list=`qvm-ls --no-spinner --running -O NAME,LABEL | grep -vw 'dom0\|sys-usb'`
 
 rearrange_qube_list
 
