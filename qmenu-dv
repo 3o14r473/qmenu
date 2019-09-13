@@ -3,12 +3,12 @@
 rearrange_qube_list() {
 
  qube_list=$(echo "$qube_list" |\
-   awk -v keysInOrder="LABEL,purple,blue,gray,green,yellow,orange,red,black" '
+   awk -v ListInOrder="LABEL,purple,blue,gray,green,yellow,orange,red,black" '
    BEGIN {
-   split(keysInOrder, a, ",")
-   for (i = 1; i <= length(a); ++i) keysToOrdinal[a[i]] = i
+   split(ListInOrder, a, ",")
+   for (i = 1; i <= length(a); ++i) ListToOrdinal[a[i]] = i
    }
-   { print keysToOrdinal[$2] "-" $0 }
+   { printListToOrdinal[$2] "-" $0 }
    ' | sort -t- -k1,1n | cut -d- -f2-)
 }
 
