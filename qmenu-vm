@@ -16,7 +16,7 @@ fqvm_preferences() {
 
        autostart) 
        
-         local value_selected=`echo -e "False\nTrue" |\
+         local value_selected=`printf "False\nTrue" |\
            dmenu -i -p "Set autostart of $target_qube to:" $dmenu_fmc`
 
          if [ -n "$value_selected" ]; then 
@@ -26,7 +26,7 @@ fqvm_preferences() {
 
        debug) 
        
-         local value_selected=`echo -e "False\nTrue" |\
+         local value_selected=`printf "False\nTrue" |\
            dmenu -i -p "Set debug mode of $target_qube to:" $dmenu_fmc`
 
          if [ -n "$value_selected" ]; then 
@@ -49,7 +49,7 @@ fqvm_preferences() {
            fi
          done 
 
-         local value_selected=`echo -e "(Default)\n(None)${LIST_OF_DISPTEMP[*]}" |\
+         local value_selected=`printf "(Default)\n(None)${LIST_OF_DISPTEMP[*]}" |\
            dmenu -l 50 -p "Select default dispvm for $target_qube" $dmenu_fmc`
 
          if [ "$value_selected" = "(None)" ]; then 
@@ -79,7 +79,7 @@ fqvm_preferences() {
        
        include_in_backups) 
        
-         local value_selected=`echo -e "False\nTrue" |\
+         local value_selected=`printf "False\nTrue" |\
            dmenu -i -p "Include $target_qube in backups?" $dmenu_fmc`
 
          if [ -n "$value_selected" ]; then 
@@ -94,7 +94,7 @@ fqvm_preferences() {
 
          if [ -n "$value_selected" ]; then
 
-           local answer_selected=`echo -e "No\nYes" |\
+           local answer_selected=`printf "No\nYes" |\
              dmenu -i -p "Set kernel of $target_qube to $value_selected?"\
              $dmenu_fmc`
 
@@ -112,7 +112,7 @@ fqvm_preferences() {
 
          if [ -n "$value_selected" ]; then
 
-           local answer_selected=`echo -e "No\nYes" |\
+           local answer_selected=`printf "No\nYes" |\
              dmenu -i -p "Set kernel options for $target_qube to \"$value_selected\"?"\
              $dmenu_fmc`
 
@@ -132,7 +132,7 @@ fqvm_preferences() {
              $dmenu_fmc &>/dev/null 
          else
            
-           local value_selected=`echo -e "Purple\nBlue\nGreen\nYellow\nOrange\nRed\nGray\nBlack" |\
+           local value_selected=`printf "Purple\nBlue\nGreen\nYellow\nOrange\nRed\nGray\nBlack" |\
              dmenu -i -l 8 -p "Select label for $target_qube" $dmenu_fmc`
 
            if [ -n "$value_selected" ]; then
@@ -155,7 +155,7 @@ fqvm_preferences() {
 
          if [ -n "$value_selected" ]; then
 
-           local answer_selected=`echo -e "No\nYes" |\
+           local answer_selected=`printf "No\nYes" |\
              dmenu -i -p "Set MAC address of $target_qube to $value_selected?"\
              $dmenu_fmc`
 
@@ -179,7 +179,7 @@ fqvm_preferences() {
 
          if [ -n "$value_selected" ]; then
 
-           local answer_selected=`echo -e "No\nYes" |\
+           local answer_selected=`printf "No\nYes" |\
              dmenu -i -p "Set maximum memory of $target_qube to $value_selected MB?"\
              $dmenu_fmc`
 
@@ -198,7 +198,7 @@ fqvm_preferences() {
 
          if [ -n "$value_selected" ]; then
 
-           local answer_selected=`echo -e "No\nYes" |\
+           local answer_selected=`printf "No\nYes" |\
              dmenu -i -p "Set initial memory of $target_qube to $value_selected MB?" $dmenu_fmc`
 
            if [ "$answer_selected" = "Yes" ]; then
@@ -211,7 +211,7 @@ fqvm_preferences() {
        netvm) 
          
          # List netvm's via 'qvm-ls'.
-         local value_selected=`echo -e "(Default)\n(None)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+         local value_selected=`printf "(Default)\n(None)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
            grep '|...N....$' | cut -d '|' -f1)" |\
            dmenu -l 50 -p "Select netvm for $target_qube" $dmenu_fmc`
 
@@ -231,7 +231,7 @@ fqvm_preferences() {
 
        provides_network) 
            
-         local value_selected=`echo -e "False\nTrue" |\
+         local value_selected=`printf "False\nTrue" |\
            dmenu -i -p "Should $target_qube provide networking for other qubes?"\
            $dmenu_fmc`
 
@@ -248,7 +248,7 @@ fqvm_preferences() {
 
          if [ -n "$value_selected" ]; then
 
-           local answer_selected=`echo -e "No\nYes" |\
+           local answer_selected=`printf "No\nYes" |\
              dmenu -i -p "Set qrexec timeout for $target_qube to $value_selected seconds?"\
              $dmenu_fmc`
 
@@ -267,7 +267,7 @@ fqvm_preferences() {
 
          if [ -n "$value_selected" ]; then
 
-           local answer_selected=`echo -e "No\nYes" |\
+           local answer_selected=`printf "No\nYes" |\
              dmenu -i -p "Set shutdown timeout for $target_qube to $value_selected seconds?"\
              $dmenu_fmc`
 
@@ -288,7 +288,7 @@ fqvm_preferences() {
          else
 
            # List templatevm's via 'qvm-ls'.
-           local value_selected=`echo -e "(Default)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+           local value_selected=`printf "(Default)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
              grep '|t.......$' | cut -d '|' -f1)" |\
              dmenu -l 50 -p "Select template for $target_qube" $dmenu_fmc`
 
@@ -306,7 +306,7 @@ fqvm_preferences() {
 
        template_for_dispvms) 
            
-         local value_selected=`echo -e "False\nTrue" |\
+         local value_selected=`printf "False\nTrue" |\
            dmenu -i -p "Should $target_qube be used as a template for disposable qubes?"\
            $dmenu_fmc`
 
@@ -323,7 +323,7 @@ fqvm_preferences() {
 
          if [ -n "$value_selected" ]; then
 
-           local answer_selected=`echo -e "No\nYes" |\
+           local answer_selected=`printf "No\nYes" |\
              dmenu -i -p "Set number of CPU cores available to $target_qube to $value_selected?"\
              $dmenu_fmc`
 
@@ -336,7 +336,7 @@ fqvm_preferences() {
 
        virt_mode) 
            
-         local value_selected=`echo -e "PVH\nHVM\nPV" |\
+         local value_selected=`printf "PVH\nHVM\nPV" |\
            dmenu -i -l 3 -p "Select virtualisation mode for $target_qube"\
            $dmenu_fmc`
 
@@ -365,7 +365,7 @@ fqvm_pci() {
 
    if ! qvm-prefs --get $target_qube maxmem | grep -w 0; then 
      
-     local answer_memorybalancing=`echo -e "Continue anyways\nDisable dynamic memory balancing" |\
+     local answer_memorybalancing=`printf "Continue anyways\nDisable dynamic memory balancing" |\
        dmenu -l 2 -i -p "Dynamic memory balancing is enabled in $target_qube, some devices might not work!"\
        $dmenu_fmc | awk '{ print $1 }'`
 
@@ -377,13 +377,13 @@ fqvm_pci() {
 
    if qvm-prefs --get $target_qube virt_mode | grep -w pvh; then
      
-     local answer_virtmode=`echo -e "Continue anyways\nSelect another virtualisation mode" |\
+     local answer_virtmode=`printf "Continue anyways\nSelect another virtualisation mode" |\
        dmenu -l 2 -i -p "$target_qube is using PVH for its virtualisation mode, which does not support PCI passthrough!"\
        $dmenu_fmc | awk '{ print $1 }'`
 
      if [ "$answer_virtmode" = "Select" ]; then
 
-       local virtmode_selected=`echo -e "HVM\nPV" |\
+       local virtmode_selected=`printf "HVM\nPV" |\
          dmenu -l 2 -i -p "Select virtualisation mode for $target_qube" $dmenu_fmc` 
 
        if [ -n "$virtmode_selected" ]; then 
@@ -407,7 +407,7 @@ fqvm_pci() {
   
        if echo "$device_selected" | grep -w $target_qube; then
      
-         local answer=`echo -e "No\nYes" |\
+         local answer=`printf "No\nYes" |\
            dmenu -i -p "Detach \"$device_bdf\" from $target_qube?" $dmenu_fmc`
 
          if [ "$answer" = "Yes" ]; then
@@ -423,7 +423,7 @@ fqvm_pci() {
          fi
        else
 
-         local answer=`echo -e "No\nYes" |\
+         local answer=`printf "No\nYes" |\
            dmenu -i -p "Attach \"$device_bdf\" to $target_qube?" $dmenu_fmc`
 
          if [ "$answer" = "Yes" ]; then
@@ -437,14 +437,9 @@ fqvm_pci() {
 
              if [ -n "$pci_option" ]; then unset pci_option; fi
 
-             local nsrt_prompt=`echo -e "\"$device_bdf\" is most likely to be"\
-               " attached with the option 'no-strict-reset' enabled."\
-               " Please be aware of the security implications!"\
-               " Do you want to attach \"$device_bdf\""\
-               " with the option 'no-strict-reset' set to true?"`
-
-             local answer_nsrt=`echo -e "No\nYes" |\
-               dmenu -i -p "$nsrt_prompt" $dmenu_fmc`
+               local answer_nsrt=`printf "No\nYes" |\
+               dmenu -i -p "\"$device_bdf\" is most likely to be attached with the option 'no-strict-reset' enabled. Please be aware of the security implications! Do you want to attach \"$device_bdf\" with the option 'no-strict-reset' set to true?"\
+               $dmenu_fmc`
 
              if [ "$answer_nsrt" = "Yes" ]; then 
                  
@@ -485,7 +480,7 @@ fqvm_firewall() {
      # instead of any existing rule.
      if [ "$rulenumber_selected" != "NO" ]; then 
             
-       local option=`echo -e "Add new rule above rule $rulenumber_selected\nRemove rule $rulenumber_selected" |\
+       local option=`printf "Add new rule above rule $rulenumber_selected\nRemove rule $rulenumber_selected" |\
          dmenu -i -l 2 -p "$target_qube:" $dmenu_fmc | awk '{ print $1 }'`
      else
              
@@ -494,7 +489,7 @@ fqvm_firewall() {
 
      if [ "$option" = "Remove" ]; then
 
-       local answer=`echo -e "No\nYes" |\
+       local answer=`printf "No\nYes" |\
          dmenu -i -p "Remove rule $rulenumber_selected?" $dmenu_fmc`
 
        if [ "$answer" = "Yes" ]; then 
@@ -506,7 +501,7 @@ fqvm_firewall() {
         
        if [ -n "${RULEARGS}" ]; then unset RULEARGS; fi
 
-       local action=`echo -e "Accept\nDrop" |\
+       local action=`printf "Accept\nDrop" |\
          dmenu -i -l 2 -p "Select action for the new firewall rule" $dmenu_fmc`
        
        local RULEARGS+="${action,,} "
@@ -574,7 +569,7 @@ fqvm_firewall() {
            local RULEARGS+="COMMENT=$comment"
          fi
         
-         local answer=`echo -e "No\nYes" |\
+         local answer=`printf "No\nYes" |\
            dmenu -i -p "Add the following rule to $target_qube? {{ ACTION=${RULEARGS[*]} }}"\
            $dmenu_fmc` 
 
@@ -654,7 +649,7 @@ fqvm_devices() {
 
      if [ -z "$holds_qube" ]; then 
 
-       local answer=`echo -e "No\nYes" |\
+       local answer=`printf "No\nYes" |\
          dmenu -i -p "Attach $device_name to $target_qube?"\
          $dmenu_fmc`
     
@@ -665,7 +660,7 @@ fqvm_devices() {
 
      elif [ "$holds_qube" = "$target_qube" ]; then 
 
-       local answer=`echo -e "No\nYes" |\
+       local answer=`printf "No\nYes" |\
          dmenu -i -p "Detach $device_name from $target_qube?"\
          $dmenu_fmc`
     
@@ -675,7 +670,7 @@ fqvm_devices() {
        fi
      else
    
-       local answer=`echo -e "No\nYes" |\
+       local answer=`printf "No\nYes" |\
          dmenu -i -p "Detach $device_name from $holds_qube and attach it to $target_qube?"\
          $dmenu_fmc`
     
@@ -696,7 +691,7 @@ fqvm_applications() {
  
  while [ -n "$option" ]; do
         
-   local option=`echo -e "Add\nRemove" |\
+   local option=`printf "Add\nRemove" |\
      dmenu -i -l 2 -p "$target_qube:" $dmenu_fmc`
 
    if [ "$option" = "Add" ]; then  
@@ -718,7 +713,7 @@ fqvm_applications() {
          if qvm-appmenus --get-available --i-understand-format-is-unstable $target_qube |\
            awk '{ print $1 }' | grep -w $application; then
 
-           echo -e "\n$application" >> $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
+           printf "\n$application" >> $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
          
            local applications_modified=1
          fi
@@ -780,7 +775,7 @@ fqvm_service() {
        local unset="\nUnset"
      fi
          
-     local value=`echo -e "Disable\nEnable$unset" |\
+     local value=`printf "Disable\nEnable$unset" |\
        dmenu -l 3 -i -p "Select value for '$service'" $dmenu_fmc`
      
      if [ "$value" = "Disable" ]; then
@@ -819,7 +814,7 @@ fqvm_disk() {
  # If $target_qube is template or standalone, give option to extend root storage.
  if [[ "$(qvm-ls -O flags $target_qube | sed '2q;d' | cut -c 1)" =~ ^(t|S)$ ]]; then
 
-   local volume=`echo -e "Root\nPrivate" |\
+   local volume=`printf "Root\nPrivate" |\
      dmenu -l 2 -i -p "$target_qube:" $dmenu_fmc`
    
    local volume="${volume,}"
@@ -842,7 +837,7 @@ fqvm_disk() {
              
        local byte=$(( $mebibyte * 1024*1024 ))
 
-       local answer=`echo -e "No\nYes" |\
+       local answer=`printf "No\nYes" |\
          dmenu -i -p "Increase the maximum $volume storage size of $target_qube from $current_storage MiB to $mebibyte MiB?"\
          $dmenu_fmc`
 
@@ -878,7 +873,7 @@ fqvm_keyboard() {
        dmenu -l 50 -p "$target_qube:" $dmenu_fmc)
    fi
 
-   local answer=`echo -e "No\nYes" |\
+   local answer=`printf "No\nYes" |\
      dmenu -i -p " Change the keyboard layout in $target_qube to '$LAYOUT'?"\
      $dmenu_fmc`
 
@@ -910,13 +905,13 @@ fqvm_remove() {
 
    if [ "$target_qube" = "$confirmation" ]; then
 
-     local confirmation_semifinal=`echo -e "No\nYes" |\
+     local confirmation_semifinal=`printf "No\nYes" |\
        dmenu -i -p "Are you sure you want to remove $target_qube permanently?"\
        $dmenu_fmc`
 
      if [ "$confirmation_semifinal" = "Yes" ]; then
 
-       local confirmation_final=`echo -e "No\nYes" |
+       local confirmation_final=`printf "No\nYes" |
          dmenu -i -p "Are you really sure you want to remove $target_qube permanently?"\
          $dmenu_fmc`
 
@@ -941,7 +936,7 @@ fqvm_clone() {
      
    while [ -n "$option" ]; do
 
-     local option=`echo -e "Create the clone\nPool" |\
+     local option=`printf "Create the clone\nPool" |\
        dmenu -i -l 2 -p "$target_qube:" $dmenu_fmc | awk '{ print $1 }'`
 
      if [ "$option" = "Pool" ]; then
@@ -1010,7 +1005,7 @@ fdom0_preferences() {
 
      check_updates_vm)
 
-       local value_selected=`echo -e "False\nTrue" |\
+       local value_selected=`printf "False\nTrue" |\
          dmenu -i -p "Should the system periodically check for domU updates?"\
          $dmenu_d0`
 
@@ -1022,7 +1017,7 @@ fdom0_preferences() {
      clockvm)
 
        # List netvm's via 'qvm-ls'.
-       local value_selected=`echo -e "$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+       local value_selected=`printf "$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select new ClockVM" $dmenu_d0`
 
@@ -1046,7 +1041,7 @@ fdom0_preferences() {
          fi
        done 
 
-       local value_selected=`echo -e "(None)${LIST_OF_DISPTEMP[*]}" |\
+       local value_selected=`printf "(None)${LIST_OF_DISPTEMP[*]}" |\
          dmenu -l 50 -p "Select default dispvm"\
          $dmenu_d0`
 
@@ -1068,7 +1063,7 @@ fdom0_preferences() {
 
        if [ -n "$value_selected" ]; then
 
-         local answer_selected=`echo -e "No\nYes" |\
+         local answer_selected=`printf "No\nYes" |\
            dmenu -i -p "Set default kernel to $value_selected?"\
            $dmenu_d0`
 
@@ -1082,7 +1077,7 @@ fdom0_preferences() {
      default_netvm)
 
        # List netvm's via 'qvm-ls'.
-       local value_selected=`echo -e "$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+       local value_selected=`printf "$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select netvm for $target_qube" $dmenu_d0`
 
@@ -1200,7 +1195,7 @@ fdom0_preferences() {
            fi
          done 
 
-         local value_selected=`echo -e "${LIST_OF_DISPTEMP[*]}" |\
+         local value_selected=`printf "${LIST_OF_DISPTEMP[*]}" |\
            dmenu -l 50 -p "Select management dispvm"\
            $dmenu_d0`
 
@@ -1222,7 +1217,7 @@ fdom0_preferences() {
      updatevm) 
 
        # List netvm's via 'qvm-ls'.
-       local value_selected=`echo -e "$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+       local value_selected=`printf "$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select new UpdateVM" $dmenu_d0`
 
@@ -1264,8 +1259,7 @@ show_qubes=$1
 
 if [ -z "$show_qubes" ]; then
 
-  echo -e "Error: Please append one of the following:\
- '--all', '--tags=TAG', '--running', '--paused', '--halted' or whatever"
+  printf "Error: Please append one of the following: '--all', '--tags=TAG', '--running', '--paused', '--halted' or whatever"
 
   exit 2
 
@@ -1331,12 +1325,7 @@ while true; do
 
         while [ -n "$chosefrom" ]; do
             
-          chosefrom=`echo -e "Applications\nAudio input\nBlock devices\nBoot"\
-                             "\nBootfrom\nClone\nCommand\nDisk"\
-                             "\nFirewall\nGUI\nKeyboard\nKill"\
-                             "\nPause\nPCI\nPreferences\nReboot"\
-                             "\nRemove\nServices\nShutdown\nUnpause"\
-                             "\nUSB" |\
+          chosefrom=`printf "Applications\nAudio input\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nGUI\nKeyboard\nKill\nPause\nPCI\nPreferences\nReboot\nRemove\nServices\nShutdown\nUnpause\nUSB" |\
                              dmenu -l 21 -i -p "$target_qube:" $dmenu_fmc |\
                              awk '{ print $1 }'`
 
@@ -1388,7 +1377,7 @@ while true; do
                     
             Kill) 
             
-              answer=`echo -e "No\nYes" |\
+              answer=`printf "No\nYes" |\
                 dmenu -i -p "Kill $target_qube?" $dmenu_fmc`
                          
               if [ "$answer" = "Yes" ]; then 
@@ -1398,7 +1387,7 @@ while true; do
             
             Pause) 
             
-              answer=`echo -e "No\nYes" |\
+              answer=`printf "No\nYes" |\
                 dmenu -i -p "Pause $target_qube?" $dmenu_fmc`
                          
               if [ "$answer" = "Yes" ]; then
@@ -1416,7 +1405,7 @@ while true; do
 
             Reboot) 
             
-              answer=`echo -e "No\nYes" |\
+              answer=`printf "No\nYes" |\
                 dmenu -i -p "Reboot $target_qube?" $dmenu_fmc`
                          
               if [ "$answer" = "Yes" ]; then
@@ -1438,7 +1427,7 @@ while true; do
 
             Shutdown) 
             
-              answer=`echo -e "No\nYes" |\
+              answer=`printf "No\nYes" |\
                 dmenu -i -p "Shutdown $target_qube?" $dmenu_fmc`
                          
               if [ "$answer" = "Yes" ]; then
