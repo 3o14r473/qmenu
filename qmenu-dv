@@ -54,7 +54,7 @@ case $1 in
 
   --all)
 
-    device_type=`echo -e "Audio input\nBlock\nUSB" |\
+    device_type=`printf "Audio input\nBlock\nUSB" |\
       dmenu -i -l 3 $dmenu_fmc | awk '{ print $1 }'`;;
 
   --audio-input)
@@ -71,8 +71,7 @@ case $1 in
 
   *)
 
-    echo -e "Please append one of the following:\
- '--all', '--audio-input', '--block' or '--usb'"
+    printf "Please append one of the following: '--all', '--audio-input', '--block' or '--usb'"
 esac
 
 # Depending on the device type, we have to 
@@ -132,7 +131,7 @@ if [ -n "$device" ]; then
 
       get_qube_label 
 
-      prompt=`echo -e "No\nYes" |\
+      prompt=`printf "No\nYes" |\
         dmenu -i -p "Attach $device_name to $target_qube?"\
         -f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1`
     
@@ -147,7 +146,7 @@ if [ -n "$device" ]; then
     
     get_qube_label
 
-    prompt=`echo -e "No\nYes" |\
+    prompt=`printf "No\nYes" |\
       dmenu -i -p "Detach $device_name from $target_qube?"\
       -f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1`
     
