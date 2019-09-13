@@ -1,35 +1,16 @@
 #!/bin/bash
 
 rearrange_qube_list() {
- 
- local QUBE_LIST_REARRANGED+=`echo "$(echo "$qube_list" |\
-   awk '$2 == "purple"')"`
 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
-   awk '$2 == "blue"')"`
- 
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
-   awk '$2 == "gray"')"`
-   
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
-   awk '$2 == "green"')"`
-
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
-   awk '$2 == "yellow"')"`
-
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
-   awk '$2 == "orange"')"`
-
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
-   awk '$2 == "red"')"`
-
- local QUBE_LIST_REARRANGED+=`echo "\n$(echo "$qube_list" |\
-   awk '$2 == "black"')"`
-
- # Remove blank lines.
- qube_list=`echo -e "$QUBE_LIST_REARRANGED" | sed "{/^$/d;}"`
+ qube_list=$(echo "$qube_list" |\
+   awk -v keysInOrder="LABEL,purple,blue,gray,green,yellow,orange,red,black" '
+   BEGIN {
+   split(keysInOrder, a, ",")
+   for (i = 1; i <= length(a); ++i) keysToOrdinal[a[i]] = i
+   }
+   { print keysToOrdinal[$2] "-" $0 }
+   ' | sort -t- -k1,1n | cut -d- -f2-)
 }
-
 
 get_qube_label() {
 
