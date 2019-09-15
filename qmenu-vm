@@ -532,7 +532,7 @@ fqvm_firewall() {
            local RULEARGS+="PROTO=$proto "
          fi
 
-         if [[ "$proto" =~ ^(tcp|udp)$ ]]; then
+         if [ "$proto" = "tcp" ] || [ "$proto" = "udp" ]; then
 
            local dstports=$(true |\
              dmenu -p "ACTION=${RULEARGS[*]} <dstports>" $dmenu_fmc)
@@ -812,7 +812,8 @@ fqvm_service() {
 fqvm_disk() {
  
  # If $target_qube is template or standalone, give option to extend root storage.
- if [[ "$(qvm-ls -O flags $target_qube | sed '2q;d' | cut -c 1)" =~ ^(t|S)$ ]]; then
+ if [ "$(qvm-ls -O flags $target_qube | sed '2q;d' | cut -c 1)" = "t" ] ||\
+   [ "$(qvm-ls -O flags $target_qube | sed '2q;d' | cut -c 1)" = "S" ]; then
 
    local volume=$(printf "Root\nPrivate" |\
      dmenu -l 2 -i -p "$target_qube:" $dmenu_fmc)
