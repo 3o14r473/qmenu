@@ -133,11 +133,12 @@ fqvm_preferences() {
          else
            
            local value_selected=$(printf "Purple\nBlue\nGreen\nYellow\nOrange\nRed\nGray\nBlack" |\
-             dmenu -i -l 8 -p "Select label for $target_qube" $dmenu_fmc)
+             dmenu -i -l 8 -p "Select label for $target_qube" $dmenu_fmc |\
+             awk '{print tolower($0)}')
 
            if [ -n "$value_selected" ]; then
 
-             qvm-prefs --set $target_qube $property ${value_selected,}
+             qvm-prefs --set $target_qube $property $value_selected
 
              qube_label=$(qvm-ls $target_qube -O LABEL | sed -e '1d')
 
@@ -816,9 +817,8 @@ fqvm_disk() {
    [ "$(qvm-ls -O flags $target_qube | sed '2q;d' | cut -c 1)" = "S" ]; then
 
    local volume=$(printf "Root\nPrivate" |\
-     dmenu -l 2 -i -p "$target_qube:" $dmenu_fmc)
-   
-   local volume="${volume,}"
+       dmenu -l 2 -i -p "$target_qube:" $dmenu_fmc | awk '{print tolower($0)}')
+
  else
 
    local volume="private"
