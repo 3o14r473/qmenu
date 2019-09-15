@@ -139,10 +139,8 @@ fqvm_preferences() {
            if [ -n "$value_selected" ]; then
 
              qvm-prefs --set $target_qube $property $value_selected
-
-             qube_label=$(qvm-ls $target_qube -O LABEL | sed -e '1d')
-
-             correct_qube_label
+ 
+             get_qube_label
 
              dmenu_fmc="-f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1"
            fi
@@ -969,9 +967,11 @@ fqvm_run() {
 
 
 
-# Change black, yellow and green to a more readable color if needed.
-correct_qube_label() {
+get_qube_label() {
 
+ qube_label=$(qvm-ls --no-spinner $target_qube -O LABEL | sed -e '1d')
+ 
+ # Change black, yellow and green to a more readable color if needed.
  if [ "$qube_label" = "black" ]; then
 
    qube_label='#373737'
@@ -1313,10 +1313,7 @@ while true; do
         fdom0_preferences
       else
 
-        qube_label=$(echo "$qube_list" | awk '{ print $1,$3 }' |\
-          grep -w $target_qube | awk '{ print $2 }')
-
-        correct_qube_label
+        get_qube_label
             
         # Note that the '-m 0' option in 'dmenu' is important
         # for security, as it restricts it to monitor 0.
