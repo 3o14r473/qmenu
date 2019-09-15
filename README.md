@@ -1,12 +1,11 @@
 # qmenu
 Utilizes [dmenu](https://tools.suckless.org/dmenu/) to provide the user with a
-drop down menu, from which they can quickly administer their qube
-preferences, firewall rules, applications, devices, etc.
-
+drop down menu for [QubesOS](https://qubes-os.org/), 
+from which they can quickly administer their qube
+preferences, firewall rules, applications, devices, etc. with only the keyboard.
 
 ## qmenu-vm
-List, manage and configure your qubes in [QubesOS](https://qubes-os.org)
-via [dmenu](https://tools.suckless.org/dmenu/).
+List, manage and configure your qubes.
 
 Selecting the top row, instead of any qube, will refresh the list.
     
@@ -19,8 +18,7 @@ Selecting the top row, instead of any qube, will refresh the list.
     --halted
 
 ## qmenu-dv
-List and manage your connected devices in [QubesOS](https://qubes-os.org)
-via [dmenu](https://tools.suckless.org/dmenu/).
+List and manage your connected devices.
 
     Usage: qmenu-dv [OPTION] (--light-theme)
 
