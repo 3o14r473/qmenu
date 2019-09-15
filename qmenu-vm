@@ -617,7 +617,7 @@ fqvm_devices() {
 
    elif [ "$chosefrom" = "Block" ]; then
 
-     local device_type="${chosefrom,}"
+     local device_type="block"
 
      local awk_devicename0=2
      local awk_devicename1=3
@@ -625,7 +625,7 @@ fqvm_devices() {
 
    elif [ "$chosefrom" = "USB" ]; then
 
-     local device_type="${chosefrom,,}"
+     local device_type="usb"
 
      local awk_devicename0=2
      local awk_devicename1=10
@@ -1012,7 +1012,7 @@ fdom0_preferences() {
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs $property ${value_selected,}; fi;;
+         qubes-prefs $property $value_selected; fi;;
 
 
      clockvm)
