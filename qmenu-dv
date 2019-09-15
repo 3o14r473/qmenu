@@ -88,7 +88,7 @@ if [ "$device_type" = "Audio" ]; then
 
 elif [ "$device_type" = "Block" ]; then
 
-  device_type="${device_type,}"
+  device_type="block"
 
   awk_devicename0=2
   awk_devicename1=3
@@ -96,7 +96,7 @@ elif [ "$device_type" = "Block" ]; then
 
 elif [ "$device_type" = "USB" ]; then
 
-  device_type="${device_type,,}"
+  device_type="usb"
 
   awk_devicename0=2
   awk_devicename1=10
