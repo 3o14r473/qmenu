@@ -861,27 +861,27 @@ fqvm_keyboard() (
  # so there is a chance that the selected layout is missing inside the vm.
  # Getting the info from the vm itself however would have security implications
  # so we will not switch to use that method.
- LAYOUT+=$(ls /usr/share/X11/xkb/symbols |\
+ layout=$(ls /usr/share/X11/xkb/symbols |\
    dmenu -l 50 -p "$target_qube:" $dmenu_fmc)
  
- if [ -n "$LAYOUT" ]; then
+ if [ -n "$layout" ]; then
 
-   if test -d /usr/share/X11/xkb/symbols/$LAYOUT; then
+   if test -d /usr/share/X11/xkb/symbols/$layout; then
 
-     LAYOUT+="/"$(ls /usr/share/X11/xkb/symbols/$LAYOUT |\
+     layout="$layout/"$(ls /usr/share/X11/xkb/symbols/$layout |\
        dmenu -l 50 -p "$target_qube:" $dmenu_fmc)
    fi
 
    answer=$(printf "No\nYes" |\
-     dmenu -i -p " Change the keyboard layout in $target_qube to '$LAYOUT'?"\
+     dmenu -i -p " Change the keyboard layout in $target_qube to '$layout'?"\
      $dmenu_fmc)
 
    if [ "$answer" = "Yes" ]; then
 
-     if ! qvm-run $target_qube "setxkbmap $LAYOUT"; then
+     if ! qvm-run $target_qube "setxkbmap $layout"; then
 
        echo "Go back..." |\
-         dmenu -p "Error: Could not set keyboard layout to '$LAYOUT' in $target_qube! Please check the installed layouts inside the vm itself."\
+         dmenu -p "Error: Could not set keyboard layout to '$layout' in $target_qube! Please check the installed layouts inside the qube itself."\
          $dmenu_fmc > /dev/null 2>&1
      fi
    fi
