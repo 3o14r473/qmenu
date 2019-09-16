@@ -42,7 +42,7 @@ fqvm_preferences() (
          for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
            grep '|a.......$' | cut -d '|' -f1); do
 
-         if qvm-prefs --get $n template_for_dispvms |\
+           if qvm-prefs --get $n template_for_dispvms |\
              grep True &>/dev/null; then
 
              LIST_OF_DISPTEMP+="\n"$n
@@ -1036,7 +1036,7 @@ fdom0_preferences() (
        for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
          grep '|a.......$' | cut -d '|' -f1); do
 
-       if qvm-prefs --get $n template_for_dispvms |\
+         if qvm-prefs --get $n template_for_dispvms |\
            grep True &>/dev/null; then
 
            LIST_OF_DISPTEMP+="\n"$n
@@ -1185,7 +1185,7 @@ fdom0_preferences() (
          for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
            grep '|a.......$' | cut -d '|' -f1); do
 
-         if qvm-prefs --get $n template_for_dispvms |\
+           if qvm-prefs --get $n template_for_dispvms |\
              grep True &>/dev/null; then
 
              if [ -z "$LIST_OF_DISPTEMP" ] 
