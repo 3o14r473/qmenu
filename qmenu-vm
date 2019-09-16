@@ -1324,7 +1324,7 @@ while true; do
 
         while [ -n "$chosefrom" ]; do
             
-          chosefrom=$(printf "Applications\nAudio input\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nGUI\nKeyboard\nKill\nPause\nPCI\nPreferences\nReboot\nRemove\nServices\nShutdown\nUnpause\nUSB" |\
+          chosefrom=$(printf "Applications\nAudio input\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nPause\nPCI\nPreferences\nReboot\nRemove\nServices\nShutdown\nUnpause\nUSB" |\
                              dmenu -l 21 -i -p "$target_qube:" $dmenu_fmc |\
                              awk '{ print $1 }')
 
@@ -1366,10 +1366,6 @@ while true; do
             
               fqvm_firewall;;
                     
-            GUI) 
-            
-              qubes-vm-settings $target_qube;;
-
             Keyboard) 
             
               fqvm_keyboard;;
