@@ -855,9 +855,7 @@ fqvm_disk() (
 )
 
 
-fqvm_keyboard() ( 
- 
- if [ -n "$LAYOUT" ]; then unset layout; fi
+fqvm_keyboard() (  
 
  # 'qmenu-vm' does not get informed about the installed layouts by the vm itself
  # so there is a chance that the selected layout is missing inside the vm.
@@ -943,7 +941,7 @@ fqvm_clone() (
      if [ "$option" = "Pool" ]; then
 
        pool=$(qvm-pool --list | sed '1d' |\
-         dmenu -i -l 10 -p "Select the pool to use for the new clone of $target_qube"\
+         dmenu -i -l 10 -p "Select the pool for the new clone of $target_qube"\
          $dmenu_fmc | awk '{ print $1 }')
 
        if [ -n "$pool" ]; then  pool="-P $pool"; fi
@@ -985,10 +983,10 @@ qlogs() (
 
 fqvm_run() (
  
-  command=$(true |\
+ commandtr=$(true |\
    dmenu -p "Enter the command that is to be run in $target_qube" $dmenu_fmc)
 
- if [ -n "$command" ]; then qvm-run $target_qube $command& fi
+ if [ -n "$commandtr" ]; then qvm-run $target_qube $commandtr& fi
 )
 
 
