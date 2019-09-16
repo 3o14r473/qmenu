@@ -1288,7 +1288,7 @@ show_qubes=$1
 
 if [ -z "$show_qubes" ]; then
 
-    printf "qmenu v1.0\n\nqmenu-vm [OPTION] (--light-theme)\n\n  --all\n  --tags=TAG\n  --running\n  --paused\n  --halted\n\n"
+  printf "qmenu v1.0\n\nqmenu-vm [OPTION] (--light-theme)\n\n  --all\n  --tags=TAG\n  --running\n  --paused\n  --halted\n\n"
 
   exit 2
 
