@@ -43,7 +43,7 @@ fqvm_preferences() (
            grep '|a.......$' | cut -d '|' -f1); do
 
            if qvm-prefs --get $n template_for_dispvms |\
-             grep True &>/dev/null; then
+             grep True > /dev/null 2>&1; then
 
              LIST_OF_DISPTEMP+="\n"$n
            fi
@@ -125,11 +125,11 @@ fqvm_preferences() (
 
        label) 
        
-         if qvm-check --running $target_qube &>/dev/null; then
+         if qvm-check --running $target_qube > /dev/null 2>&1; then
 
            echo "Go back..." |\
              dmenu -p "$target_qube needs to be powered off, in order to change its label"\
-             $dmenu_fmc &>/dev/null 
+             $dmenu_fmc > /dev/null 2>&1 
          else
            
            value_selected=$(printf "Purple\nBlue\nGreen\nYellow\nOrange\nRed\nGray\nBlack" |\
@@ -164,7 +164,7 @@ fqvm_preferences() (
 
                echo "Go back..." |\
                  dmenu -p "Error: Could not set MAC address to '$value_selected'!"\
-                 $dmenu_fmc &>/dev/null
+                 $dmenu_fmc > /dev/null 2>&1
              fi
            fi
          fi;;
@@ -279,11 +279,11 @@ fqvm_preferences() (
 
        template) 
        
-         if qvm-check --running $target_qube &>/dev/null; then
+         if qvm-check --running $target_qube > /dev/null 2>&1; then
 
            echo "Go back..." |\
              dmenu -p "$target_qube needs to be powered off, in order to change its template"\
-             $dmenu_fmc &>/dev/null 
+             $dmenu_fmc > /dev/null 2>&1
          else
 
            # List templatevm's via 'qvm-ls'.
@@ -353,11 +353,11 @@ fqvm_preferences() (
 
 fqvm_pci() (
  
- if qvm-check --running $target_qube &>/dev/null; then 
+ if qvm-check --running $target_qube > /dev/null 2>&1; then 
 
    echo "Go back..." |\
      dmenu -p "$target_qube needs to be powered off, in order to attach or detach PCI devices"\
-     $dmenu_fmc &>/dev/null   
+     $dmenu_fmc > /dev/null 2>&1
  else
 
    list_pci=$(qvm-pci)
@@ -415,7 +415,7 @@ fqvm_pci() (
 
              echo "Go back..." |\
                dmenu -p "Error: Failed to detach \"$device_bdf\" from $target_qube!"\
-               $dmenu_fmc &>/dev/null
+               $dmenu_fmc > /dev/null 2>&1
            fi
 
            list_pci=$(qvm-pci)
@@ -450,7 +450,7 @@ fqvm_pci() (
 
              echo "Go back..." |\
                dmenu -p "Error: Failed to attach \"$device_bdf\" to $target_qube!"\
-               $dmenu_fmc &>/dev/null
+               $dmenu_fmc > /dev/null 2>&1
            fi
 
            list_pci=$(qvm-pci)
@@ -585,7 +585,7 @@ fqvm_firewall() (
 
              echo "Go back..." | dmenu -i $dmenu_fmc\
                -p "Error: Failed to add firewall rule! See 'qvm-firewall --help' for more information."\
-               &>/dev/null
+               > /dev/null 2>&1
            fi
          fi
        fi
@@ -597,11 +597,11 @@ fqvm_firewall() (
 
 fqvm_devices() (
 
- if ! qvm-check --running $target_qube &>/dev/null; then 
+ if ! qvm-check --running $target_qube > /dev/null 2>&1; then 
 
    echo "Go back..." |\
      dmenu -p "$target_qube needs to be running, in order to attach devices"\
-     $dmenu_fmc &>/dev/null 
+     $dmenu_fmc > /dev/null 2>&1
  else
 
    # Depending on the device type, we have to 
@@ -782,7 +782,7 @@ fqvm_service() (
        if ! qvm-service $target_qube $service off; then
         
          echo "Go back..." | dmenu -p "Error: Could not deactivate $service!"\
-           $dmenu_fmc &>/dev/null
+           $dmenu_fmc > /dev/null 2>&1
        fi
      
      elif [ "$value" = "Enable" ]; then
@@ -790,7 +790,7 @@ fqvm_service() (
        if ! qvm-service $target_qube $service on; then
         
          echo "Go back..." | dmenu -p "Error: Could not activate $service!"\
-           $dmenu_fmc &>/dev/null
+           $dmenu_fmc > /dev/null 2>&1
        fi
 
      elif [ "$value" = "Unset" ]; then
@@ -798,7 +798,7 @@ fqvm_service() (
        if ! qvm-service $target_qube $service --unset; then
         
          echo "Go back..." | dmenu -p "Error: Could not unset $service!"\
-           $dmenu_fmc &>/dev/null
+           $dmenu_fmc > /dev/null 2>&1
        fi
      fi
 
@@ -848,7 +848,7 @@ fqvm_disk() (
              
        echo "Go back..." |\
          dmenu -p "Error: Can only increase the maximum $volume storage!"\
-         $dmenu_fmc &>/dev/null
+         $dmenu_fmc > /dev/null 2>&1
      fi
    fi
  fi
@@ -882,7 +882,7 @@ fqvm_keyboard() (
 
        echo "Go back..." |\
          dmenu -p "Error: Could not set keyboard layout to '$LAYOUT' in $target_qube! Please check the installed layouts inside the vm itself."\
-         $dmenu_fmc &>/dev/null
+         $dmenu_fmc > /dev/null 2>&1
      fi
    fi
  fi
@@ -891,11 +891,11 @@ fqvm_keyboard() (
 
 fqvm_remove() (
  
- if qvm-check --running $target_qube &>/dev/null; then 
+ if qvm-check --running $target_qube > /dev/null 2>&1; then 
 
    echo "Go back..." |\
      dmenu -p "$target_qube needs to be powered off, in order to be removed"\
-     $dmenu_fmc &>/dev/null 
+     $dmenu_fmc > /dev/null 2>&1
  else
         
    confirmation=$(true |\
@@ -1059,7 +1059,7 @@ fdom0_preferences() (
          grep '|a.......$' | cut -d '|' -f1); do
 
          if qvm-prefs --get $n template_for_dispvms |\
-           grep True &>/dev/null; then
+           grep True > /dev/null 2>&1; then
 
            LIST_OF_DISPTEMP+="\n"$n
          fi
@@ -1208,7 +1208,7 @@ fdom0_preferences() (
            grep '|a.......$' | cut -d '|' -f1); do
 
            if qvm-prefs --get $n template_for_dispvms |\
-             grep True &>/dev/null; then
+             grep True > /dev/null 2>&1; then
 
              if [ -z "$LIST_OF_DISPTEMP" ] 
                
@@ -1247,14 +1247,14 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         if qvm-check --running $value_selected &>/dev/null; then
+         if qvm-check --running $value_selected > /dev/null 2>&1; then
 
            qubes-prefs --set $property $value_selected
          else
 
            echo "Go back..." |\
              dmenu -p "$value_selected needs to be running!"\
-             $dmenu_d0 &>/dev/null
+             $dmenu_d0 > /dev/null 2>&1
          fi
        fi;;
 
@@ -1431,7 +1431,7 @@ while true; do
                          
               if [ "$answer" = "Yes" ]; then
                
-                if qvm-check --running $target_qube &>/dev/null; then 
+                if qvm-check --running $target_qube > /dev/null 2>&1; then 
 
                   $(qvm-shutdown --wait $target_qube && qvm-start $target_qube)&
                 fi
