@@ -959,6 +959,30 @@ fqvm_clone() (
 )
 
 
+qlogs() (
+
+ entry=0
+
+ while [ -n "$entry" ]; do
+
+   entry=$(printf "/var/log/xen/console/guest-$target_qube.log\n/var/log/qubes/guid.$target_qube.log\n/var/log/qubes/qrexec.$target_qube.log" |\
+     dmenu -i -l 3 -p "$target_qube:" $dmenu_fmc)
+
+   if [ -n "$entry" ]; then
+     
+     log=$(cat $entry | dmenu -l 20 -p "$target_qube:" $dmenu_fmc)
+
+     if [ -n "$log" ]; then
+
+       echo "$log" > /var/run/qubes/qubes-clipboard.bin
+       
+       printf "dom0" > /var/run/qubes/qubes-clipboard.bin.source
+     fi
+   fi 
+ done
+)
+
+
 fqvm_run() (
  
   command=$(true |\
@@ -1324,7 +1348,7 @@ while true; do
 
         while [ -n "$chosefrom" ]; do
             
-          chosefrom=$(printf "Applications\nAudio input\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nPause\nPCI\nPreferences\nReboot\nRemove\nServices\nShutdown\nUnpause\nUSB" |\
+          chosefrom=$(printf "Applications\nAudio input\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nPause\nPCI\nPreferences\nReboot\nRemove\nServices\nShutdown\nUnpause\nUSB" |\
                              dmenu -l 21 -i -p "$target_qube:" $dmenu_fmc |\
                              awk '{ print $1 }')
 
@@ -1379,6 +1403,10 @@ while true; do
                        
                 qvm-kill $target_qube& fi;;
                     
+            
+            Logs)
+
+              qlogs;; 
             
             Pause) 
             
