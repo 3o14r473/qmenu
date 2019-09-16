@@ -498,78 +498,79 @@ fqvm_firewall() (
 
      elif [ "$option" = "Add" ]; then   
         
-       if [ -n "${RULEARGS}" ]; then unset RULEARGS; fi
+       if [ -n "$RULEARGS" ]; then unset RULEARGS; fi
 
        action=$(printf "Accept\nDrop" |\
-         dmenu -i -l 2 -p "Select action for the new firewall rule" $dmenu_fmc)
-       
-       RULEARGS+="${action,,} "
+         dmenu -i -l 2 -p "Select action for the new firewall rule" $dmenu_fmc |\
+         awk '{print tolower($0)}') 
 
        if [ -n "$action" ]; then 
 
+         RULEARGS="$action"
+
          specialtarget=$(true |\
-           dmenu -p "ACTION=${RULEARGS[*]} <specialtarget>" $dmenu_fmc)
+           dmenu -p "ACTION=$RULEARGS <specialtarget>" $dmenu_fmc)
              
          if [ -n "$specialtarget" ]; then 
                  
-           RULEARGS+="SPECIALTARGET=$specialtarget "
+           RULEARGS="$RULEARGS SPECIALTARGET=$specialtarget"
          fi
                 
          dsthost=$(true |\
-           dmenu -p "ACTION=${RULEARGS[*]} <dsthost>" $dmenu_fmc)
+           dmenu -p "ACTION=$RULEARGS <dsthost>" $dmenu_fmc)
                  
          if [ -n "$dsthost" ]; then 
                  
-           RULEARGS+="DSTHOST=$dsthost "
+           RULEARGS="$RULEARGS DSTHOST=$dsthost"
          fi
 
          proto=$(true |\
-           dmenu -p "ACTION=${RULEARGS[*]} <proto>" $dmenu_fmc)
+           dmenu -p "ACTION=$RULEARGS <proto>" $dmenu_fmc)
                  
          if [ -n "$proto" ]; then 
                
-           RULEARGS+="PROTO=$proto "
+           RULEARGS="$RULEARGS PROTO=$proto"
          fi
 
          if [ "$proto" = "tcp" ] || [ "$proto" = "udp" ]; then
 
            dstports=$(true |\
-             dmenu -p "ACTION=${RULEARGS[*]} <dstports>" $dmenu_fmc)
+             dmenu -p "ACTION=$RULEARGS <dstports>" $dmenu_fmc)
                      
            if [ -n "$dstports" ]; then
                   
-             RULEARGS+="DSTPORTS=$dstports "
+             RULEARGS="$RULEARGS DSTPORTS=$dstports"
            fi
 
          elif [ "$proto" = "icmp" ]; then
 
            icmptype=$(true |\
-             dmenu -p "ACTION=${RULEARGS[*]} <icmptype>" $dmenu_fmc)
+             dmenu -p "ACTION=$RULEARGS <icmptype>" $dmenu_fmc)
                      
            if [ -n "$icmptype" ]; then
                      
-             RULEARGS+="ICMPTYPE=$icmptype "
+             RULEARGS="$RULEARGS ICMPTYPE=$icmptype"
            fi
          fi
 
          expire=$(true |\
-           dmenu -p "ACTION=${RULEARGS[*]} <expire>" $dmenu_fmc)
+           dmenu -p "ACTION=$RULEARGS <expire>" $dmenu_fmc)
              
          if [ -n "$expire" ]; then
                
-           RULEARGS+="EXPIRE=$expire "
+           RULEARGS="EXPIRE=$expire"
          fi
 
          comment=$(true |\
-           dmenu -p "ACTION=${RULEARGS[*]} <comment>" $dmenu_fmc)
+           dmenu -p "ACTION=$RULEARGS <comment>" $dmenu_fmc)
                  
          if [ -n "$comment" ]; then
                
-           RULEARGS+="COMMENT=$comment"
+           RULEARGS="$RULEARGS COMMENT=$comment"
          fi
         
          answer=$(printf "No\nYes" |\
-           dmenu -i -p "Add the following rule to $target_qube? {{ ACTION=${RULEARGS[*]} }}"\
+           dmenu -i -p "Add the following rule to $target_qube? {{ ACTION=$RULEARGS }}"\
            $dmenu_fmc) 
 
          if [ "$answer" = "Yes" ]; then
@@ -581,7 +582,9 @@ fqvm_firewall() (
              beforerule=$(echo --before $rulenumber_selected)
            fi
 
-           if ! qvm-firewall $target_qube add $beforerule ${RULEARGS[*],,}; then
+           RULEARGS=$(echo "$RULEARGS" | awk '{print tolower($0)}')
+
+           if ! qvm-firewall $target_qube add $beforerule $RULEARGS; then
 
              echo "Go back..." | dmenu -i $dmenu_fmc\
                -p "Error: Failed to add firewall rule! See 'qvm-firewall --help' for more information."\
