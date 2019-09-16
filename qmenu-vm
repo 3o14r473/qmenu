@@ -957,7 +957,7 @@ fqvm_clone() (
 )
 
 
-qlogs() (
+fqvm_logs() (
 
  entry=0
 
@@ -1404,7 +1404,7 @@ while true; do
             
             Logs)
 
-              qlogs;; 
+              fqvm_logs;; 
             
             Pause) 
             
