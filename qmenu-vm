@@ -1016,7 +1016,9 @@ get_qube_label() {
 
 
 fdom0_preferences() (
- 
+
+ dmenu_d0="-f -m 0 -nb #d3d3d3 -nf #000000 -sb #ffffff -sf #000000"
+
  property=0
 
  while [ -n "$property" ]; do
@@ -1329,9 +1331,7 @@ while true; do
 
     elif [ "$target_qube" != "NAME" ]; then
 
-      if [ "$target_qube" = "dom0" ]; then
-
-        dmenu_d0="-f -m 0 -nb #d3d3d3 -nf #000000 -sb #ffffff -sf #000000"
+      if [ "$target_qube" = "dom0" ]; then 
 
         fdom0_preferences
       else
@@ -1347,8 +1347,8 @@ while true; do
         while [ -n "$chosefrom" ]; do
             
           chosefrom=$(printf "Applications\nAudio input\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nPause\nPCI\nPreferences\nReboot\nRemove\nServices\nShutdown\nUnpause\nUSB" |\
-                             dmenu -l 21 -i -p "$target_qube:" $dmenu_fmc |\
-                             awk '{ print $1 }')
+            dmenu -l 21 -i -p "$target_qube:" $dmenu_fmc |\
+            awk '{ print $1 }')
 
           case $chosefrom in
 
