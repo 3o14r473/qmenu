@@ -35,8 +35,8 @@ fqvm_preferences() (
 
 
        default_dispvm) 
-          
-         if [ -n "${LIST_OF_DISPTEMP}" ]; then unset LIST_OF_DISPTEMP; fi 
+
+         if [ -n "$list_of_disptemp" ]; then unset list_of_disptemp; fi 
 
          # [mediocre] Look up disposable templates.
          for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
@@ -45,11 +45,11 @@ fqvm_preferences() (
            if qvm-prefs --get $n template_for_dispvms |\
              grep True > /dev/null 2>&1; then
 
-             LIST_OF_DISPTEMP+="\n"$n
+             list_of_disptemp="$list_of_disptemp\n$n"
            fi
          done 
 
-         value_selected=$(printf "(Default)\n(None)${LIST_OF_DISPTEMP[*]}" |\
+         value_selected=$(printf "(Default)\n(None)$list_of_disptemp" |\
            dmenu -l 50 -p "Select default dispvm for $target_qube" $dmenu_fmc)
 
          if [ "$value_selected" = "(None)" ]; then 
@@ -1054,7 +1054,7 @@ fdom0_preferences() (
 
      default_dispvm)
 
-       if [ -n "${LIST_OF_DISPTEMP}" ]; then unset LIST_OF_DISPTEMP; fi
+       if [ -n "$list_of_disptemp" ]; then unset list_of_disptemp; fi
 
        # [mediocre] Look up disposable templates.
        for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
@@ -1063,11 +1063,11 @@ fdom0_preferences() (
          if qvm-prefs --get $n template_for_dispvms |\
            grep True > /dev/null 2>&1; then
 
-           LIST_OF_DISPTEMP+="\n"$n
+           list_of_disptemp="$list_of_disptemp\n$n"
          fi
        done 
 
-       value_selected=$(printf "(None)${LIST_OF_DISPTEMP[*]}" |\
+       value_selected=$(printf "(None)$list_of_disptemp" |\
          dmenu -l 50 -p "Select default dispvm"\
          $dmenu_d0)
 
@@ -1203,7 +1203,7 @@ fdom0_preferences() (
 
      management_dispvm)
 
-       if [ -n "${LIST_OF_DISPTEMP}" ]; then unset LIST_OF_DISPTEMP; fi
+       if [ -n "$list_of_disptemp" ]; then unset list_of_disptemp; fi
 
          # [mediocre] Look up disposable templates.
          for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
@@ -1212,16 +1212,16 @@ fdom0_preferences() (
            if qvm-prefs --get $n template_for_dispvms |\
              grep True > /dev/null 2>&1; then
 
-             if [ -z "$LIST_OF_DISPTEMP" ] 
+             if [ -z "$list_of_disptemp" ] 
                
-               then LIST_OF_DISPTEMP+=$n
+               then list_of_disptemp=$n
            
-               else LIST_OF_DISPTEMP+="\n"$n
+               else list_of_disptemp="$list_of_disptemp\n$n"
              fi
            fi
          done 
 
-         value_selected=$(printf "${LIST_OF_DISPTEMP[*]}" |\
+         value_selected=$(printf "$list_of_disptemp" |\
            dmenu -l 50 -p "Select management dispvm"\
            $dmenu_d0)
 
