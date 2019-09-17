@@ -36,7 +36,7 @@ fqvm_preferences() (
 
        default_dispvm) 
 
-         if [ -n "$list_of_disptemp" ]; then unset list_of_disptemp; fi 
+         if [ -n "$LIST_OF_DISPTEMP" ]; then unset LIST_OF_DISPTEMP; fi 
 
          # [mediocre] Look up disposable templates.
          for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
@@ -45,11 +45,11 @@ fqvm_preferences() (
            if qvm-prefs --get $n template_for_dispvms |\
              grep True > /dev/null 2>&1; then
 
-             list_of_disptemp="$list_of_disptemp\n$n"
+             LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
            fi
          done 
 
-         value_selected=$(printf "(Default)\n(None)$list_of_disptemp" |\
+         value_selected=$(printf "(Default)\n(None)$LIST_OF_DISPTEMP" |\
            dmenu -l 50 -p "Select default dispvm for $target_qube" $dmenu_fmc)
 
          if [ "$value_selected" = "(None)" ]; then 
@@ -864,27 +864,27 @@ fqvm_keyboard() (
  # so there is a chance that the selected layout is missing inside the vm.
  # Getting the info from the vm itself however would have security implications
  # so we will not switch to use that method.
- layout=$(ls /usr/share/X11/xkb/symbols |\
+ LAYOUT=$(ls /usr/share/X11/xkb/symbols |\
    dmenu -l 50 -p "$target_qube:" $dmenu_fmc)
  
- if [ -n "$layout" ]; then
+ if [ -n "$LAYOUT" ]; then
 
-   if test -d /usr/share/X11/xkb/symbols/$layout; then
+   if test -d /usr/share/X11/xkb/symbols/$LAYOUT; then
 
-     layout="$layout/"$(ls /usr/share/X11/xkb/symbols/$layout |\
+     LAYOUT="$LAYOUT/"$(ls /usr/share/X11/xkb/symbols/$LAYOUT |\
        dmenu -l 50 -p "$target_qube:" $dmenu_fmc)
    fi
 
    answer=$(printf "No\nYes" |\
-     dmenu -i -p " Change the keyboard layout in $target_qube to '$layout'?"\
+     dmenu -i -p " Change the keyboard layout in $target_qube to '$LAYOUT'?"\
      $dmenu_fmc)
 
    if [ "$answer" = "Yes" ]; then
 
-     if ! qvm-run $target_qube "setxkbmap $layout"; then
+     if ! qvm-run $target_qube "setxkbmap $LAYOUT"; then
 
        echo "Go back..." |\
-         dmenu -p "Error: Could not set keyboard layout to '$layout' in $target_qube! Please check the installed layouts inside the qube itself."\
+         dmenu -p "Error: Could not set keyboard layout to '$LAYOUT' in $target_qube! Please check the installed layouts inside the qube itself."\
          $dmenu_fmc > /dev/null 2>&1
      fi
    fi
@@ -1057,7 +1057,7 @@ fdom0_preferences() (
 
      default_dispvm)
 
-       if [ -n "$list_of_disptemp" ]; then unset list_of_disptemp; fi
+       if [ -n "$LIST_OF_DISPTEMP" ]; then unset LIST_OF_DISPTEMP; fi
 
        # [mediocre] Look up disposable templates.
        for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
@@ -1066,11 +1066,11 @@ fdom0_preferences() (
          if qvm-prefs --get $n template_for_dispvms |\
            grep True > /dev/null 2>&1; then
 
-           list_of_disptemp="$list_of_disptemp\n$n"
+           LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
          fi
        done 
 
-       value_selected=$(printf "(None)$list_of_disptemp" |\
+       value_selected=$(printf "(None)$LIST_OF_DISPTEMP" |\
          dmenu -l 50 -p "Select default dispvm"\
          $dmenu_d0)
 
@@ -1206,7 +1206,7 @@ fdom0_preferences() (
 
      management_dispvm)
 
-       if [ -n "$list_of_disptemp" ]; then unset list_of_disptemp; fi
+       if [ -n "$LIST_OF_DISPTEMP" ]; then unset LIST_OF_DISPTEMP; fi
 
          # [mediocre] Look up disposable templates.
          for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
@@ -1215,16 +1215,16 @@ fdom0_preferences() (
            if qvm-prefs --get $n template_for_dispvms |\
              grep True > /dev/null 2>&1; then
 
-             if [ -z "$list_of_disptemp" ] 
+             if [ -z "$LIST_OF_DISPTEMP" ] 
                
-               then list_of_disptemp=$n
+               then LIST_OF_DISPTEMP=$n
            
-               else list_of_disptemp="$list_of_disptemp\n$n"
+               else LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
              fi
            fi
          done 
 
-         value_selected=$(printf "$list_of_disptemp" |\
+         value_selected=$(printf "$LIST_OF_DISPTEMP" |\
            dmenu -l 50 -p "Select management dispvm"\
            $dmenu_d0)
 
