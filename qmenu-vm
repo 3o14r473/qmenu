@@ -465,16 +465,14 @@ fqvm_pci() (
 
 fqvm_firewall() (
 
- rule_selected=0        
+ rulenumber_selected=0        
         
- while [ -n "$rule_selected" ]; do
-        
-   rule_selected=$(qvm-firewall $target_qube list |\
-     dmenu -l 50 -p "$target_qube:" $dmenu_fmc)
+ while [ -n "$rulenumber_selected" ]; do
 
-   rulenumber_selected=$(echo $rule_selected | awk '{ print $1 }')
+   rulenumber_selected=$(qvm-firewall $target_qube list |\
+     dmenu -l 50 -p "$target_qube:" $dmenu_fmc | awk '{ print $1 }')
 
-   if [ -n "$rule_selected" ]; then
+   if [ -n "$rulenumber_selected" ]; then
          
      # This will equal "NO" if the user selects the top row,
      # instead of any existing rule.
@@ -699,8 +697,6 @@ fqvm_applications() (
 
    if [ "$option" = "Add" ]; then  
 
-     template=$(qvm-prefs $target_qube template)
-
      application=0
 
      while [ -n "$application" ]; do
@@ -838,7 +834,7 @@ fqvm_disk() (
 
      if [ "$mebibyte" -gt "$current_storage" ]; then 
              
-       byte=$(( $mebibyte * 1024*1024 ))
+       byte=$(( mebibyte * 1024*1024 ))
 
        answer=$(printf "No\nYes" |\
          dmenu -i -p "Increase the maximum $volume storage size of $target_qube from $current_storage MiB to $mebibyte MiB?"\
