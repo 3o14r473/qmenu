@@ -362,7 +362,7 @@ fqvm_pci() (
 
    list_pci=$(qvm-pci)
 
-   if ! qvm-prefs --get $target_qube maxmem | grep -w 0; then 
+   if ! qvm-prefs --get $target_qube maxmem | grep -w 0 > /dev/null 2>&1; then 
      
      answer_memorybalancing=$(printf "Continue anyways\nDisable dynamic memory balancing" |\
        dmenu -l 2 -i -p "Dynamic memory balancing is enabled in $target_qube, some devices might not work!"\
@@ -374,7 +374,8 @@ fqvm_pci() (
      fi
    fi
 
-   if qvm-prefs --get $target_qube virt_mode | grep -w pvh; then
+   if qvm-prefs --get $target_qube virt_mode |\
+     grep -w pvh > /dev/null 2>&1; then
      
      answer_virtmode=$(printf "Continue anyways\nSelect another virtualisation mode" |\
        dmenu -l 2 -i -p "$target_qube is using PVH for its virtualisation mode, which does not support PCI passthrough!"\
