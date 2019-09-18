@@ -42,7 +42,7 @@ fqvm_preferences() (
          for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
            grep '|a.......$' | cut -d '|' -f1); do
 
-           if qvm-prefs --get $n template_for_dispvms |\
+           if qvm-prefs --get "$n" template_for_dispvms |\
              grep True > /dev/null 2>&1; then
 
              LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
@@ -139,10 +139,9 @@ fqvm_preferences() (
            if [ -n "$value_selected" ]; then
 
              qvm-prefs --set "$target_qube" "$property" "$value_selected"
- 
+
              get_qube_label
 
-             dmenu_fmc="-f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1"
            fi
          fi;;
 
@@ -1011,6 +1010,10 @@ get_qube_label() {
      qube_label='#00b300'
    fi
  fi
+
+ # Note that the '-m 0' option in 'dmenu' is important
+ # for security, as it restricts it to monitor 0.
+ dmenu_fmc="-f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1"
 }
 
 
@@ -1339,10 +1342,6 @@ while true; do
       else
 
         get_qube_label
-
-        # Note that the '-m 0' option in 'dmenu' is important
-        # for security, as it restricts it to monitor 0.
-        dmenu_fmc="-f -m 0 -nb $theme_0 -nf $theme_1 -sb $qube_label -sf $theme_1"
 
         chosefrom=0
 
