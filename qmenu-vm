@@ -1281,22 +1281,6 @@ rearrange_qube_list() {
 }
 
 
-show_qubes=$1
-
-if [ -z "$show_qubes" ]; then
-
-  printf "qmenu v1.0\n\nqmenu-vm [OPTION] (--light-theme)\n\n  --all\n  --tags=TAG\n  --running\n  --paused\n  --halted\n\n"
-
-  exit 2
-
-# As of 2019.08.23, 'qvm-ls --all' will not list dom0 because of a bug.
-# As a workaround, we will output $1 into a variable
-# and unset it when '--all' is used.
-elif [ "$show_qubes" = "--all" ]; then
-
-  unset show_qubes
-fi
-
 if [ "$2" = "--light-theme" ]; then
 
   theme_0='#ffffff'
@@ -1307,11 +1291,29 @@ else
   theme_1='#ffffff'
 fi
 
+case $1 in
+
+  --all)
+
+    # As of 20190823, 'qvm-ls --all' will not list dom0 because of a bug.
+    # As a workaround, we will 'shift' $1 and, if needed, $2.
+    shift
+    if [ -n "$1" ]; then shift; fi;;
+
+  --tags*|--running|--paused|--halted);;
+
+  *)
+
+    printf "qmenu-vm [OPTION] (--light-theme)\n\n --all\n --tags=TAG\n --running\n --paused\n --halted\n\n\nqmenu v1.1\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+
+    if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
+esac
+
 while true; do
 
   # Load 'qvm-ls' into a variable so that it doesnt 
   # need to reload again after every user operation.
-  qube_list=$(qvm-ls --no-spinner $show_qubes -O NAME,STATE,LABEL,CLASS\
+  qube_list=$(qvm-ls --no-spinner $1 -O NAME,STATE,LABEL,CLASS\
 ,TEMPLATE,NETVM,IP,PRIV-MAX,PRIV-CURR,PRIV-USED,ROOT-MAX\
 ,ROOT-CURR,ROOT-USED,KERNEL,KERNELOPTS)
 

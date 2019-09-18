@@ -73,7 +73,9 @@ case $1 in
 
   *)
 
-    printf "qmenu v1.0\n\nqmenu-dv [OPTION] (--light-theme)\n\n  --all\n  --audio-input\n  --block\n  --usb\n\n"
+    printf "qmenu-dv [OPTION] (--light-theme)\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v1.1\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+
+    if [ "$1" = "--help" ]; then exit 0; fi
 esac
 
 # Depending on the device type, we have to 
