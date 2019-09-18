@@ -688,7 +688,7 @@ fqvm_devices() (
 
 fqvm_applications() (
 
- option=0 
+ option=0
 
  while [ -n "$option" ]; do
 
@@ -712,7 +712,7 @@ fqvm_applications() (
          if qvm-appmenus --get-available --i-understand-format-is-unstable $target_qube |\
            awk '{ print $1 }' | grep -w $application; then
 
-           printf "\n$application" >> $HOME/./share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
+           printf "\n\n$application" >> $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
 
            applications_modified=1
          fi
@@ -733,13 +733,13 @@ fqvm_applications() (
        if [ -n "$application" ]; then
 
          # Look up linenumber above $application in /whitelisted-appmenus.list and delete whitespace.
-         whitespace_app=$(cat $HOME/./share/qubes-appmenus/$target_qube/whitelisted-appmenus.list |\
+         whitespace_app=$(cat $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list |\
            grep -n $application | cut -c 1)
 
          whitespace_app=$((whitespace_app - 1))
 
-         sed -i "${whitespace_app}{/^$/d;}" $HOME/./share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
-         sed -i "/$application/d" $HOME/./share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
+         sed -i "${whitespace_app}{/^$/d;}" $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
+         sed -i "/$application/d" $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
 
          applications_modified=1
        fi
