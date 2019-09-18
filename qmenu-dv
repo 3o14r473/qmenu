@@ -8,14 +8,14 @@ rearrange_qube_list() {
    split(ListInOrder, a, ",")
    for (i = 1; i <= length(a); ++i) ListToOrdinal[a[i]] = i
    }
-   { print ListToOrdinal[$2] "-" $0 }
+   {print ListToOrdinal[$2] "-" $0}
    ' | sort -t- -k1,1n | cut -d- -f2-)
 }
 
 
 get_qube_label() {
 
- qube_label=$(echo "$qube_list" | grep -w "$target_qube" | awk '{ print $2 }')
+ qube_label=$(echo "$qube_list" | grep -w "$target_qube" | awk '{print $2}')
 
  # Change black, yellow and green to a more readable color if needed.
  if [ "$qube_label" = "black" ]; then
@@ -57,7 +57,7 @@ case $1 in
   --all)
 
     device_type=$(printf "Audio input\nBlock\nUSB" |\
-      dmenu -i -l 3 $dmenu_fmc | awk '{ print $1 }');;
+      dmenu -i -l 3 $dmenu_fmc | awk '{print $1}');;
 
   --audio-input)
 
@@ -116,20 +116,20 @@ devices_list=$(qvm-$device_type)
 
 device=$(echo "$devices_list" | dmenu -l 16 $dmenu_fmc)
 
-device_id=$(echo "$device" | awk '{ print $1 }')
+device_id=$(echo "$device" | awk '{print $1}')
 
 device_name=$(echo "$device" |\
-  awk '{ print $'$awk_devicename0'$'$awk_devicename1' }')
+  awk '{print $'$awk_devicename0'$'$awk_devicename1'}')
 
 if [ -n "$device" ]; then
 
   target_qube=$(echo "$devices_list" | grep "$device_id" |\
-     awk '{ print $'$awk_targetqube' }')
+     awk '{print $'$awk_targetqube'}')
 
   if [ -z "$target_qube" ]; then
 
     target_qube=$(echo "$qube_list" |\
-      sed '1d' | dmenu -p "attach to:" -l 32 $dmenu_fmc | awk '{ print $1 }')
+      sed '1d' | dmenu -p "attach to:" -l 32 $dmenu_fmc | awk '{print $1}')
 
     if [ -n "$target_qube" ]; then
 
