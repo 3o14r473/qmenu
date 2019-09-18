@@ -21,7 +21,7 @@ fqvm_preferences() (
 
          if [ -n "$value_selected" ]; then
 
-           qvm-prefs --set $target_qube $property $value_selected; fi;;
+           qvm-prefs --set "$target_qube" "$property" "$value_selected"; fi;;
 
 
        debug)
@@ -31,7 +31,7 @@ fqvm_preferences() (
 
          if [ -n "$value_selected" ]; then
 
-           qvm-prefs --set $target_qube $property $value_selected; fi;;
+           qvm-prefs --set "$target_qube" "$property" "$value_selected"; fi;;
 
 
        default_dispvm)
@@ -63,7 +63,7 @@ fqvm_preferences() (
 
          if [ -n "$value_selected" ]; then
 
-           qvm-prefs --set $target_qube $property $value_selected; fi;;
+           qvm-prefs --set "$target_qube" "$property" "$value_selected"; fi;;
 
 
        default_user)
@@ -74,7 +74,7 @@ fqvm_preferences() (
 
          if [ -n "$value_selected" ]; then
 
-           qvm-prefs --set $target_qube $property $value_selected; fi;;
+           qvm-prefs --set "$target_qube" "$property" "$value_selected"; fi;;
 
 
        include_in_backups)
@@ -84,7 +84,7 @@ fqvm_preferences() (
 
          if [ -n "$value_selected" ]; then
 
-           qvm-prefs --set $target_qube $property $value_selected; fi;;
+           qvm-prefs --set "$target_qube" "$property" "$value_selected"; fi;;
 
 
        kernel)
@@ -100,7 +100,7 @@ fqvm_preferences() (
 
            if [ "$answer_selected" = "Yes" ]; then
 
-             qvm-prefs --set $target_qube $property "$value_selected"
+             qvm-prefs --set "$target_qube" "$property" "$value_selected"
            fi
          fi;;
 
@@ -118,14 +118,14 @@ fqvm_preferences() (
 
            if [ "$answer_selected" = "Yes" ]; then
 
-             qvm-prefs --set $target_qube $property "$value_selected"
+             qvm-prefs --set "$target_qube" "$property" "$value_selected"
            fi
          fi;;
 
 
        label)
 
-         if qvm-check --running $target_qube > /dev/null 2>&1; then
+         if qvm-check --running "$target_qube" > /dev/null 2>&1; then
 
            echo "Go back..." |\
              dmenu -p "$target_qube needs to be powered off, in order to change its label"\
@@ -138,7 +138,7 @@ fqvm_preferences() (
 
            if [ -n "$value_selected" ]; then
 
-             qvm-prefs --set $target_qube $property $value_selected
+             qvm-prefs --set "$target_qube" "$property" "$value_selected"
  
              get_qube_label
 
@@ -160,7 +160,7 @@ fqvm_preferences() (
 
            if [ "$answer_selected" = "Yes" ]; then
 
-             if ! qvm-prefs --set $target_qube $property $value_selected; then
+             if ! qvm-prefs --set "$target_qube" "$property" "$value_selected"; then
 
                echo "Go back..." |\
                  dmenu -p "Error: Could not set MAC address to '$value_selected'!"\
@@ -184,7 +184,7 @@ fqvm_preferences() (
 
            if [ "$answer_selected" = "Yes" ]; then
 
-             qvm-prefs --set $target_qube $property $value_selected
+             qvm-prefs --set "$target_qube" "$property" "$value_selected"
            fi
          fi;;
 
@@ -202,7 +202,7 @@ fqvm_preferences() (
 
            if [ "$answer_selected" = "Yes" ]; then
 
-             qvm-prefs --set $target_qube $property $value_selected
+             qvm-prefs --set "$target_qube" "$property" "$value_selected"
            fi
          fi;;
 
@@ -225,7 +225,7 @@ fqvm_preferences() (
 
          if [ -n "$value_selected" ]; then
 
-           qvm-prefs --set $target_qube $property $value_selected; fi;;
+           qvm-prefs --set "$target_qube" "$property" "$value_selected"; fi;;
 
 
        provides_network)
@@ -236,7 +236,7 @@ fqvm_preferences() (
 
          if [ -n "$value_selected" ]; then
 
-           qvm-prefs --set $target_qube $property $value_selected; fi;;
+           qvm-prefs --set "$target_qube" "$property" "$value_selected"; fi;;
 
 
        qrexec_timeout)
@@ -253,7 +253,7 @@ fqvm_preferences() (
 
            if [ "$answer_selected" = "Yes" ]; then
 
-             qvm-prefs --set $target_qube $property $value_selected
+             qvm-prefs --set "$target_qube" "$property" "$value_selected"
            fi
          fi;;
 
@@ -272,14 +272,14 @@ fqvm_preferences() (
 
            if [ "$answer_selected" = "Yes" ]; then
 
-             qvm-prefs --set $target_qube $property $value_selected
+             qvm-prefs --set "$target_qube" "$property" "$value_selected"
            fi
          fi;;
 
 
        template)
 
-         if qvm-check --running $target_qube > /dev/null 2>&1; then
+         if qvm-check --running "$target_qube" > /dev/null 2>&1; then
 
            echo "Go back..." |\
              dmenu -p "$target_qube needs to be powered off, in order to change its template"\
@@ -298,7 +298,7 @@ fqvm_preferences() (
 
            if [ -n "$value_selected" ]; then
 
-             qvm-prefs --set $target_qube $property $value_selected
+             qvm-prefs --set "$target_qube" "$property" "$value_selected"
            fi
          fi;;
 
@@ -311,7 +311,7 @@ fqvm_preferences() (
 
          if [ -n "$value_selected" ]; then
 
-           qvm-prefs --set $target_qube $property $value_selected; fi;;
+           qvm-prefs --set "$target_qube" "$property" "$value_selected"; fi;;
 
 
        vcpus)
@@ -328,7 +328,7 @@ fqvm_preferences() (
 
            if [ "$answer_selected" = "Yes" ]; then
 
-             qvm-prefs --set $target_qube $property $value_selected
+             qvm-prefs --set "$target_qube" "$property" "$value_selected"
            fi
          fi;;
 
@@ -341,7 +341,7 @@ fqvm_preferences() (
 
          if [ -n "$value_selected" ]; then
 
-           qvm-prefs --set $target_qube $property $value_selected; fi;;
+           qvm-prefs --set "$target_qube" "$property" "$value_selected"; fi;;
 
 
        *)
@@ -353,7 +353,7 @@ fqvm_preferences() (
 
 fqvm_pci() (
 
- if qvm-check --running $target_qube > /dev/null 2>&1; then
+ if qvm-check --running "$target_qube" > /dev/null 2>&1; then
 
    echo "Go back..." |\
      dmenu -p "$target_qube needs to be powered off, in order to attach or detach PCI devices"\
@@ -362,7 +362,7 @@ fqvm_pci() (
 
    list_pci=$(qvm-pci)
 
-   if ! qvm-prefs --get $target_qube maxmem | grep -w 0 > /dev/null 2>&1; then
+   if ! qvm-prefs --get "$target_qube" maxmem | grep -w 0 > /dev/null 2>&1; then
 
      answer_memorybalancing=$(printf "Continue anyways\nDisable dynamic memory balancing" |\
        dmenu -l 2 -i -p "Dynamic memory balancing is enabled in $target_qube, some devices might not work!"\
@@ -370,11 +370,11 @@ fqvm_pci() (
 
      if [ "$answer_memorybalancing" = "Disable" ]; then
 
-       qvm-prefs --set $target_qube maxmem 0
+       qvm-prefs --set "$target_qube" maxmem 0
      fi
    fi
 
-   if qvm-prefs --get $target_qube virt_mode |\
+   if qvm-prefs --get "$target_qube" virt_mode |\
      grep -w pvh > /dev/null 2>&1; then
 
      answer_virtmode=$(printf "Continue anyways\nSelect another virtualisation mode" |\
@@ -388,7 +388,7 @@ fqvm_pci() (
 
        if [ -n "$virtmode_selected" ]; then
 
-         qvm-prefs --set $target_qube virt_mode $virtmode_selected
+         qvm-prefs --set "$target_qube" virt_mode "$virtmode_selected"
        fi
      fi
    fi
@@ -402,17 +402,17 @@ fqvm_pci() (
 
      if [ -n "$device_selected" ]; then
 
-       device_src=$(echo $device_selected | awk '{ print $1 }' | sed 's/:.*//')
-       device_bdf=$(echo $device_selected | awk '{ print $1 }' | sed 's/.*://')
+       device_src=$(echo "$device_selected" | awk '{ print $1 }' | sed 's/:.*//')
+       device_bdf=$(echo "$device_selected" | awk '{ print $1 }' | sed 's/.*://')
 
-       if echo "$device_selected" | grep -w $target_qube; then
+       if echo "$device_selected" | grep -w "$target_qube"; then
 
          answer=$(printf "No\nYes" |\
            dmenu -i -p "Detach \"$device_bdf\" from $target_qube?" $dmenu_fmc)
 
          if [ "$answer" = "Yes" ]; then
 
-           if ! test_qvm-pci detach $target_qube $device_src:$device_bdf; then
+           if ! test_qvm-pci detach "$target_qube" "$device_src":"$device_bdf"; then
 
              echo "Go back..." |\
                dmenu -p "Error: Failed to detach \"$device_bdf\" from $target_qube!"\
@@ -431,7 +431,7 @@ fqvm_pci() (
            # Check if there is more than one function
            # that belongs to the same device.
            bdf_count=$(echo "$list_pci" | awk '{ print $1 }' |\
-             grep $(echo $device_bdf | sed 's/\..*//') | wc -l) 
+             grep $(echo "$device_bdf" | sed 's/\..*//') | wc -l) 
 
            if [ "$bdf_count" -gt 1 ]; then
 
@@ -447,7 +447,7 @@ fqvm_pci() (
              fi
            fi
 
-           if ! qvm-pci attach --persistent $pci_option $target_qube $device_src:$device_bdf; then
+           if ! qvm-pci attach --persistent "$pci_option" "$target_qube" "$device_src":"$device_bdf"; then
 
              echo "Go back..." |\
                dmenu -p "Error: Failed to attach \"$device_bdf\" to $target_qube!"\
@@ -492,7 +492,7 @@ fqvm_firewall() (
 
        if [ "$answer" = "Yes" ]; then
 
-         qvm-firewall $target_qube del --rule-no $rulenumber_selected
+         qvm-firewall "$target_qube" del --rule-no "$rulenumber_selected"
        fi
 
      elif [ "$option" = "Add" ]; then
@@ -578,12 +578,12 @@ fqvm_firewall() (
 
            if [ "$rulenumber_selected" != "NO" ]; then
 
-             beforerule=$(echo --before $rulenumber_selected)
+             beforerule=$(echo --before "$rulenumber_selected")
            fi
 
            RULEARGS=$(echo "$RULEARGS" | awk '{print tolower($0)}')
 
-           if ! qvm-firewall $target_qube add $beforerule $RULEARGS; then
+           if ! qvm-firewall "$target_qube" add $beforerule $RULEARGS; then
 
              echo "Go back..." | dmenu -i $dmenu_fmc\
                -p "Error: Failed to add firewall rule! See 'qvm-firewall --help' for more information."\
@@ -599,7 +599,7 @@ fqvm_firewall() (
 
 fqvm_devices() (
 
- if ! qvm-check --running $target_qube > /dev/null 2>&1; then
+ if ! qvm-check --running "$target_qube" > /dev/null 2>&1; then
 
    echo "Go back..." |\
      dmenu -p "$target_qube needs to be running, in order to attach devices"\
@@ -638,14 +638,14 @@ fqvm_devices() (
    device=$(echo "$devices_list" |\
      dmenu -l 16 -p "$target_qube:" $dmenu_fmc)
 
-   device_id=$(echo $device | awk '{ print $1 }')
+   device_id=$(echo "$device" | awk '{ print $1 }')
 
-   device_name=$(echo $device |\
+   device_name=$(echo "$device" |\
      awk '{ print $'$awk_devicename0'$'$awk_devicename1' }')
 
    if [ -n "$device" ]; then
 
-     holds_qube=$(echo "$devices_list" | grep $device_id |\
+     holds_qube=$(echo "$devices_list" | grep "$device_id" |\
        awk '{ print $'$awk_targetqube' }')
 
      if [ -z "$holds_qube" ]; then
@@ -656,7 +656,7 @@ fqvm_devices() (
 
        if [ "$answer" = "Yes" ]; then
 
-         qvm-$device_type attach $target_qube $device_id&
+         qvm-$device_type attach "$target_qube" "$device_id"&
        fi
 
      elif [ "$holds_qube" = "$target_qube" ]; then
@@ -667,7 +667,7 @@ fqvm_devices() (
 
        if [ "$answer" = "Yes" ]; then
 
-         qvm-$device_type detach $holds_qube $device_id&
+         qvm-$device_type detach "$holds_qube" "$device_id"&
        fi
      else
 
@@ -677,8 +677,8 @@ fqvm_devices() (
 
        if [ "$answer" = "Yes" ]; then
 
-         $(qvm-$device_type detach $holds_qube $device_id &&
-           qvm-$device_type attach $target_qube $device_id)&
+         $(qvm-$device_type detach "$holds_qube" "$device_id" &&
+           qvm-$device_type attach "$target_qube" "$device_id")&
        fi
      fi
    fi
@@ -702,17 +702,17 @@ fqvm_applications() (
      while [ -n "$application" ]; do
 
        # Only show applications that arent already selected for $target_qube via 'grep -v'.
-       application=$(qvm-appmenus --get-available --i-understand-format-is-unstable $target_qube |\
-         grep -v "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable $target_qube)" |\
+       application=$(qvm-appmenus --get-available --i-understand-format-is-unstable "$target_qube" |\
+         grep -v "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$target_qube")" |\
          dmenu -l 50 -p "$target_qube:" $dmenu_fmc | awk '{ print $1 }')
 
        if [ -n "$application" ]; then
 
          # Check validity of input.
-         if qvm-appmenus --get-available --i-understand-format-is-unstable $target_qube |\
-           awk '{ print $1 }' | grep -w $application; then
+         if qvm-appmenus --get-available --i-understand-format-is-unstable "$target_qube" |\
+           awk '{ print $1 }' | grep -w "$application" > /dev/null 2>&1; then
 
-           printf "\n\n$application" >> $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
+           printf "\n\n$application" >> "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list
 
            applications_modified=1
          fi
@@ -726,20 +726,20 @@ fqvm_applications() (
      while [ -n "$application" ]; do
 
        # Show complete application and .desktop names via 'grep'.
-       application=$(qvm-appmenus --get-available --i-understand-format-is-unstable $target_qube |\
-         grep "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable $target_qube)" |\
+       application=$(qvm-appmenus --get-available --i-understand-format-is-unstable "$target_qube" |\
+         grep "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$target_qube")" |\
          dmenu -l 50 -p "$target_qube:" $dmenu_fmc | awk '{ print $1 }')
 
        if [ -n "$application" ]; then
 
          # Look up linenumber above $application in /whitelisted-appmenus.list and delete whitespace.
-         whitespace_app=$(cat $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list |\
-           grep -n $application | cut -c 1)
+         whitespace_app=$(cat "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list |\
+           grep -n "$application" | cut -c 1)
 
          whitespace_app=$((whitespace_app - 1))
 
-         sed -i "${whitespace_app}{/^$/d;}" $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
-         sed -i "/$application/d" $HOME/.local/share/qubes-appmenus/$target_qube/whitelisted-appmenus.list
+         sed -i "${whitespace_app}{/^$/d;}" "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list
+         sed -i "/$application/d" "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list
 
          applications_modified=1
        fi
@@ -748,7 +748,7 @@ fqvm_applications() (
 
    if [ -n "$applications_modified" ]; then
 
-     qvm-appmenus --update $target_qube
+     qvm-appmenus --update "$target_qube" > /dev/null 2>&1
 
      unset applications_modified
    fi
@@ -762,14 +762,14 @@ fqvm_service() (
 
  while [ -n "$service" ]; do
 
-   service=$(qvm-service $target_qube --list |\
+   service=$(qvm-service "$target_qube" --list |\
      dmenu -l 32 -p "$target_qube:" $dmenu_fmc | awk '{ print $1 }')
 
    if [ -n "$service" ]; then
 
      # If the service has already been added to the list,
      # give option to unset it.
-     if qvm-service $target_qube --list | grep -w $service; then
+     if qvm-service "$target_qube" --list | grep -w "$service"; then
 
         unset="\nUnset"
      fi
@@ -779,7 +779,7 @@ fqvm_service() (
 
      if [ "$value" = "Disable" ]; then
 
-       if ! qvm-service $target_qube $service off; then
+       if ! qvm-service "$target_qube" "$service" off; then
 
          echo "Go back..." | dmenu -p "Error: Could not deactivate $service!"\
            $dmenu_fmc > /dev/null 2>&1
@@ -787,7 +787,7 @@ fqvm_service() (
 
      elif [ "$value" = "Enable" ]; then
 
-       if ! qvm-service $target_qube $service on; then
+       if ! qvm-service "$target_qube" "$service" on; then
 
          echo "Go back..." | dmenu -p "Error: Could not activate $service!"\
            $dmenu_fmc > /dev/null 2>&1
@@ -795,7 +795,7 @@ fqvm_service() (
 
      elif [ "$value" = "Unset" ]; then
 
-       if ! qvm-service $target_qube $service --unset; then
+       if ! qvm-service "$target_qube" "$service" --unset; then
 
          echo "Go back..." | dmenu -p "Error: Could not unset $service!"\
            $dmenu_fmc > /dev/null 2>&1
@@ -811,8 +811,8 @@ fqvm_service() (
 fqvm_disk() (
 
  # If $target_qube is template or standalone, give option to extend root storage.
- if [ "$(qvm-ls -O flags $target_qube | sed '2q;d' | cut -c 1)" = "t" ] ||\
-   [ "$(qvm-ls -O flags $target_qube | sed '2q;d' | cut -c 1)" = "S" ]; then
+ if [ "$(qvm-ls -O flags "$target_qube" | sed '2q;d' | cut -c 1)" = "t" ] ||\
+   [ "$(qvm-ls -O flags "$target_qube" | sed '2q;d' | cut -c 1)" = "S" ]; then
 
    volume=$(printf "Root\nPrivate" |\
      dmenu -l 2 -i -p "$target_qube:" $dmenu_fmc | awk '{print tolower($0)}')
@@ -824,7 +824,7 @@ fqvm_disk() (
 
  if [ -n "$volume" ]; then
 
-   current_storage=$(( $(qvm-volume info $target_qube:$volume size) / 1024/1024 ))
+   current_storage=$(( $(qvm-volume info "$target_qube:$volume" size) / 1024/1024 ))
 
    mebibyte=$(echo "$current_storage" |\
      dmenu -p "Enter the maximum size of $volume storage in MiB to be allocated to $target_qube"\
@@ -842,7 +842,7 @@ fqvm_disk() (
 
        if [ "$answer" = "Yes" ]; then
 
-         qvm-volume extend $target_qube:$volume $byte&
+         qvm-volume extend "$target_qube:$volume" "$byte"&
        fi
      else
 
@@ -868,7 +868,7 @@ fqvm_keyboard() (
 
    if test -d /usr/share/X11/xkb/symbols/$LAYOUT; then
 
-     LAYOUT="$LAYOUT/"$(ls /usr/share/X11/xkb/symbols/$LAYOUT |\
+     LAYOUT="$LAYOUT/"$(ls /usr/share/X11/xkb/symbols/"$LAYOUT" |\
        dmenu -l 50 -p "$target_qube:" $dmenu_fmc)
    fi
 
@@ -878,7 +878,7 @@ fqvm_keyboard() (
 
    if [ "$answer" = "Yes" ]; then
 
-     if ! qvm-run $target_qube "setxkbmap $LAYOUT"; then
+     if ! qvm-run "$target_qube" "setxkbmap $LAYOUT"; then
 
        echo "Go back..." |\
          dmenu -p "Error: Could not set keyboard layout to '$LAYOUT' in $target_qube! Please check the installed layouts inside the qube itself."\
@@ -891,7 +891,7 @@ fqvm_keyboard() (
 
 fqvm_remove() (
 
- if qvm-check --running $target_qube > /dev/null 2>&1; then
+ if qvm-check --running "$target_qube" > /dev/null 2>&1; then
 
    echo "Go back..." |\
      dmenu -p "$target_qube needs to be powered off, in order to be removed"\
@@ -916,7 +916,7 @@ fqvm_remove() (
 
        if [ "$confirmation_final" = "Yes" ]; then
 
-         qvm-remove -f $target_qube&
+         qvm-remove -f "$target_qube"&
        fi
      fi
    fi
@@ -950,7 +950,7 @@ fqvm_clone() (
 
        unset option
 
-       qvm-clone $pool $target_qube $clone_name&
+       qvm-clone $pool "$target_qube" "$clone_name"&
      fi
    done
  fi
@@ -968,7 +968,7 @@ fqvm_logs() (
 
    if [ -n "$entry" ]; then
 
-     log=$(cat $entry | dmenu -l 20 -p "$target_qube:" $dmenu_fmc)
+     log=$(cat "$entry" | dmenu -l 20 -p "$target_qube:" $dmenu_fmc)
 
      if [ -n "$log" ]; then
 
@@ -986,13 +986,13 @@ fqvm_run() (
  commandtr=$(true |\
    dmenu -p "Enter the command that is to be run in $target_qube" $dmenu_fmc)
 
- if [ -n "$commandtr" ]; then qvm-run $target_qube $commandtr& fi
+ if [ -n "$commandtr" ]; then qvm-run "$target_qube" "$commandtr"& fi
 )
 
 
 get_qube_label() {
 
- qube_label=$(qvm-ls --no-spinner $target_qube -O LABEL | sed -e '1d')
+ qube_label=$(qvm-ls --no-spinner "$target_qube" -O LABEL | sed -e '1d')
 
  # Change black, yellow and green to a more readable color if needed.
  if [ "$qube_label" = "black" ]; then
@@ -1037,7 +1037,7 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      clockvm)
@@ -1049,7 +1049,7 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      default_dispvm)
@@ -1060,7 +1060,7 @@ fdom0_preferences() (
        for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
          grep '|a.......$' | cut -d '|' -f1); do
 
-         if qvm-prefs --get $n template_for_dispvms |\
+         if qvm-prefs --get "$n" template_for_dispvms |\
            grep True > /dev/null 2>&1; then
 
            LIST_OF_DISPTEMP="$LIST_OF_DISPTEMP\n$n"
@@ -1078,7 +1078,7 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      default_kernel)
@@ -1095,7 +1095,7 @@ fdom0_preferences() (
 
          if [ "$answer_selected" = "Yes" ]; then
 
-           qubes-prefs --set $property "$value_selected"
+           qubes-prefs --set "$property" "$value_selected"
          fi
        fi;;
 
@@ -1109,7 +1109,7 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      default_pool)
@@ -1120,7 +1120,7 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      default_pool_kernel)
@@ -1131,7 +1131,7 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      default_pool_private)
@@ -1142,7 +1142,7 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      default_pool_root)
@@ -1153,7 +1153,7 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      default_pool_volatile)
@@ -1164,7 +1164,7 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      default_qrexec_timeout)
@@ -1175,7 +1175,7 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set default_$property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      default_shutdown_timeout)
@@ -1186,7 +1186,7 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      default_template)
@@ -1198,7 +1198,7 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      management_dispvm)
@@ -1209,7 +1209,7 @@ fdom0_preferences() (
          for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
            grep '|a.......$' | cut -d '|' -f1); do
 
-           if qvm-prefs --get $n template_for_dispvms |\
+           if qvm-prefs --get "$n" template_for_dispvms |\
              grep True > /dev/null 2>&1; then
 
              if [ -z "$LIST_OF_DISPTEMP" ]
@@ -1227,7 +1227,7 @@ fdom0_preferences() (
 
          if [ -n "$value_selected" ]; then
 
-           qubes-prefs --set $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      stats_interval)
@@ -1235,9 +1235,9 @@ fdom0_preferences() (
        value_selected=$(true  |\
          dmenu -p "Enter interval in seconds for VM stats reporting" $dmenu_d0)
 
-       if [ -n "$stats_interval" ]; then
+       if [ -n "$value_selected" ]; then
 
-         qubes-prefs --set $property $value_selected; fi;;
+         qubes-prefs --set "$property" "$value_selected"; fi;;
 
 
      updatevm)
@@ -1249,9 +1249,9 @@ fdom0_preferences() (
 
        if [ -n "$value_selected" ]; then
 
-         if qvm-check --running $value_selected > /dev/null 2>&1; then
+         if qvm-check --running "$value_selected" > /dev/null 2>&1; then
 
-           qubes-prefs --set $property $value_selected
+           qubes-prefs --set "$property" "$value_selected"
          else
 
            echo "Go back..." |\
@@ -1366,11 +1366,11 @@ while true; do
 
             Boot)
 
-              qvm-start --skip-if-running $target_qube&;;
+              qvm-start --skip-if-running "$target_qube"&;;
 
             Bootfrom)
 
-              qubes-vm-boot-from-device $target_qube;;
+              qubes-vm-boot-from-device "$target_qube";;
 
             Clone)
 
@@ -1399,7 +1399,7 @@ while true; do
 
               if [ "$answer" = "Yes" ]; then
 
-                qvm-kill $target_qube& fi;;
+                qvm-kill "$target_qube"& fi;;
 
 
             Logs)
@@ -1413,7 +1413,7 @@ while true; do
 
               if [ "$answer" = "Yes" ]; then
 
-                qvm-pause $target_qube& fi;;
+                qvm-pause "$target_qube"& fi;;
 
 
             PCI)
@@ -1431,9 +1431,9 @@ while true; do
 
               if [ "$answer" = "Yes" ]; then
 
-                if qvm-check --running $target_qube > /dev/null 2>&1; then
+                if qvm-check --running "$target_qube" > /dev/null 2>&1; then
 
-                  $(qvm-shutdown --wait $target_qube && qvm-start $target_qube)&
+                  $(qvm-shutdown --wait "$target_qube" && qvm-start "$target_qube")&
                 fi
               fi;;
 
@@ -1453,12 +1453,12 @@ while true; do
 
               if [ "$answer" = "Yes" ]; then
 
-                qvm-shutdown $target_qube& fi;;
+                qvm-shutdown "$target_qube"& fi;;
 
 
             Unpause)
 
-              qvm-unpause $target_qube&;;
+              qvm-unpause "$target_qube"&;;
 
             USB)
 
