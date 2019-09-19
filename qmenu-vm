@@ -1303,7 +1303,7 @@ case $1 in
     shift
     if [ -n "$1" ]; then shift; fi;;
 
-  --tags*|--running|--paused|--halted);;
+  --tags=*|--running|--paused|--halted);;
 
   *)
 
