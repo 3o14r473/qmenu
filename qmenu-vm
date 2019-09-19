@@ -446,7 +446,7 @@ fqvm_pci() (
              fi
            fi
 
-           if ! qvm-pci attach --persistent "$pci_option" "$target_qube" "$device_src":"$device_bdf"; then
+           if ! qvm-pci attach --persistent $pci_option "$target_qube" "$device_src:$device_bdf"; then
 
              echo "Go back..." |\
                dmenu -p "Error: Failed to attach \"$device_bdf\" to $target_qube!"\
