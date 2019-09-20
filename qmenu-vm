@@ -39,7 +39,7 @@ fqvm_preferences() (
          if [ -n "$LIST_OF_DISPTEMP" ]; then unset LIST_OF_DISPTEMP; fi
 
          # [mediocre] Look up disposable templates.
-         for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
+         for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
            grep '|a.......$' | cut -d '|' -f1); do
 
            if qvm-prefs --get "$n" template_for_dispvms |\
@@ -209,7 +209,7 @@ fqvm_preferences() (
        netvm)
 
          # List netvm's via 'qvm-ls'.
-         value_selected=$(printf "(Default)\n(None)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+         value_selected=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
            grep '|...N....$' | cut -d '|' -f1)" |\
            dmenu -l 50 -p "Select netvm for $target_qube" $dmenu_fmc)
 
@@ -286,7 +286,7 @@ fqvm_preferences() (
          else
 
            # List templatevm's via 'qvm-ls'.
-           value_selected=$(printf "(Default)\n$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+           value_selected=$(printf "(Default)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
              grep '|t.......$' | cut -d '|' -f1)" |\
              dmenu -l 50 -p "Select template for $target_qube" $dmenu_fmc)
 
@@ -809,10 +809,12 @@ fqvm_service() (
 
 fqvm_disk() (
 
+ qube_class=$(qvm-ls --raw-data -O flags "$target_qube" | cut -c 1)
+
  # If $target_qube is template or standalone, give option to extend root storage.
- if [ "$(qvm-ls -O flags "$target_qube" | sed '2q;d' | cut -c 1)" = "t" ] ||\
-   [ "$(qvm-ls -O flags "$target_qube" | sed '2q;d' | cut -c 1)" = "s" ] ||\
-   [ "$(qvm-ls -O flags "$target_qube" | sed '2q;d' | cut -c 1)" = "S" ]; then
+ if [ "$qube_class" = "t" ] ||\
+   [ "$qube_class" = "s" ] ||\
+   [ "$qube_class" = "S" ]; then
 
    volume=$(printf "Root\nPrivate" |\
      dmenu -l 2 -i -p "$target_qube:" $dmenu_fmc | awk '{print tolower($0)}')
@@ -992,7 +994,7 @@ fqvm_run() (
 
 get_qube_label() {
 
- qube_label=$(qvm-ls --no-spinner "$target_qube" -O LABEL | sed -e '1d')
+ qube_label=$(qvm-ls --raw-data "$target_qube" -O LABEL)
 
  # Change black, yellow and green to a more readable color if needed.
  if [ "$qube_label" = "black" ]; then
@@ -1047,7 +1049,7 @@ fdom0_preferences() (
      clockvm)
 
        # List netvm's via 'qvm-ls'.
-       value_selected=$(printf "$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+       value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select new ClockVM" $dmenu_d0)
 
@@ -1061,7 +1063,7 @@ fdom0_preferences() (
        if [ -n "$LIST_OF_DISPTEMP" ]; then unset LIST_OF_DISPTEMP; fi
 
        # [mediocre] Look up disposable templates.
-       for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
+       for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
          grep '|a.......$' | cut -d '|' -f1); do
 
          if qvm-prefs --get "$n" template_for_dispvms |\
@@ -1107,7 +1109,7 @@ fdom0_preferences() (
      default_netvm)
 
        # List netvm's via 'qvm-ls'.
-       value_selected=$(printf "$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+       value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select netvm for $target_qube" $dmenu_d0)
 
@@ -1196,7 +1198,7 @@ fdom0_preferences() (
      default_template)
 
        # List templatevm's via 'qvm-ls'.
-       value_selected=$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+       value_selected=$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|t.......$' | cut -d '|' -f1 |\
          dmenu -l 50 -p "Select default template for" $dmenu_d0)
 
@@ -1210,7 +1212,7 @@ fdom0_preferences() (
        if [ -n "$LIST_OF_DISPTEMP" ]; then unset LIST_OF_DISPTEMP; fi
 
          # [mediocre] Look up disposable templates.
-         for n in $(qvm-ls --no-spinner --raw-data -O NAME,FLAGS |\
+         for n in $(qvm-ls --raw-data -O NAME,FLAGS |\
            grep '|a.......$' | cut -d '|' -f1); do
 
            if qvm-prefs --get "$n" template_for_dispvms |\
@@ -1247,7 +1249,7 @@ fdom0_preferences() (
      updatevm)
 
        # List netvm's via 'qvm-ls'.
-       value_selected=$(printf "$(qvm-ls --no-spinner --raw-data --fields NAME,FLAGS |\
+       value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select new UpdateVM" $dmenu_d0)
 
