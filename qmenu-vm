@@ -811,6 +811,7 @@ fqvm_disk() (
 
  # If $target_qube is template or standalone, give option to extend root storage.
  if [ "$(qvm-ls -O flags "$target_qube" | sed '2q;d' | cut -c 1)" = "t" ] ||\
+   [ "$(qvm-ls -O flags "$target_qube" | sed '2q;d' | cut -c 1)" = "s" ] ||\
    [ "$(qvm-ls -O flags "$target_qube" | sed '2q;d' | cut -c 1)" = "S" ]; then
 
    volume=$(printf "Root\nPrivate" |\
