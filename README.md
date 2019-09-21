@@ -28,7 +28,7 @@ List and manage your connected devices.
      --usb
 
 ## qmenu-al
-Launch domU applications
+Launch domU applications.
 
     Usage: qmenu-al [OPTION] (--light-theme)
 
