@@ -23,10 +23,8 @@ case $1 in
 
     if [ -n "$chosen" ]; then
 
-      execute_chosen=$(echo "$app_list" | grep -A1 "$chosen" |\
-        grep '^Exec=.*' | cut -f2 -d=)
-
-      if ! $execute_chosen; then exit 2; fi
+      if ! $(echo "$app_list" | grep -A1 "$chosen" |\
+        grep '^Exec=.*' | cut -f2 -d=); then exit 2; fi
 
       exit 0
     fi
@@ -74,10 +72,8 @@ case $1 in
 
         if [ -n "$chosen" ]; then
 
-          execute_chosen=$(echo "$app_list" | grep -A1 "$chosen" |\
-            grep '^Exec=.*' | cut -f2 -d=)
-
-          if ! $execute_chosen; then exit 2; fi
+          if ! $(echo "$app_list" | grep -A1 "$chosen" |\
+            grep '^Exec=.*' | cut -f2 -d=); then exit 2; fi
 
           exit 0
         fi
