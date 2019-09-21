@@ -20,7 +20,7 @@ Selecting the top row, instead of any qube, will refresh the list.
 ## qmenu-dm
 List and manage your connected devices.
 
-    Usage: qmenu-dv [OPTION] (--light-theme)
+    Usage: qmenu-dm [OPTION] (--light-theme)
 
      --all
      --audio-input
