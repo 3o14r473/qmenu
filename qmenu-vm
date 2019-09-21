@@ -1306,11 +1306,11 @@ case $1 in
     shift
     if [ -n "$1" ]; then shift; fi;;
 
-  --tags=*|--running|--paused|--halted);;
+  --halted|--paused|--running|--tags=*);;
 
   *)
 
-    printf "qmenu-vm [OPTION] (--light-theme)\n\n --all\n --tags=TAG\n --running\n --paused\n --halted\n\n\nqmenu v1.1\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+    printf "qmenu-vm [OPTION] (--light-theme)\n\n --all\n --halted\n --paused\n --running\n --tags=TAG\n\n\nqmenu v1.2\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
