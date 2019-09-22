@@ -36,55 +36,50 @@ case $1 in
 
     focused_window=$(xdotool getwindowfocus)
 
-    if [ -n "$focused_window" ]; then
+    qube=$(xprop -id "$focused_window" | grep -w "_QUBES_VMNAME(STRING)" |\
+      cut -f2 -d\")
 
-      qube=$(xprop -id "$focused_window" | grep -w "_QUBES_VMNAME(STRING)" |\
-        cut -f2 -d\")
+    if [ -n "$qube" ]; then
 
-      if [ -n "$qube" ]; then
+      qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
 
-        qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
+      # Change black, yellow and green to a more readable color if needed.
+      if [ "$qube_label" = "black" ]; then
 
-        # Change black, yellow and green to a more readable color if needed.
-        if [ "$qube_label" = "black" ]; then
+        qube_label='#373737'
 
-          qube_label='#373737'
+      # Change only if dark theme is selected.
+      elif [ "$theme_1" = "#ffffff" ]; then
 
-        # Change only if dark theme is selected.
-        elif [ "$theme_1" = "#ffffff" ]; then
+        if [ "$qube_label" = "yellow" ]; then 
 
-          if [ "$qube_label" = "yellow" ]; then 
+          qube_label='#cdcd00'
 
-            qube_label='#cdcd00'
+        elif [ "$qube_label" = "green" ]; then
 
-          elif [ "$qube_label" = "green" ]; then
-
-            qube_label='#00b300'
-          fi
+          qube_label='#00b300'
         fi
-
-        app_list=$(cat "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop |\
-          grep '^Name=.*\|^Exec=.*' |\
-          grep -vw 'Qube Settings\|qubes-vm-settings')
-
-        chosen=$(echo "$app_list" | grep '^Name=.*' | cut -f2 -d: |\
-          dmenu -p "$qube:" -f -m 0 -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_1)
-
-        if [ -n "$chosen" ]; then
-
-          if ! $(echo "$app_list" | grep -A1 "$chosen" |\
-            grep '^Exec=.*' | cut -c 6-); then exit 2; fi
-
-          exit 0
-        fi
-
-        exit 1
       fi
 
-      exit 2
+      app_list=$(cat "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop |\
+        grep '^Name=.*\|^Exec=.*' |\
+        grep -vw 'Qube Settings\|qubes-vm-settings')
+
+      chosen=$(echo "$app_list" | grep '^Name=.*' | cut -f2 -d: |\
+        dmenu -p "$qube:" -f -m 0 -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_1)
+
+      if [ -n "$chosen" ]; then
+
+        if ! $(echo "$app_list" | grep -A1 "$chosen" |\
+          grep '^Exec=.*' | cut -c 6-); then exit 2; fi
+
+        exit 0
+      fi
+
+      exit 1
     fi
 
-    exit 1;;
+    exit 2;;
 
 
   *)
