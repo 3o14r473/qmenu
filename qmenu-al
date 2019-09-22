@@ -18,13 +18,13 @@ case $1 in
       grep '^Name=.*\|^Exec=.*' | grep -vw 'Qube Settings\|qubes-vm-settings')
 
 
-    chosen=$(echo "$app_list" | grep '^Name=.*' | cut -f2 -d= |\
+    chosen=$(echo "$app_list" | grep '^Name=.*' | cut -c 6- |\
       dmenu -f -m 0 -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0)
 
     if [ -n "$chosen" ]; then
 
       if ! $(echo "$app_list" | grep -A1 "$chosen" |\
-        grep '^Exec=.*' | cut -f2 -d=); then exit 2; fi
+        grep '^Exec=.*' | cut -c 6-); then exit 2; fi
 
       exit 0
     fi
@@ -73,7 +73,7 @@ case $1 in
         if [ -n "$chosen" ]; then
 
           if ! $(echo "$app_list" | grep -A1 "$chosen" |\
-            grep '^Exec=.*' | cut -f2 -d=); then exit 2; fi
+            grep '^Exec=.*' | cut -c 6-); then exit 2; fi
 
           exit 0
         fi
@@ -93,3 +93,7 @@ case $1 in
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
+
+
+# Note that the '-m 0' option in 'dmenu' is important
+# for security, as it restricts it to monitor 0.
