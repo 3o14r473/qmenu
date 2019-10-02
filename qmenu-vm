@@ -139,9 +139,6 @@ fqvm_preferences() (
            if [ -n "$value_selected" ]; then
 
              qvm-prefs --set "$target_qube" "$property" "$value_selected"
-
-             get_qube_label
-
            fi
          fi;;
 
