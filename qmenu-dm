@@ -25,7 +25,7 @@ get_qube_label() {
  # Change only if dark theme is selected.
  elif [ "$theme_1" = "#ffffff" ]; then
 
-   if [ "$qube_label" = "yellow" ]; then 
+   if [ "$qube_label" = "yellow" ]; then
 
      qube_label='#cdcd00'
 
@@ -78,7 +78,7 @@ case $1 in
     if [ "$1" = "--help" ]; then exit 0; fi
 esac
 
-# Depending on the device type, we have to 
+# Depending on the device type, we have to
 # 'awk' different fields later on.
 if [ "$device_type" = "Audio" ]; then
 
@@ -108,7 +108,8 @@ else
   exit 2
 fi
 
-qube_list=$(qvm-ls --no-spinner --running -O NAME,LABEL | grep -vw 'dom0\|sys-usb')
+qube_list=$(qvm-ls --no-spinner --running -O NAME,LABEL |\
+  grep -vw 'dom0\|sys-usb')
 
 rearrange_qube_list
 
@@ -133,7 +134,7 @@ if [ -n "$device" ]; then
 
     if [ -n "$target_qube" ]; then
 
-      get_qube_label 
+      get_qube_label
 
       prompt=$(printf "No\nYes" |\
         dmenu -i -p "Attach $device_name to $target_qube?"\
@@ -141,11 +142,11 @@ if [ -n "$device" ]; then
 
       if [ "$prompt" = "Yes" ]; then
 
-        if ! qvm-$device_type attach "$target_qube" "$device_id"; then exit 2; fi   
+        if ! qvm-$device_type attach "$target_qube" "$device_id"; then exit 2; fi
 
         exit 0
       fi
-    fi 
+    fi
   else
 
     get_qube_label
