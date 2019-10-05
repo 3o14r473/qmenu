@@ -1,8 +1,26 @@
 # qmenu
 Utilizes [dmenu](https://tools.suckless.org/dmenu/) to provide the user with a
-drop down menu for [QubesOS](https://qubes-os.org/),
+drop down menu for [QubesOS](https://qubes-os.org/) R4.0+,
 from which they can quickly administer their qube
 preferences, firewall rules, applications, devices, etc. with only the keyboard.
+
+## qmenu-al
+Launch domU applications.
+
+    Usage: qmenu-al [OPTION] (--light-theme)
+
+     --all
+     --only
+
+## qmenu-dm
+List and manage your connected devices.
+
+    Usage: qmenu-dm [OPTION] (--light-theme)
+
+     --all
+     --audio-input
+     --block
+     --usb
 
 ## qmenu-vm
 List, manage and configure your qubes.
@@ -15,22 +33,13 @@ Selecting the top row, instead of any qube, will refresh the list.
      --halted
      --paused
      --running
-     --tags=TAG
+     --tags=[TAG]
 
-## qmenu-dm
-List and manage your connected devices.
+# Installation
+0. `[user@dispXXXX ~]$ git clone https://github.com/sine3o14nnae/qmenu/`
 
-    Usage: qmenu-dm [OPTION] (--light-theme)
+1. `[user@dom0 ~]$ qvm-run --pass-io dispXXXX 'cat /home/user/qmenu/qmenu-XX' > /tmp/qmenu-XX`
 
-     --all
-     --audio-input
-     --block
-     --usb
+2. `[user@dom0 ~]$ sudo cp /tmp/qmenu-XX /usr/bin/`
 
-## qmenu-al
-Launch domU applications.
-
-    Usage: qmenu-al [OPTION] (--light-theme)
-
-     --all
-     --only
+3. `[user@dom0 ~]$ sudo chmod 755 /usr/bin/qmenu-XX`
