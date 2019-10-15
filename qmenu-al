@@ -43,22 +43,22 @@ case $1 in
 
       qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
 
-      # Change black, yellow and green to a more readable color if needed.
+      # Change some to a more readable color if needed.
       if [ "$qube_label" = "black" ]; then
 
         qube_label='#373737'
 
-      # Change only if dark theme is selected.
-      elif [ "$theme_1" = "#ffffff" ]; then
+      elif [ "$qube_label" = "orange" ]; then
 
-        if [ "$qube_label" = "yellow" ]; then 
+        qube_label='#f57900'
 
-          qube_label='#cdcd00'
+      elif [ "$qube_label" = "yellow" ]; then
 
-        elif [ "$qube_label" = "green" ]; then
+        qube_label='#edd400'
 
-          qube_label='#00b300'
-        fi
+      elif [ "$qube_label" = "green" ]; then
+
+        qube_label='#73d216'
       fi
 
       app_list=$(cat "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop |\
