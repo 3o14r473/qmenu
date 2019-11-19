@@ -31,8 +31,7 @@ case $1 in
 
     exit 1;;
 
-
-  --only)
+  --focused)
 
     focused_window=$(xdotool getwindowfocus)
 
@@ -43,17 +42,13 @@ case $1 in
 
       qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
 
-      # Change some to a more readable color if needed.
-      case $qube_label in
+      # Change label colors according to 
+      # ~/.config/qmenu.conf if that file exists.
+      if [ -f "$HOME/.config/qmenu.conf" ]; then
 
-        black) qube_label='#373737';;
-
-        orange) qube_label='#f57900';;
-
-        yellow) qube_label='#edd400';;
-
-        green) qube_label='#73d216'
-      esac
+        qube_label=$(grep -A1 "^$qube_label" "$HOME"/.config/qmenu.conf |\
+          grep -v "$qube_label")
+      fi
 
       app_list=$(cat "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop |\
         grep '^Name=.*\|^Exec=.*' |\
@@ -78,7 +73,7 @@ case $1 in
 
   *)
 
-    printf "qmenu-al [OPTION] (--light-theme)\n\n --all\n --only\n\n\nqmenu v1.2\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+    printf "qmenu-al [OPTION] (--light-theme)\n\n --all\n --focused\n\n\nqmenu v1.3\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
