@@ -1,8 +1,21 @@
 # qmenu
-Utilizes [dmenu](https://tools.suckless.org/dmenu/) to provide the user with a
+Collection of tools that utilize
+[dmenu](https://tools.suckless.org/dmenu/) to provide the user with a
 drop down menu for [QubesOS](https://qubes-os.org/) R4.0+,
 from which they can quickly administer their qube
-preferences, firewall rules, applications, devices, etc. with only the keyboard.
+preferences, firewall rules, applications, devices, etc.
+with only the keyboard.
+
+The colors that correspond to the qube label can be adjusted by creating a
+text file called `qmenu.conf` in `/home/user/.config/` with
+the following contents:
+
+    [LABEL 1]
+    [HEX TRIPLET]
+    ...
+    [LABEL 8]
+    [HEX TRIPLET]
+    (...)
 
 ## qmenu-al
 Launch domU applications.
@@ -10,7 +23,7 @@ Launch domU applications.
     Usage: qmenu-al [OPTION] (--light-theme)
 
      --all
-     --only
+     --focused
 
 ## qmenu-dm
 List and manage your connected devices.
