@@ -7,8 +7,7 @@ get_qube_label() {
 # Change label colors according to ~/.config/qmenu.conf if that file exists.
 if [ -f "$HOME/.config/qmenu.conf" ]; then
 
-  qube_label=$(grep -A1 "^$qube_label" "$HOME"/.config/qmenu.conf |\
-    grep -v "$qube_label")
+  qube_label=$(grep "^$qube_label=" "$HOME"/.config/qmenu.conf | cut -d= -f2)
 fi
 }
 
