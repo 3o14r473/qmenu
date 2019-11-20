@@ -43,6 +43,7 @@ Selecting the top row, instead of any qube, will refresh the list.
     Usage: qmenu-vm [OPTION] (--light-theme)
 
      --all
+     --focused
      --halted
      --paused
      --running
