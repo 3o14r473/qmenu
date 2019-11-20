@@ -86,7 +86,7 @@ fdom0_preferences() (
        # List netvm's via 'qvm-ls'.
        value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
-         dmenu -l 50 -p "Select netvm for $target_qube" $dmenu_d0)
+         dmenu -l 50 -p "Select default netvm" $dmenu_d0)
 
        if [ -n "$value_selected" ]; then
 
@@ -1370,13 +1370,17 @@ case $1 in
 
   --focused)
 
-    target_qube=$(xprop -id $(xdotool getwindowfocus) |\
+    target_qube=$(xprop -id "$(xdotool getwindowfocus)" |\
       grep -w '^_QUBES_VMNAME(STRING)' |\
       cut -d\" -f2)
 
-    if [ -z "target_qube" ]; then exit 2; fi
+    if [ -z "$target_qube" ]; then
 
-    fmenu_fqvm
+      fdom0_preferences
+    else
+
+      fmenu_fqvm
+    fi
 
     exit 1;;
 
