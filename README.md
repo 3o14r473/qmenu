@@ -10,11 +10,9 @@ The colors that correspond to the qube label can be adjusted by creating a
 text file called `qmenu.conf` in `/home/user/.config/` with
 the following contents:
 
-    [LABEL 1]
-    [HEX TRIPLET]
+    [LABEL 1]=#[HEX TRIPLET]
     ...
-    [LABEL 8]
-    [HEX TRIPLET]
+    [LABEL 8]=#[HEX TRIPLET]
     (...)
 
 ## qmenu-al
