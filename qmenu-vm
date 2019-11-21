@@ -8,7 +8,7 @@ fmenu_fqvm() {
 
  while [ -n "$chosefrom" ]; do
 
-   chosefrom=$(printf "Applications\nAudio input\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nPause\nPCI device\nPreferences\nReboot\nRemove\nServices\nShutdown\nUnpause\nUSB devices" |\
+   chosefrom=$(printf "Applications\nAudio input\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nPause\nPCI devices\nPreferences\nReboot\nRemove\nServices\nShutdown\nUnpause\nUSB devices" |\
      dmenu -l 21 -i -p "$target_qube:" $dmenu_fmc |\
      awk '{print $1}')
 
