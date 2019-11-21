@@ -53,7 +53,7 @@ case $1 in
         grep '^Name=.*\|^Exec=.*' |\
         grep -vw 'Qube Settings\|qubes-vm-settings')
 
-      chosen=$(echo "$app_list" | grep '^Name=.*' | cut -f2 -d: |\
+      chosen=$(echo "$app_list" | grep '^Name=.*' | cut -f2- -d: |\
         dmenu -p "$qube:" -f -m 0 -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_1)
 
       if [ -n "$chosen" ]; then
