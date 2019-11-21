@@ -1,6 +1,131 @@
 #!/bin/sh
 
-fdom0_preferences() (
+fmenu_fqvm() {
+
+ get_qube_label
+
+ chosefrom=0
+
+ while [ -n "$chosefrom" ]; do
+
+   chosefrom=$(printf "Applications\nAudio input\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nPause\nPCI device\nPreferences\nReboot\nRemove\nServices\nShutdown\nUnpause\nUSB devices" |\
+     dmenu -l 21 -i -p "$target_qube:" $dmenu_fmc |\
+     awk '{print $1}')
+
+   case $chosefrom in
+
+     Applications)
+
+       fqvm_applications;;
+
+     Audio)
+
+       fqvm_devices;;
+
+     Block)
+
+       fqvm_devices;;
+
+     Boot)
+
+       qvm-start --skip-if-running "$target_qube"&;;
+
+     Bootfrom)
+
+       qubes-vm-boot-from-device "$target_qube";;
+
+     Clone)
+
+       fqvm_clone;;
+
+     Command)
+
+       fqvm_run;;
+
+     Disk)
+
+       fqvm_disk;;
+
+     Firewall)
+
+       fqvm_firewall;;
+
+     Keyboard)
+
+       fqvm_keyboard;;
+
+     Kill)
+
+       answer=$(printf "No\nYes" | dmenu -i -p "Kill $target_qube?" $dmenu_fmc)
+
+       if [ "$answer" = "Yes" ]; then
+
+         qvm-kill "$target_qube"& fi;;
+
+     Logs)
+
+       fqvm_logs;;
+
+     Pause)
+
+       answer=$(printf "No\nYes" | dmenu -i -p "Pause $target_qube?" $dmenu_fmc)
+
+       if [ "$answer" = "Yes" ]; then
+
+         qvm-pause "$target_qube"& fi;;
+
+     PCI)
+
+       fqvm_pci;;
+
+     Preferences)
+
+       fqvm_preferences;;
+
+     Reboot)
+
+       answer=$(printf "No\nYes" |\
+         dmenu -i -p "Reboot $target_qube?" $dmenu_fmc)
+
+       if [ "$answer" = "Yes" ]; then
+
+         if qvm-check --running "$target_qube" > /dev/null 2>&1; then
+
+           $(qvm-shutdown --wait "$target_qube" && qvm-start "$target_qube")&
+         fi
+       fi;;
+
+     Remove)
+
+       fqvm_remove;;
+
+     Services)
+
+       fqvm_service;;
+
+     Shutdown)
+
+       answer=$(printf "No\nYes" |\
+         dmenu -i -p "Shutdown $target_qube?" $dmenu_fmc)
+
+       if [ "$answer" = "Yes" ]; then
+
+         qvm-shutdown "$target_qube"& fi;;
+
+     Unpause)
+
+       qvm-unpause "$target_qube"&;;
+
+     USB)
+
+       fqvm_devices;;
+
+     *)
+  esac
+done
+}
+
+fqubes_preferences() (
 
  dmenu_d0="-f -m 0 -nb #d3d3d3 -nf #000000 -sb #ffffff -sf #000000"
 
@@ -234,131 +359,6 @@ fdom0_preferences() (
    esac
  done
 )
-
-fmenu_fqvm() {
-
- get_qube_label
-
- chosefrom=0
-
- while [ -n "$chosefrom" ]; do
-
-   chosefrom=$(printf "Applications\nAudio input\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nPause\nPCI device\nPreferences\nReboot\nRemove\nServices\nShutdown\nUnpause\nUSB devices" |\
-     dmenu -l 21 -i -p "$target_qube:" $dmenu_fmc |\
-     awk '{print $1}')
-
-   case $chosefrom in
-
-     Applications)
-
-       fqvm_applications;;
-
-     Audio)
-
-       fqvm_devices;;
-
-     Block)
-
-       fqvm_devices;;
-
-     Boot)
-
-       qvm-start --skip-if-running "$target_qube"&;;
-
-     Bootfrom)
-
-       qubes-vm-boot-from-device "$target_qube";;
-
-     Clone)
-
-       fqvm_clone;;
-
-     Command)
-
-       fqvm_run;;
-
-     Disk)
-
-       fqvm_disk;;
-
-     Firewall)
-
-       fqvm_firewall;;
-
-     Keyboard)
-
-       fqvm_keyboard;;
-
-     Kill)
-
-       answer=$(printf "No\nYes" | dmenu -i -p "Kill $target_qube?" $dmenu_fmc)
-
-       if [ "$answer" = "Yes" ]; then
-
-         qvm-kill "$target_qube"& fi;;
-
-     Logs)
-
-       fqvm_logs;;
-
-     Pause)
-
-       answer=$(printf "No\nYes" | dmenu -i -p "Pause $target_qube?" $dmenu_fmc)
-
-       if [ "$answer" = "Yes" ]; then
-
-         qvm-pause "$target_qube"& fi;;
-
-     PCI)
-
-       fqvm_pci;;
-
-     Preferences)
-
-       fqvm_preferences;;
-
-     Reboot)
-
-       answer=$(printf "No\nYes" |\
-         dmenu -i -p "Reboot $target_qube?" $dmenu_fmc)
-
-       if [ "$answer" = "Yes" ]; then
-
-         if qvm-check --running "$target_qube" > /dev/null 2>&1; then
-
-           $(qvm-shutdown --wait "$target_qube" && qvm-start "$target_qube")&
-         fi
-       fi;;
-
-     Remove)
-
-       fqvm_remove;;
-
-     Services)
-
-       fqvm_service;;
-
-     Shutdown)
-
-       answer=$(printf "No\nYes" |\
-         dmenu -i -p "Shutdown $target_qube?" $dmenu_fmc)
-
-       if [ "$answer" = "Yes" ]; then
-
-         qvm-shutdown "$target_qube"& fi;;
-
-     Unpause)
-
-       qvm-unpause "$target_qube"&;;
-
-     USB)
-
-       fqvm_devices;;
-
-     *)
-  esac
-done
-}
 
 fqvm_applications() (
 
@@ -1376,7 +1376,7 @@ case $1 in
 
     if [ -z "$target_qube" ]; then
 
-      fdom0_preferences
+      fqubes_preferences
     else
 
       fmenu_fqvm
@@ -1419,7 +1419,7 @@ while true; do
 
       if [ "$target_qube" = "dom0" ]; then
 
-        fdom0_preferences
+        fqubes_preferences
       else
 
         fmenu_fqvm
