@@ -1,6 +1,36 @@
 #!/bin/sh
 
-fmenu_fqvm() {
+fmenu_fqubes() (
+
+ dmenu_fmc="-f -m 0 -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0"
+
+ chosefrom=0
+
+ while [ -n "$chosefrom" ]; do
+
+  chosefrom=$(printf "New qube\nGlobal preferences\nLogs" |\
+    dmenu -l 3 -i -p "dom0:" $dmenu_fmc | awk '{print $1}')
+
+  case $chosefrom in
+
+    New)
+
+      fqvm_create;;
+
+    Global)
+
+      fqubes_preferences;;
+
+    Logs)
+
+      fqvm_logs;;
+
+    *)
+  esac
+done
+)
+
+fmenu_fqvm() (
 
  get_qube_label
 
@@ -8,8 +38,8 @@ fmenu_fqvm() {
 
  while [ -n "$chosefrom" ]; do
 
-   chosefrom=$(printf "Applications\nAudio input\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nPause\nPCI devices\nPreferences\nReboot\nRemove\nServices\nShutdown\nUnpause\nUSB devices" |\
-     dmenu -l 21 -i -p "$target_qube:" $dmenu_fmc |\
+   chosefrom=$(printf "Applications\nAudio input devices\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nPause\nPCI devices\nPreferences\nReboot\nRemove\nServices\nShutdown\nTags\nUnpause\nUSB devices" |\
+     dmenu -l 22 -i -p "$target_qube:" $dmenu_fmc |\
      awk '{print $1}')
 
    case $chosefrom in
@@ -112,6 +142,10 @@ fmenu_fqvm() {
 
          qvm-shutdown "$target_qube"& fi;;
 
+     Tags)
+
+       fqvm_tags;;
+
      Unpause)
 
        qvm-unpause "$target_qube"&;;
@@ -123,18 +157,16 @@ fmenu_fqvm() {
      *)
   esac
 done
-}
+)
 
 fqubes_preferences() (
-
- dmenu_d0="-f -m 0 -nb #d3d3d3 -nf #000000 -sb #ffffff -sf #000000"
 
  property=0
 
  while [ -n "$property" ]; do
 
    property=$(qubes-prefs |\
-     dmenu -l 16 -p "Global Preferences:" $dmenu_d0 |\
+     dmenu -l 16 -p "Global preferences:" $dmenu_fmc |\
      awk '{print $1}')
 
    case $property in
@@ -143,7 +175,7 @@ fqubes_preferences() (
 
        value_selected=$(printf "False\nTrue" |\
          dmenu -i -p "Should the system periodically check for domU updates?"\
-         $dmenu_d0)
+         $dmenu_fmc)
 
        if [ -n "$value_selected" ]; then
 
@@ -154,7 +186,7 @@ fqubes_preferences() (
        # List netvm's via 'qvm-ls'.
        value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
-         dmenu -l 50 -p "Select new ClockVM" $dmenu_d0)
+         dmenu -l 50 -p "Select new ClockVM" $dmenu_fmc)
 
        if [ -n "$value_selected" ]; then
 
@@ -177,7 +209,7 @@ fqubes_preferences() (
 
        value_selected=$(printf "(None)$LIST_OF_DISPTEMP" |\
          dmenu -l 50 -p "Select default dispvm"\
-         $dmenu_d0)
+         $dmenu_fmc)
 
        if [ "$value_selected" = "(None)" ]; then
 
@@ -192,13 +224,13 @@ fqubes_preferences() (
 
        value_selected=$(true |\
          dmenu -p "Enter the kernel that is to be used as default"\
-         $dmenu_d0)
+         $dmenu_fmc)
 
        if [ -n "$value_selected" ]; then
 
          answer_selected=$(printf "No\nYes" |\
            dmenu -i -p "Set default kernel to $value_selected?"\
-           $dmenu_d0)
+           $dmenu_fmc)
 
          if [ "$answer_selected" = "Yes" ]; then
 
@@ -211,7 +243,7 @@ fqubes_preferences() (
        # List netvm's via 'qvm-ls'.
        value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
-         dmenu -l 50 -p "Select default netvm" $dmenu_d0)
+         dmenu -l 50 -p "Select default netvm" $dmenu_fmc)
 
        if [ -n "$value_selected" ]; then
 
@@ -221,7 +253,7 @@ fqubes_preferences() (
 
        value_selected=$(qvm-pool --list | sed '1d' |\
          dmenu -i -l 30 -p "Select default storage pool" \
-         $dmenu_d0 | awk '{print $1}')
+         $dmenu_fmc | awk '{print $1}')
 
        if [ -n "$value_selected" ]; then
 
@@ -231,7 +263,7 @@ fqubes_preferences() (
 
        value_selected=$(qvm-pool --list | sed '1d' |\
          dmenu -i -l 30 -p "Select default storage pool for kernel volumes" \
-         $dmenu_d0 | awk '{print $1}')
+         $dmenu_fmc | awk '{print $1}')
 
        if [ -n "$value_selected" ]; then
 
@@ -241,7 +273,7 @@ fqubes_preferences() (
 
        value_selected=$(qvm-pool --list | sed '1d' |\
          dmenu -i -l 30 -p "Select default storage pool for private volumes" \
-         $dmenu_d0 | awk '{print $1}')
+         $dmenu_fmc | awk '{print $1}')
 
        if [ -n "$value_selected" ]; then
 
@@ -251,7 +283,7 @@ fqubes_preferences() (
 
        value_selected=$(qvm-pool --list | sed '1d' |\
          dmenu -i -l 30 -p "Select default storage pool for root volumes" \
-         $dmenu_d0 | awk '{print $1}')
+         $dmenu_fmc | awk '{print $1}')
 
        if [ -n "$value_selected" ]; then
 
@@ -261,7 +293,7 @@ fqubes_preferences() (
 
        value_selected=$(qvm-pool --list | sed '1d' |\
          dmenu -i -l 30 -p "Select default storage pool for volatile volumes" \
-         $dmenu_d0 | awk '{print $1}')
+         $dmenu_fmc | awk '{print $1}')
 
        if [ -n "$value_selected" ]; then
 
@@ -271,7 +303,7 @@ fqubes_preferences() (
 
        value_selected=$(qubes-prefs --get default_qrexec_timeout |\
          dmenu -p "Enter the time in seconds, after which qrexec connection attempts are deemed a failure"\
-         $dmenu_d0)
+         $dmenu_fmc)
 
        if [ -n "$value_selected" ]; then
 
@@ -281,7 +313,7 @@ fqubes_preferences() (
 
        value_selected=$(qubes-prefs --get default_shutdown_timeout |\
          dmenu -p "Enter the default time in seconds for vm shutdowns to complete"\
-         $dmenu_d0)
+         $dmenu_fmc)
 
        if [ -n "$value_selected" ]; then
 
@@ -292,7 +324,7 @@ fqubes_preferences() (
        # List templatevm's via 'qvm-ls'.
        value_selected=$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|t.......$' | cut -d '|' -f1 |\
-         dmenu -l 50 -p "Select default template for" $dmenu_d0)
+         dmenu -l 50 -p "Select default template for" $dmenu_fmc)
 
        if [ -n "$value_selected" ]; then
 
@@ -320,7 +352,7 @@ fqubes_preferences() (
 
          value_selected=$(printf "$LIST_OF_DISPTEMP" |\
            dmenu -l 50 -p "Select management dispvm"\
-           $dmenu_d0)
+           $dmenu_fmc)
 
          if [ -n "$value_selected" ]; then
 
@@ -329,7 +361,7 @@ fqubes_preferences() (
      stats_interval)
 
        value_selected=$(true  |\
-         dmenu -p "Enter interval in seconds for VM stats reporting" $dmenu_d0)
+         dmenu -p "Enter interval in seconds for VM stats reporting" $dmenu_fmc)
 
        if [ -n "$value_selected" ]; then
 
@@ -340,7 +372,7 @@ fqubes_preferences() (
        # List netvm's via 'qvm-ls'.
        value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
-         dmenu -l 50 -p "Select new UpdateVM" $dmenu_d0)
+         dmenu -l 50 -p "Select new UpdateVM" $dmenu_fmc)
 
        if [ -n "$value_selected" ]; then
 
@@ -351,7 +383,7 @@ fqubes_preferences() (
 
            echo "Go back..." |\
              dmenu -p "$value_selected needs to be running!"\
-             $dmenu_d0 > /dev/null 2>&1
+             $dmenu_fmc > /dev/null 2>&1
          fi
        fi;;
 
@@ -440,7 +472,7 @@ fqvm_clone() (
 
    while [ -n "$option" ]; do
 
-     option=$(printf "Create the clone \"$clone_name\"\nAdvanced options" |\
+     option=$(printf "Create the clone\nAdvanced options" |\
        dmenu -i -l 2 -p "$target_qube:" $dmenu_fmc | awk '{print $1}')
 
      if [ "$option" = "Advanced" ]; then
@@ -465,7 +497,7 @@ fqvm_clone() (
              dmenu -i -l 10 -p "Select a pool for $clone_name"\
              $dmenu_fmc | awk '{print $1}')
 
-           if [ -n "$pool" ]; then  pool="-P $pool"; fi
+           if [ -n "$pool" ]; then pool="-P $pool"; fi
          fi
        done
 
@@ -476,6 +508,88 @@ fqvm_clone() (
        qvm-clone $class $pool "$target_qube" "$clone_name"&
      fi
    done
+ fi
+)
+
+fqvm_create() (
+
+ new_name=$(true | dmenu -p "Enter the name of the qube to create" $dmenu_fmc)
+
+ if [ -n "$new_name" ]; then
+
+   label=$(printf "Purple\nBlue\nGray\nGreen\nYellow\nOrange\nRed\nBlack" |\
+     dmenu -i -l 8 -p "Select label for $new_name" $dmenu_fmc |\
+     awk '{print tolower($0)}')
+
+   if [ -n "$label" ]; then
+
+     QUBEARGS="-l $label"
+
+     class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
+       dmenu -i -l 4 -p "Choose a class for $new_name" $dmenu_fmc)
+
+     if [ -n "$class" ]; then
+
+       QUBEARGS="$QUBEARGS -C $class"
+     fi
+
+     # List templatevm's via 'qvm-ls'.
+     template=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
+       grep '|t.......$' | cut -d '|' -f1)" |\
+       dmenu -l 50 -p "Select template for $new_name" $dmenu_fmc)
+
+     if [ "$template" != "(Default)" ] && [ "$template" != "(None)" ]; then
+
+       QUBEARGS="$QUBEARGS -t $template"
+     fi
+
+     netvm=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
+       grep '|...N....$' | cut -d '|' -f1)" |\
+       dmenu -l 50 -p "Select netvm for $new_name" $dmenu_fmc)
+
+     if [ "$netvm" != "(Default)" ]; then
+
+       if [ "$netvm" = "(None)" ]; then unset netvm; fi
+
+       QUBEARGS="$QUBEARGS --prop netvm=$netvm"
+     fi
+
+     provides_network=$(printf "No\nYes" |\
+       dmenu -i -p "Should $new_name provide networking for other qubes?" $dmenu_fmc)
+
+     if [ "$provides_network" = "Yes" ]; then
+
+       QUBEARGS="$QUBEARGS --prop provides_network=true"
+     fi
+
+     option=0
+
+     while [ -n "$option" ]; do
+
+       option=$(printf "Create the new qube\nAdvanced options" |\
+         dmenu -i -l 2 -p "dom0:" $dmenu_fmc | awk '{print $1}')
+
+       if [ "$option" = "Advanced" ]; then
+
+         option_adv=$(printf "Pool" | dmenu -l 1 -p "$new_name:" $dmenu_fmc)
+
+         if [ "$option_adv" = "Pool" ]; then
+
+           pool=$(qvm-pool --list | sed '1d' |\
+             dmenu -i -l 10 -p "Select a pool for $new_name" $dmenu_fmc |\
+             awk '{print $1}')
+
+           if [ -n "$pool" ]; then pool="-P $pool"; fi
+         fi
+
+       elif [ "$option" = "Create" ]; then
+
+         qvm-create $QUBEARGS $pool "$new_name"&
+
+         unset option
+       fi
+     done
+   fi
  fi
 )
 
@@ -784,11 +898,19 @@ fqvm_keyboard() (
 
 fqvm_logs() (
 
+ if [ "$target_qube" = "dom0" ]; then
+
+   logs="/var/log/xen/console/hypervisor.log"
+ else
+
+   logs="/var/log/xen/console/guest-$target_qube.log\n/var/log/qubes/guid.$target_qube.log\n/var/log/qubes/qrexec.$target_qube.log"
+ fi
+
  entry=0
 
  while [ -n "$entry" ]; do
 
-   entry=$(printf "/var/log/xen/console/guest-$target_qube.log\n/var/log/qubes/guid.$target_qube.log\n/var/log/qubes/qrexec.$target_qube.log" |\
+   entry=$(printf "$logs" |\
      dmenu -i -l 3 -p "$target_qube:" $dmenu_fmc)
 
    if [ -n "$entry" ]; then
@@ -1041,7 +1163,7 @@ fqvm_preferences() (
              $dmenu_fmc > /dev/null 2>&1
          else
 
-           value_selected=$(printf "Purple\nBlue\nGreen\nYellow\nOrange\nRed\nGray\nBlack" |\
+           value_selected=$(printf "Purple\nBlue\nGray\nGreen\nYellow\nOrange\nRed\nBlack" |\
              dmenu -i -l 8 -p "Select label for $target_qube" $dmenu_fmc |\
              awk '{print tolower($0)}')
 
@@ -1336,6 +1458,34 @@ fqvm_service() (
  done
 )
 
+fqvm_tags() (
+
+ tag=0
+
+ while [ -n "$tag" ]; do
+
+   tag=$(qvm-tags "$target_qube" list |\
+     dmenu -l 15 -p "$target_qube:" $dmenu_fmc | awk '{print $1}')
+
+   if [ -n "$tag" ]; then
+
+     if qvm-tags "$target_qube" list | grep -w "$tag"; then
+
+       answer=$(printf "No\nYes" |\
+         dmenu -i -p "Remove $tag from $target_qube?" $dmenu_fmc)
+
+       if [ "$answer" = "Yes" ]; then
+
+         qvm-tags "$target_qube" del "$tag"
+       fi
+     else
+
+       qvm-tags "$target_qube" add "$tag"
+     fi
+   fi
+ done
+)
+
 get_qube_label() {
 
  qube_label=$(qvm-ls --raw-data "$target_qube" -O LABEL)
@@ -1389,12 +1539,13 @@ case $1 in
   --focused)
 
     target_qube=$(xprop -id "$(xdotool getwindowfocus)" |\
-      grep -w '^_QUBES_VMNAME(STRING)' |\
-      cut -d\" -f2)
+      grep -w '^_QUBES_VMNAME(STRING)' | cut -d\" -f2)
 
     if [ -z "$target_qube" ]; then
 
-      fqubes_preferences
+      target_qube=dom0
+
+      fmenu_fqubes
     else
 
       fmenu_fqvm
@@ -1437,7 +1588,7 @@ while true; do
 
       if [ "$target_qube" = "dom0" ]; then
 
-        fqubes_preferences
+        fmenu_fqubes
       else
 
         fmenu_fqvm
