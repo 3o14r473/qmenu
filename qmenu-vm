@@ -440,22 +440,40 @@ fqvm_clone() (
 
    while [ -n "$option" ]; do
 
-     option=$(printf "Create the clone\nPool" |\
+     option=$(printf "Create the clone \"$clone_name\"\nAdvanced options" |\
        dmenu -i -l 2 -p "$target_qube:" $dmenu_fmc | awk '{print $1}')
 
-     if [ "$option" = "Pool" ]; then
+     if [ "$option" = "Advanced" ]; then
 
-       pool=$(qvm-pool --list | sed '1d' |\
-         dmenu -i -l 10 -p "Select the pool for the new clone of $target_qube"\
-         $dmenu_fmc | awk '{print $1}')
+       option_adv=0
 
-       if [ -n "$pool" ]; then  pool="-P $pool"; fi
+       while [ -n "$option_adv" ]; do
+
+         option_adv=$(printf "Class\nPool" |\
+             dmenu -i -l 2 -p "$clone_name($target_qube):" $dmenu_fmc)
+
+         if [ "$option_adv" = "Class" ]; then
+
+           class=$(printf "AppVM\nDispVM\nStandaloneVM\nTemplateVM" |\
+             dmenu -i -l 4 -p "Choose a class for $clone_name" $dmenu_fmc)
+
+           if [ -n "$pool" ]; then class="-C $class"; fi
+
+         elif [ "$option_adv" = "Pool" ]; then
+
+           pool=$(qvm-pool --list | sed '1d' |\
+             dmenu -i -l 10 -p "Select a pool for $clone_name"\
+             $dmenu_fmc | awk '{print $1}')
+
+           if [ -n "$pool" ]; then  pool="-P $pool"; fi
+         fi
+       done
 
      elif [ "$option" = "Create" ]; then
 
        unset option
 
-       qvm-clone $pool "$target_qube" "$clone_name"&
+       qvm-clone $class $pool "$target_qube" "$clone_name"&
      fi
    done
  fi
