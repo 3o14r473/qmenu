@@ -556,7 +556,7 @@ fqvm_devices() (
  if ! qvm-check --running "$target_qube" > /dev/null 2>&1; then
 
    echo "Go back..." |\
-     dmenu -p "$target_qube needs to be running, in order to attach devicesto it"\
+     dmenu -p "$target_qube needs to be running, in order to attach devices to it"\
      $dmenu_fmc > /dev/null 2>&1
  else
 
