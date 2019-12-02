@@ -8,26 +8,26 @@ fmenu_fqubes() (
 
  while [ -n "$chosefrom" ]; do
 
-  chosefrom=$(printf "New qube\nGlobal preferences\nLogs" |\
-    dmenu -l 3 -i -p "dom0:" $dmenu_fmc | awk '{print $1}')
+   chosefrom=$(printf "New qube\nGlobal preferences\nLogs" |\
+     dmenu -l 3 -i -p "dom0:" $dmenu_fmc | awk '{print $1}')
 
-  case $chosefrom in
+   case $chosefrom in
 
-    New)
+     New)
 
-      fqvm_create;;
+       fqvm_create;;
 
-    Global)
+     Global)
 
-      fqubes_preferences;;
+       fqubes_preferences;;
 
-    Logs)
+     Logs)
 
-      fqvm_logs;;
+       fqvm_logs;;
 
-    *)
-  esac
-done
+     *)
+   esac
+ done
 )
 
 fmenu_fqvm() (
@@ -155,8 +155,8 @@ fmenu_fqvm() (
        fqvm_devices;;
 
      *)
-  esac
-done
+   esac
+ done
 )
 
 fqubes_preferences() (
@@ -179,7 +179,7 @@ fqubes_preferences() (
 
      clockvm)
 
-       # List netvm's via 'qvm-ls'.
+       # List netvms via 'qvm-ls'.
        value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select new ClockVM" $dmenu_fmc);;
@@ -228,7 +228,7 @@ fqubes_preferences() (
 
      default_netvm)
 
-       # List netvm's via 'qvm-ls'.
+       # List netvms via 'qvm-ls'.
        value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select default netvm" $dmenu_fmc);;
@@ -308,12 +308,12 @@ fqubes_preferences() (
 
      stats_interval)
 
-       value_selected=$(true  |\
+       value_selected=$(true |\
          dmenu -p "Enter interval in seconds for VM stats reporting" $dmenu_fmc);;
 
      updatevm)
 
-       # List netvm's via 'qvm-ls'.
+       # List netvms via 'qvm-ls'.
        value_selected=$(printf "$(qvm-ls --raw-data --fields NAME,FLAGS |\
          grep '|...N....$' | cut -d '|' -f1)" |\
          dmenu -l 50 -p "Select new UpdateVM" $dmenu_fmc)
@@ -356,22 +356,22 @@ fqvm_applications() (
 
    if [ "$option" = "Available" ]; then
 
-     application=0
+     applications=0
 
-     while [ -n "$application" ]; do
+     while [ -n "$applications" ]; do
 
        # Only show applications that arent already selected for $target_qube via 'grep -v'.
-       application=$(qvm-appmenus --get-available --i-understand-format-is-unstable "$target_qube" |\
-         grep -v "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$target_qube")" |\
+       applications=$(qvm-appmenus --get-available --i-understand-format-is-unstable "$target_qube" |\
+         grep -vw "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$target_qube")" |\
          dmenu -l 50 -p "$target_qube:" $dmenu_fmc | awk '{print $1}')
 
-       if [ -n "$application" ]; then
+       if [ -n "$applications" ]; then
 
          # Check validity of input.
          if qvm-appmenus --get-available --i-understand-format-is-unstable "$target_qube" |\
-           awk '{print $1}' | grep -w "$application" > /dev/null 2>&1; then
+           awk '{print $1}' | grep -w "$applications" > /dev/null 2>&1; then
 
-           printf "\n\n$application" >> "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list
+           printf "\n$applications" >> "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list
 
            applications_modified=1
          fi
@@ -380,31 +380,36 @@ fqvm_applications() (
 
    elif [ "$option" = "Selected" ]; then
 
-     application=0
+     applications=0
 
-     while [ -n "$application" ]; do
+     while [ -n "$applications" ]; do
 
        # Show complete application and .desktop names via 'grep'.
-       application=$(qvm-appmenus --get-available --i-understand-format-is-unstable "$target_qube" |\
-         grep "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$target_qube")" |\
+       applications=$(qvm-appmenus --get-available --i-understand-format-is-unstable "$target_qube" |\
+         grep -w "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$target_qube")" |\
          dmenu -l 50 -p "$target_qube:" $dmenu_fmc | awk '{print $1}')
 
-       if [ -n "$application" ]; then
+       if [ -n "$applications" ]; then
 
-         # Look up linenumber above $application in /whitelisted-appmenus.list and delete whitespace.
-         whitespace_app=$(cat "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list |\
-           grep -n "$application" | cut -c 1)
+         for application in $applications; do
 
-         whitespace_app=$((whitespace_app - 1))
+           # Look up linenumber above $application in
+           # /whitelisted-appmenus.list and delete whitespace.
+           whitespace=$(grep -B1 -wn "$application" <\
+             "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list |\
+             cut -c 1 | sed 2d)
 
-         sed -i "${whitespace_app}{/^$/d;}" "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list
-         sed -i "/$application/d" "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list
+           sed -i "${whitespace}{/^$/d;}" "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list
+           sed -i "/$application/d" "$HOME"/.local/share/qubes-appmenus/"$target_qube"/whitelisted-appmenus.list
 
-         applications_modified=1
+           applications_modified=1
+         done
        fi
      done
    fi
 
+   # Only update qvm-appmenus down here, *after* the user
+   # has quit the application selection.
    if [ -n "$applications_modified" ]; then
 
      qvm-appmenus --update "$target_qube" > /dev/null 2>&1
@@ -466,7 +471,7 @@ fqvm_clone() (
 
 fqvm_create() (
 
- new_name=$(true | dmenu -p "Enter the name of the qube to create" $dmenu_fmc)
+ new_name=$(true | dmenu -p "Enter the name of the qube to create:" $dmenu_fmc)
 
  if [ -n "$new_name" ]; then
 
@@ -551,7 +556,7 @@ fqvm_devices() (
  if ! qvm-check --running "$target_qube" > /dev/null 2>&1; then
 
    echo "Go back..." |\
-     dmenu -p "$target_qube needs to be running, in order to attach devices"\
+     dmenu -p "$target_qube needs to be running, in order to attach devicesto it"\
      $dmenu_fmc > /dev/null 2>&1
  else
 
@@ -584,53 +589,64 @@ fqvm_devices() (
 
    devices_list=$(qvm-$device_type)
 
-   device=$(echo "$devices_list" |\
-     dmenu -l 16 -p "$target_qube:" $dmenu_fmc)
+   device=0
 
-   device_id=$(echo "$device" | awk '{print $1}')
+   while [ -n "$device" ]; do
 
-   device_name=$(echo "$device" |\
-     awk '{print $'$awk_devicename0'$'$awk_devicename1'}')
+     device=$(echo "$devices_list" |\
+       dmenu -l 16 -p "$target_qube:" $dmenu_fmc)
 
-   if [ -n "$device" ]; then
+     device_id=$(echo "$device" | awk '{print $1}')
 
-     holds_qube=$(echo "$devices_list" | grep "$device_id" |\
-       awk '{print $'$awk_targetqube'}')
+     device_name=$(echo "$device" |\
+       awk '{print $'$awk_devicename0'$'$awk_devicename1'}')
 
-     if [ -z "$holds_qube" ]; then
+     if [ -n "$device" ]; then
 
-       answer=$(printf "No\nYes" |\
-         dmenu -i -p "Attach $device_name to $target_qube?"\
-         $dmenu_fmc)
+       holds_qube=$(echo "$devices_list" | grep "$device_id" |\
+         awk '{print $'$awk_targetqube'}')
 
-       if [ "$answer" = "Yes" ]; then
+       if [ -z "$holds_qube" ]; then
 
-         qvm-$device_type attach "$target_qube" "$device_id"&
-       fi
+         answer=$(printf "No\nYes" |\
+           dmenu -i -p "Attach $device_name to $target_qube?"\
+           $dmenu_fmc)
 
-     elif [ "$holds_qube" = "$target_qube" ]; then
+         if [ "$answer" = "Yes" ]; then
 
-       answer=$(printf "No\nYes" |\
-         dmenu -i -p "Detach $device_name from $target_qube?"\
-         $dmenu_fmc)
+           unset device
 
-       if [ "$answer" = "Yes" ]; then
+           qvm-$device_type attach "$target_qube" "$device_id"&
+         fi
 
-         qvm-$device_type detach "$holds_qube" "$device_id"&
-       fi
-     else
+       elif [ "$holds_qube" = "$target_qube" ]; then
 
-       answer=$(printf "No\nYes" |\
-         dmenu -i -p "Detach $device_name from $holds_qube and attach it to $target_qube?"\
-         $dmenu_fmc)
+         answer=$(printf "No\nYes" |\
+           dmenu -i -p "Detach $device_name from $target_qube?"\
+           $dmenu_fmc)
 
-       if [ "$answer" = "Yes" ]; then
+         if [ "$answer" = "Yes" ]; then
 
-         $(qvm-$device_type detach "$holds_qube" "$device_id" &&
-           qvm-$device_type attach "$target_qube" "$device_id")&
+           unset device
+
+           qvm-$device_type detach "$holds_qube" "$device_id"&
+         fi
+       else
+
+         answer=$(printf "No\nYes" |\
+           dmenu -i -p "Detach $device_name from $holds_qube and attach it to $target_qube?"\
+           $dmenu_fmc)
+
+         if [ "$answer" = "Yes" ]; then
+
+           unset device
+
+           $(qvm-$device_type detach "$holds_qube" "$device_id" &&
+             qvm-$device_type attach "$target_qube" "$device_id")&
+         fi
        fi
      fi
-   fi
+   done
  fi
 )
 
@@ -676,7 +692,7 @@ fqvm_disk() (
      else
 
        echo "Go back..." |\
-         dmenu -p "Error: Can only increase the maximum $volume storage!"\
+         dmenu -p "Error: Can not decrease the maximum $volume storage!"\
          $dmenu_fmc > /dev/null 2>&1
      fi
    fi
@@ -819,7 +835,7 @@ fqvm_firewall() (
 fqvm_keyboard() (
 
  # 'qmenu-vm' does not get informed about the installed layouts by the vm itself
- # so there is a chance that the selected layout is missing inside the vm.
+ # so it is possible that the selected layout is missing inside the vm.
  # Getting the info from the vm itself however would have security implications
  # so we will not switch to use that method.
  LAYOUT=$(ls /usr/share/X11/xkb/symbols |\
@@ -833,18 +849,11 @@ fqvm_keyboard() (
        dmenu -l 50 -p "$target_qube:" $dmenu_fmc)
    fi
 
-   answer=$(printf "No\nYes" |\
-     dmenu -i -p "Change the keyboard layout in $target_qube to '$LAYOUT'?"\
-     $dmenu_fmc)
+   if ! qvm-run "$target_qube" "setxkbmap $LAYOUT"; then
 
-   if [ "$answer" = "Yes" ]; then
-
-     if ! qvm-run "$target_qube" "setxkbmap $LAYOUT"; then
-
-       echo "Go back..." |\
-         dmenu -p "Error: Could not set keyboard layout to '$LAYOUT' in $target_qube! Please check the installed layouts inside the qube itself."\
-         $dmenu_fmc > /dev/null 2>&1
-     fi
+     echo "Go back..." |\
+       dmenu -p "Error: Could not set keyboard layout to '$LAYOUT' in $target_qube! Please check the installed layouts inside the qube itself."\
+       $dmenu_fmc > /dev/null 2>&1
    fi
  fi
 )
@@ -868,7 +877,7 @@ fqvm_logs() (
 
    if [ -n "$entry" ]; then
 
-     log=$(cat "$entry" | dmenu -l 20 -p "$target_qube:" $dmenu_fmc)
+     log=$(dmenu -l 20 -p "$target_qube:" $dmenu_fmc < "$entry")
 
      if [ -n "$log" ]; then
 
@@ -960,7 +969,7 @@ fqvm_pci() (
            # Check if there is more than one function
            # that belongs to the same device.
            bdf_count=$(echo "$list_pci" | awk '{print $1}' |\
-             grep $(echo "$device_bdf" | sed 's/\..*//') | wc -l) 
+             grep -c $(echo "$device_bdf" | sed 's/\..*//'))
 
            if [ "$bdf_count" -gt 1 ]; then
 
@@ -1081,7 +1090,7 @@ fqvm_preferences() (
              dmenu -i -p "Set kernel options for $target_qube to \"$value_selected\"?"\
              $dmenu_fmc)
 
-           if [ "$answer_selected" = "Yes" ]; then
+           if [ "$answer_selected" != "Yes" ]; then
 
              unset value_selected
            fi
@@ -1155,7 +1164,7 @@ fqvm_preferences() (
 
        netvm)
 
-         # List netvm's via 'qvm-ls'.
+         # List netvms via 'qvm-ls'.
          value_selected=$(printf "(Default)\n(None)\n$(qvm-ls --raw-data --fields NAME,FLAGS |\
            grep '|...N....$' | cut -d '|' -f1)" |\
            dmenu -l 50 -p "Select netvm for $target_qube" $dmenu_fmc)
@@ -1279,7 +1288,7 @@ fqvm_preferences() (
  done
 )
 
-fqvm_remove() (
+fqvm_remove() {
 
  if qvm-check --running "$target_qube" > /dev/null 2>&1; then
 
@@ -1307,16 +1316,18 @@ fqvm_remove() (
        if [ "$confirmation_final" = "Yes" ]; then
 
          qvm-remove -f "$target_qube"&
+
+         unset chosefrom
        fi
      fi
    fi
  fi
-)
+}
 
 fqvm_run() (
 
  commandtr=$(true |\
-   dmenu -p "Enter the command that is to be run in $target_qube" $dmenu_fmc)
+   dmenu -p "Run command in $target_qube:" $dmenu_fmc)
 
  if [ -n "$commandtr" ]; then qvm-run "$target_qube" "$commandtr"& fi
 )
@@ -1386,7 +1397,7 @@ fqvm_tags() (
      if qvm-tags "$target_qube" list | grep -w "$tag"; then
 
        answer=$(printf "No\nYes" |\
-         dmenu -i -p "Remove $tag from $target_qube?" $dmenu_fmc)
+         dmenu -i -p "Remove tag '$tag' from $target_qube?" $dmenu_fmc)
 
        if [ "$answer" = "Yes" ]; then
 
@@ -1471,14 +1482,14 @@ case $1 in
 
   *)
 
-    printf "qmenu-vm [OPTION] (--light-theme)\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v1.3\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+    printf "qmenu-vm [OPTION] (--light-theme)\nList, manage and configure your qubes.\n\n --all\n --focused\n --halted\n --paused\n --running\n --tags=[TAG]\n\n\nqmenu v1.3\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac
 
 while true; do
 
-  # Load 'qvm-ls' into a variable so that it doesnt 
+  # Load 'qvm-ls' into a variable so that it doesnt
   # need to reload again after every user operation.
   qube_list=$(qvm-ls --no-spinner $1 -O NAME,STATE,LABEL,CLASS\
 ,TEMPLATE,NETVM,IP,PRIV-MAX,PRIV-CURR,PRIV-USED,ROOT-MAX\

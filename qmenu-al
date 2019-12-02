@@ -71,7 +71,7 @@ case $1 in
 
   *)
 
-    printf "qmenu-al [OPTION] (--light-theme)\n\n --all\n --focused\n\n\nqmenu v1.3\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+    printf "qmenu-al [OPTION] (--light-theme)\nLaunch domU applications.\n\n --all\n --focused\n\n\nqmenu v1.3\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
 esac

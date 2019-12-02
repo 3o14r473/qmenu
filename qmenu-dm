@@ -45,7 +45,7 @@ case $1 in
 
   --all)
 
-    device_type=$(printf "Audio input\nBlock\nUSB" |\
+    device_type=$(printf "Audio input devices\nBlock devices\nUSB devices" |\
       dmenu -i -l 3 $dmenu_fmc | awk '{print $1}');;
 
   --audio-input)
@@ -62,7 +62,7 @@ case $1 in
 
   *)
 
-    printf "qmenu-dm [OPTION] (--light-theme)\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v1.3\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
+    printf "qmenu-dm [OPTION] (--light-theme)\nList and manage your connected devices.\n\n --all\n --audio-input\n --block\n --usb\n\n\nqmenu v1.3\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
 
     if [ "$1" = "--help" ]; then exit 0; fi
 esac
