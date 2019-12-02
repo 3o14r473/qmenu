@@ -11,9 +11,9 @@ text file called `qmenu.conf` in `/home/user/.config/` with
 the following contents:
 
     [LABEL 1]=#[HEX TRIPLET]
+    [LABEL 2]=#[HEX TRIPLET]
     ...
     [LABEL 8]=#[HEX TRIPLET]
-    (...)
 
 ## qmenu-al
 Launch domU applications.
