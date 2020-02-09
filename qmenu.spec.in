@@ -1,0 +1,39 @@
+Name: qmenu
+Version: @VERSION@
+Release: 1%{?dist}
+Summary: Collection of tools that utilize 'dmenu' to provide the user with a drop down menu for Qubes OS
+License: GPLv2+
+URL: https://github.com/QubesOS-contrib/qubes-dmenu
+
+Source0: %{name}-%{version}.tar.gz
+
+Requires: dmenu
+
+%description
+Collection of tools that utilize 'dmenu' to provide the user with a
+drop down menu for Qubes OS from which they can quickly administer
+their qube preferences, firewall rules, applications, devices, etc.
+with only the keyboard.
+
+%prep
+%setup -q
+
+
+%install
+install -m 644 -D qmenu.conf %{buildroot}/etc/qmenu/qmenu.conf
+install -m 755 -D qmenu-al %{buildroot}%{_bindir}/qmenu-al
+install -m 755 -D qmenu-dm %{buildroot}%{_bindir}/qmenu-dm
+install -m 755 -D qmenu-vm %{buildroot}%{_bindir}/qmenu-vm
+
+
+%files
+%defattr(-,root,root,-)
+%doc README.md
+%config(noreplace) /etc/qmenu/qmenu.conf
+%{_bindir}/qmenu-al
+%{_bindir}/qmenu-dm
+%{_bindir}/qmenu-vm
+
+
+%changelog
+@CHANGELOG@
