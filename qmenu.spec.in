@@ -29,7 +29,7 @@ install -m 755 -D qmenu-vm %{buildroot}%{_bindir}/qmenu-vm
 %files
 %defattr(-,root,root,-)
 %doc README.md
-/etc/qmenu/qmenu.conf
+%config(noreplace) /etc/qmenu/qmenu.conf
 %{_bindir}/qmenu-al
 %{_bindir}/qmenu-dm
 %{_bindir}/qmenu-vm
