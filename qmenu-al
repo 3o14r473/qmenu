@@ -1,81 +1,76 @@
 #!/bin/sh
+# Author: SINE3o14NNAE <https://github.com/sine3o14nnae/qmenu/>
+
+help() {
+  printf "qmenu-al [OPTION] (--light-theme)\nLaunch domU applications.\n\n --all\n --focused\n"
+}
 
 if [ "$2" = "--light-theme" ]; then
-
-  theme_0='#ffffff'
-  theme_1='#000000'
+    theme_0='#ffffff'
+    theme_1='#000000'
 else
-
-  theme_0='#000000'
-  theme_1='#ffffff'
+    theme_0='#000000'
+    theme_1='#ffffff'
 fi
 
 case $1 in
+    --all)
+        app_list=$(cat "$HOME"/.local/share/applications/*.desktop |
+            grep '^Name=.*\|^Exec=.*' | grep -vw 'Qube Settings\|qubes-vm-settings')
 
-  --all)
+        chosen=$(echo "$app_list" | grep '^Name=.*' | cut -c 6- |
+            dmenu -f -m 0 -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0)
 
-    app_list=$(cat "$HOME"/.local/share/applications/*.desktop |\
-      grep '^Name=.*\|^Exec=.*' | grep -vw 'Qube Settings\|qubes-vm-settings')
+        if [ -n "$chosen" ]; then
+            if ! echo "$app_list" | grep -A1 "$chosen" | grep '^Exec=.*' | cut -c 6-; then exit 2; fi
+            exit 0
+        fi
 
+        exit 1
+        ;;
 
-    chosen=$(echo "$app_list" | grep '^Name=.*' | cut -c 6- |\
-      dmenu -f -m 0 -nb $theme_0 -nf $theme_1 -sb $theme_1 -sf $theme_0)
+    --focused)
+        qube=$(xprop -id "$(xdotool getwindowfocus)" |
+            grep -w "^_QUBES_VMNAME(STRING)" |
+            cut -f2 -d\")
 
-    if [ -n "$chosen" ]; then
+        if [ -n "$qube" ]; then
+            qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
 
-      if ! $(echo "$app_list" | grep -A1 "$chosen" |\
-        grep '^Exec=.*' | cut -c 6-); then exit 2; fi
+            # Change label colors according configuration file
+            # User wide: ~/.config/qmenu.conf
+            # System wide: /etc/qmenu/qmenu.conf
+            if [ -e "$HOME/.config/qmenu.conf" ]; then
+                qmenu_conf="$HOME/.config/qmenu.conf"
+            elif [ -e "/etc/qmenu/qmenu.conf" ]; then
+                qmenu_conf="/etc/qmenu/qmenu.conf"
+            fi
 
-      exit 0
-    fi
+            if [ -n "$qmenu_conf" ]; then
+                qube_label=$(grep "^$qube_label=" "$qmenu_conf" | cut -d= -f2)
+            fi
+            
+            app_list=$(cat "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop |
+                grep '^Name=.*\|^Exec=.*' |
+                grep -vw 'Qube Settings\|qubes-vm-settings')
 
-    exit 1;;
+            chosen=$(echo "$app_list" | grep '^Name=.*' | cut -f2- -d: |
+                dmenu -p "$qube:" -f -m 0 -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_1)
 
-  --focused)
+            if [ -n "$chosen" ]; then
+                if ! echo "$app_list" | grep -A1 "$chosen" | grep '^Exec=.*' | cut -c 6-; then exit 2; fi
+                exit 0
+            fi
+            exit 1
+        fi
+        exit 2
+        ;;
+    *)
+        help
 
-    qube=$(xprop -id "$(xdotool getwindowfocus)" |\
-      grep -w "^_QUBES_VMNAME(STRING)" |\
-      cut -f2 -d\")
-
-    if [ -n "$qube" ]; then
-
-      qube_label=$(qvm-ls --raw-data "$qube" -O LABEL)
-
-      # Change label colors according to 
-      # ~/.config/qmenu.conf if that file exists.
-      if [ -f "$HOME/.config/qmenu.conf" ]; then
-
-        qube_label=$(grep "^$qube_label=" "$HOME"/.config/qmenu.conf |\
-          cut -d= -f2)
-      fi
-
-      app_list=$(cat "$HOME"/.local/share/qubes-appmenus/"$qube"/apps/*.desktop |\
-        grep '^Name=.*\|^Exec=.*' |\
-        grep -vw 'Qube Settings\|qubes-vm-settings')
-
-      chosen=$(echo "$app_list" | grep '^Name=.*' | cut -f2- -d: |\
-        dmenu -p "$qube:" -f -m 0 -nb $theme_0 -nf $theme_1 -sb "$qube_label" -sf $theme_1)
-
-      if [ -n "$chosen" ]; then
-
-        if ! $(echo "$app_list" | grep -A1 "$chosen" |\
-          grep '^Exec=.*' | cut -c 6-); then exit 2; fi
-
-        exit 0
-      fi
-
-      exit 1
-    fi
-
-    exit 2;;
-
-  *)
-
-    printf "qmenu-al [OPTION] (--light-theme)\nLaunch domU applications.\n\n --all\n --focused\n\n\nqmenu v1.3\n<https://github.com/sine3o14nnae/qmenu/>\n<https://gitlab.com/sine3o14nnae/qmenu/>\n\n"
-
-    if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
+        if [ "$1" = "--help" ]; then exit 0; else exit 2; fi
+        ;;
 esac
-
 
 # Note that the '-m 0' option in 'dmenu' is important
 # for security, as it restricts it to monitor 0.

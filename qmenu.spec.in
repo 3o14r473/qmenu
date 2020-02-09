@@ -19,18 +19,17 @@ with only the keyboard.
 %setup -q
 
 
-%build
-
-
 %install
-install -m 644 -D qmenu-al %{buildroot}%{_bindir}/qmenu-al
-install -m 644 -D qmenu-dm %{buildroot}%{_bindir}/qmenu-dm
-install -m 644 -D qmenu-vm %{buildroot}%{_bindir}/qmenu-vm
+install -m 644 -D qmenu.conf %{buildroot}/etc/qmenu/qmenu.conf
+install -m 755 -D qmenu-al %{buildroot}%{_bindir}/qmenu-al
+install -m 755 -D qmenu-dm %{buildroot}%{_bindir}/qmenu-dm
+install -m 755 -D qmenu-vm %{buildroot}%{_bindir}/qmenu-vm
 
 
 %files
 %defattr(-,root,root,-)
 %doc README.md
+/etc/qmenu/qmenu.conf
 %{_bindir}/qmenu-al
 %{_bindir}/qmenu-dm
 %{_bindir}/qmenu-vm
