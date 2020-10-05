@@ -214,6 +214,19 @@ dmenu can be replaced with [qubes-rofi](https://github.com/QubesOS-contrib/qubes
 
 ### qmenu
 
+qmenu is part of the official [contributed package repository](https://github.com/QubesOS-contrib), the [latest release](https://github.com/QubesOS-contrib/qubes-qmenu) can therefore be conviniently
+[downloaded, verified and installed](https://www.qubes-os.org/doc/how-to-install-software-in-dom0/#contributed-package-repository) by the dom0 package manager:
+
+    [@dom0 ~]# qubes-dom0-update qubes-repo-contrib
+
+    [@dom0 ~]# qubes-dom0-update --clean qmenu
+
+
+If you prefer to manually install the most recent version from the dev branch, you can follow these steps:
+
+Warning: This repository, and therefore the dev branch, is not reviewed by the Qubes Team.
+
+
     [@dispXXXX ~]$ git clone https://github.com/3o14r473/qmenu/
 
     [@dom0 ~]$ qvm-run --pass-io --filter-escape-chars --no-color-output dispXXXX 'cat /home/user/qmenu/qmenu-XX' > /tmp/qmenu-XX
