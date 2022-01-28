@@ -68,8 +68,19 @@ while [ -n "$property" ]; do
 
 				value=$(echo --default | dmenu -p "Enter the maximum amount of memory in MB to be allocated to $qube. Setting it to 0 will disable dynamic memory balancing.") &&
 
-					nyprompt "Set maximum memory of $qube to $value MB?" || unset value;;
-					
+					if nyprompt "Set maximum memory of $qube to $value MB?"; then
+
+						# For linux qubes, initial memory can not be less than one tenth of maxmem
+						# so we will automatically set the minimum allowed value.
+						# Users can still overwrite this manually via fqvm_prefs - memory.
+
+						minmem=$(( $value / 10 ))
+
+						[ "$(qvm-prefs $qube memory)" -lt "$minmem" ] && qvm-prefs "$qube" memory "$minmem"
+					else
+						unset value
+					fi;;
+
 			memory)
 
 				value=$(echo --default | dmenu -p "Enter the amount of initial memory in MB to be allocated to $qube:") &&
