@@ -4,7 +4,7 @@ fmenu_dom0() (
 
 while :; do
 
-	chosefrom=$(printf 'Global preferences\nLogs\nNew qube\nNotes\nProperty Manager' | dmenu -l 5 -i -p "dom0:")
+	[ -z "$loop" ] && chosefrom=$(printf 'Global preferences\nLogs\nNew qube\nNotes\nProperty Manager' | dmenu -l 5 -i -p "dom0:")
 
 	case $chosefrom in
 
@@ -20,6 +20,8 @@ while :; do
 
 		*) exit
 	esac
+
+	[ -z "$loop" ] || break
 done
 )
 
@@ -36,7 +38,7 @@ qube_label=$(grep -s "^$(qvm-prefs "$qube" label)=" "$HOME"/.config/qmenu.conf |
 
 while :; do
 
-	chosefrom=$(printf 'Applications\nAudio input devices\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nNotes\nPause\nPCI devices\nPreferences\nReboot\nRemove\nScreenshot\nServices\nShutdown\nTags\nUnpause\nUSB devices' | dmenu -l 24 -i -p "$qube:")
+	[ -z "$loop" ] && chosefrom=$(printf 'Applications\nAudio input devices\nBlock devices\nBoot\nBootfrom\nClone\nCommand\nDisk\nFirewall\nKeyboard\nKill\nLogs\nNotes\nPause\nPCI devices\nPreferences\nReboot\nRemove\nScreenshot\nServices\nShutdown\nTags\nUnpause\nUSB devices' | dmenu -l 24 -i -p "$qube:")
 
 	case $chosefrom in
 
@@ -86,6 +88,8 @@ while :; do
 
 		*) exit
 	esac
+
+	[ -z "$loop" ] || break
 done
 )
 
@@ -108,6 +112,8 @@ nyprompt() (
 [ "$(printf 'No\nYes' | dmenu -i -p "$1")" = Yes ]
 )
 
+
+[ -n "$2" ] && chosefrom="$2" loop=0
 
 case $1 in
 
@@ -153,7 +159,7 @@ case $1 in
 
 	*)
 
-		printf "Usage: $0 [OPTION]\nList, manage and configure your qubes via dmenu.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n"
+		printf "Usage: $0 [OPTION] (MENU ITEM)\nList, manage and configure your qubes via dmenu.\n\n --all\n --focused\n --halted\n --paused\n --running\n --qube=[QUBE]\n --tags=[TAG]\n\n"
 
 		[ "$1" = --help ] && exit 0; exit 2
 esac

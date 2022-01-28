@@ -38,7 +38,7 @@ List and manage your connected devices.
 
 List, manage and configure your qubes.
 
-    Usage: qmenu-vm [OPTION]
+    Usage: qmenu-vm [OPTION] (MENU ITEM)
 
      --all              List all qubes
      --focused          Manage the qube of the focused window
@@ -47,6 +47,10 @@ List, manage and configure your qubes.
      --running          List running qubes
      --qube=[QUBE]      Manage the given qube
      --tags=[TAG]       List all qubes marked with the given tag
+
+`MENU ITEM` is optional and can be any item that is listed in the menu after a qube has been selected.
+For example, `qmenu-vm --focused Shutdown` will prompt you to shutdown the qube that the focused window belongs to
+and `qmenu-vm --running Command` lists all running qubes and launches into the command prompt for the selected one(s).
 
 ### Screenshots
 
