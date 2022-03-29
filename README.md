@@ -5,8 +5,8 @@ Collection of tools that utilize
 [dmenu](https://tools.suckless.org/dmenu/), a dynamic menu for X,
 to provide the user with a drop down menu for [QubesOS](https://qubes-os.org) administration.
 
-With these tools, the user is able to list, start and stop their qubes, attach and detach connected devices,
-manage qube preferences, firewall rules and tags, switch per-qube keyboard layouts, take notes and screenshots, launch applications and more, very quickly with only the keyboard.
+List, start and stop your qubes, attach and detach connected devices, manage qube preferences, firewall rules and tags,
+switch per-qube keyboard layouts, take notes and screenshots, launch applications and more, **very quickly with only the keyboard**.
 
 ## Usage
 
@@ -60,14 +60,14 @@ Screenshots taken via qmenu-vm are placed in `$HOME/Pictures/`, inside the relev
 
 ### Label color
 
-Whenever relevant, the "selected background" color of dmenu will be matched to a qube label.
-The color for each label can be defined by creating a text file called `qmenu.conf` in `$HOME/.config/` inside dom0 with the following contents:
+Whenever relevant, the selected background color of dmenu will be defined by a qube label.
+Each qube label can be assigned a qmenu color in `$HOME/.config/qmenu.conf`, inside dom0, denoted as a hex triplet like this:
 
 ~~~
-[LABEL 1]=#[RRGGBB]
-[LABEL 2]=#[RRGGBB]
+purple=#[RRGGBB]
+blue=#[RRGGBB]
 ...
-[LABEL 8]=#[RRGGBB]
+black=#[RRGGBB]
 ~~~
 
 <details>
@@ -86,12 +86,16 @@ black=#000000
 
 </details>
 
-Empty `qmenu.conf` entries let dmenu display the "selected background" as black.
+Labels that have not been assinged a color will default to pure black.
+
+qmenu tools use dmenu's `-sb` flag to send this information to it.
 
 ### dmenu
 
-Everything else, like display options, font size and other colors, is handled by dmenu.
-Therefore, extensive customization can be achieved by [modifying](https://tools/suckless.org/dmenu/patches/) or replacing dmenu with something else like [rofi](https://github.com/davatorium/rofi).
+Everything else, like display options, font size and other colors, is handled by dmenu,
+therefore extensive customization can be achieved by [modifying](https://tools.suckless.org/dmenu/patches/) it.
+
+Alternatively, dmenu can be completely replaced and symlinked.
 
 ### Qube Settings
 
