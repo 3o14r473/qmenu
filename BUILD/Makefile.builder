@@ -1,0 +1,1 @@
+RPM_SPEC_FILES := qmenu.spec
