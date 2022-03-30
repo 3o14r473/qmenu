@@ -1,0 +1,77 @@
+name=$(: | dmenu -p "Enter the name for the new qube:") &&
+
+	label=$(printf 'Red\nOrange\nYellow\nGreen\nGray\nBlue\nPurple\nBlack' | dmenu -i -l 8 -p "Select label for $name:" | awk '{print tolower($0)}')
+
+	if [ -n "$label" ]; then
+
+		QUBEARGS="-l $label"
+
+		class=$(printf 'AppVM\nStandaloneVM\nTemplateVM' | dmenu -i -l 4 -p "Choose a class for $name:")
+
+		QUBEARGS="$QUBEARGS -C $class"
+
+		get_list template
+
+		if [ "$class" = 'AppVM' ]; then
+		
+			template=$(printf "(Default)\n$list" | dmenu -l 50 -p "Select template for $name:")
+
+			[ "$template" = '(Default)' ] && unset template
+
+		else
+			template=$(printf "(None)\n$list" | dmenu -l 50 -p "Select template that $name will be copied from:")
+
+			[ "$template" = '(None)' ] && unset template
+		fi
+
+		[ -n "$template" ] && QUBEARGS="$QUBEARGS -t $template"
+
+		get_list netvm
+
+		netvm=$(printf "(Default)\n(None)\n$list" | dmenu -l 50 -p "Select netvm for $name:")
+
+		if [ "$netvm" = '(Default)' ]; then netvm=--default
+		elif [ "$netvm" = '(None)' ]; then unset netvm
+		fi
+
+		QUBEARGS="$QUBEARGS --prop netvm=$netvm"
+
+		provides_network=$(printf 'No\nYes' | dmenu -i -p "Should $name provide networking for other qubes?")
+
+		if [ "$provides_network" = Yes ]; then
+
+			QUBEARGS="$QUBEARGS --prop provides_network=true"
+		fi
+
+		option=1
+
+		while [ -n "$option" ]; do
+
+			option=$(printf 'Create the new qube\nAdvanced options' | dmenu -i -l 2 -p "dom0:" | cut -f1 -d\ )
+
+			if [ "$option" = Advanced ]; then
+
+				option_adv=$(printf Pool | dmenu -l 1 -p "$name:")
+
+				if [ "$option_adv" = Pool ]; then
+
+					pool=$(qvm-pool --list | sed '1d' | dmenu -i -l 10 -p "Select a pool for $name:" | cut -f1 -d\ )
+
+					[ -n "$pool" ] && pool="-P $pool"
+				fi
+
+			elif [ "$option" = Create ]; then
+
+				qvm-create $QUBEARGS $pool "$name"
+
+				if [ "$class" = 'StandaloneVM' ] && [ -z "$template" ]; then
+
+					qvm-prefs "$name" kernel ''
+					qvm-prefs "$name" virt_mode hvm
+					qvm-prefs "$name" maxmem 0
+				fi
+
+				unset option
+			fi
+		done
+	fi

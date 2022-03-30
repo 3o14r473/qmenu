@@ -1,0 +1,70 @@
+if ! qvm-check -q --running "$qube"; then
+
+	echo Go back... | dmenu -p "$qube needs to be running, in order to attach $(echo "$chosefrom" | cut -f1 -d\ | awk '{print tolower($0)}') devices to it." > /dev/null 2>&1
+else
+	case $chosefrom in
+
+		Audio*) device_type='device mic';;
+
+		Block*) device_type=block;;
+
+		USB*) device_type=usb
+	esac
+
+	devices_list=$(qvm-$device_type)
+
+	device=1
+
+	while [ -n "$device" ]; do
+
+		device=$(echo "$devices_list" | dmenu -l 16 -p "$qube:")
+
+		if [ -n "$device" ] && [ "$(echo "$device" | wc -l)" -eq 1 ]; then
+
+			device_id=$(echo "$device" | cut -f1 -d\ )
+
+			if [ "$device_type" = block ]; then
+
+				device_name=$(echo "$device" | awk '{print $2,$3}')
+				holds_qube=$(echo "$device" | awk '{print $4}')
+			else
+				device_name=$(echo "$device" | awk '{print $2}')
+				holds_qube=$(echo "$device" | awk '{print $3}')
+			fi
+
+			if [ -z "$holds_qube" ]; then
+
+				if nyprompt "Attach '$device_name' to $qube?"; then
+
+					unset device
+
+					qvm-$device_type attach -q "$qube" "$device_id" ||
+
+						echo Go back... | dmenu -p "Error: Failed to attach device!" > /dev/null 2>&1
+				fi
+
+			elif [ "$holds_qube" = "$qube" ]; then
+
+				if nyprompt "Detach '$device_name' from $qube?"; then
+
+					unset device
+
+					qvm-$device_type detach -q "$holds_qube" "$device_id" ||
+
+						echo Go back... | dmenu -p "Error: Failed to detach device!" > /dev/null 2>&1
+				fi
+			else
+				if nyprompt "Detach '$device_name' from $holds_qube and attach it to $qube?"; then
+
+					unset device
+
+					qvm-$device_type detach -q "$holds_qube" "$device_id" &&
+
+						qvm-$device_type attach -q "$qube" "$device_id" ||
+
+							echo Go back... | dmenu -p "Error: Failed to handle device!" > /dev/null 2>&1
+				fi
+			fi
+		fi
+	done
+fi

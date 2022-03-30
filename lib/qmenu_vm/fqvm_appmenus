@@ -1,0 +1,64 @@
+option=1
+
+while [ -n "$option" ]; do
+
+	option=$(printf 'Available\nSelected\nRefresh' | dmenu -i -l 3 -p "$qube:")
+
+	if [ "$option" = Available ]; then
+
+		applications=1
+
+		while [ -n "$applications" ]; do
+
+			applications=$(qvm-appmenus --get-available --i-understand-format-is-unstable "$qube" | grep -v "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$qube")" | dmenu -l 50 -p "$qube:" | cut -f1 -d\ )
+
+			if [ -n "$applications" ]; then
+
+				# Check validity of input to prevent whitelisted-appmenus.list
+ 				# from being filled with garbage.
+				qvm-appmenus --get-available --i-understand-format-is-unstable "$qube" | cut -f1 -d\  | grep -q "^$applications$" &&
+
+					printf "\n$applications" >> "$HOME"/.local/share/qubes-appmenus/"$qube"/whitelisted-appmenus.list
+
+					applications_modified=1
+			fi
+		done
+
+	elif [ "$option" = Selected ]; then
+
+		applications=1
+
+		while [ -n "$applications" ]; do
+
+			applications=$(qvm-appmenus --get-available --i-understand-format-is-unstable "$qube" | grep "$(qvm-appmenus --get-whitelist --i-understand-format-is-unstable "$qube")" | dmenu -l 50 -p "$qube:"  | cut -f1 -d\ )
+
+			if [ -n "$applications" ]; then
+
+				for application in $applications; do
+
+					# Look up linenumber above $application in
+					# whitelisted-appmenus.list to delete if it is garbage whitespace.
+					whitespace=$(grep -n1 "^$application$" < "$HOME"/.local/share/qubes-appmenus/"$qube"/whitelisted-appmenus.list | sed '1q;d' | cut -d- -f1)
+
+					sed -i "${whitespace}{/^$/d;}" "$HOME"/.local/share/qubes-appmenus/"$qube"/whitelisted-appmenus.list
+					sed -i "/$application/d" "$HOME"/.local/share/qubes-appmenus/"$qube"/whitelisted-appmenus.list
+
+					applications_modified=1
+				done
+			fi
+		done
+
+	elif [ "$option" = Refresh ]; then
+
+		qvm-appmenus -q --force --update "$qube"
+	fi
+
+	# Only update qvm-appmenus down here, *after* the user
+	# has quit the application selection to improve speed and reduce unnecessary updates.
+	if [ -n "$applications_modified" ]; then
+
+		qvm-appmenus -q --update "$qube"
+
+		unset applications_modified
+	fi
+done

@@ -1,0 +1,43 @@
+Name: qmenu
+Version: @VERSION@
+Release: 1%{?dist}
+Summary: Collection of tools that utilize dmenu, a dynamic menu for X, to provide the user with a drop down menu for QubesOS administration.
+
+License: GPLv2+
+URL: https://github.com/QubesOS-contrib/qubes-qmenu
+
+Source0: %{name}-%{version}.tar.gz
+
+Requires: dmenu
+
+%description
+Collection of tools that utilize dmenu, a dynamic menu for X, to provide the user with a drop down menu for QubesOS administration.
+
+List, start and stop your qubes, attach and detach connected devices, manage qube preferences, firewall rules and tags,
+switch per-qube keyboard layouts, take notes and screenshots, launch applications and more, very quickly with only the keyboard.
+
+%prep
+%setup -q
+
+
+%install
+install -m 664 -D ../qmenu.conf $HOME/.config/qmenu.conf
+install -m 644 -D ../usr/share/man/man1/qmenu-am.1.gz %{buildroot}/usr/share/man/man1/qmenu-am.1.gz
+install -m 644 -D ../usr/share/man/man1/qmenu-dm.1.gz %{buildroot}/usr/share/man/man1/qmenu-dm.1.gz
+install -m 644 -D ../usr/share/man/man1/qmenu-vm.1.gz %{buildroot}/usr/share/man/man1/qmenu-vm.1.gz
+install -m 755 -D ../qmenu-am %{buildroot}%{_bindir}/qmenu-am
+install -m 755 -D ../qmenu-dm %{buildroot}%{_bindir}/qmenu-dm
+install -m 755 -D ../qmenu-vm %{buildroot}%{_bindir}/qmenu-vm
+install -m 644 -D ../lib/qmenu_vm %{buildroot}/lib/qmenu_vm/
+
+
+%files
+%defattr(-,root,root,-)
+%doc README.md
+%{_bindir}/qmenu-am
+%{_bindir}/qmenu-dm
+%{_bindir}/qmenu-vm
+
+
+%changelog
+@CHANGELOG@

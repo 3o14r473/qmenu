@@ -1,0 +1,23 @@
+if [ "$(qvm-prefs "$qube" klass)" = DispVM ]; then
+
+	notes=/tmp/."$qube".dispnotes
+else
+	mkdir -p "$HOME"/.local/share/qubes-notes
+	notes="$HOME/.local/share/qubes-notes/$qube"
+fi
+
+touch "$notes"
+
+note=$(dmenu -l 25 -p "$qube:" < "$notes")
+
+while [ -n "$note" ]; do
+
+	if grep -q "^$note\$" "$notes"; then
+		
+		sed -i "/^$note$/d" "$notes"
+ 	else
+		echo "$(date +%Y-%m-%d\ %H:%M)   $note" >> "$notes"
+ 	fi
+
+	note=$(dmenu -l 25 -p "$qube:" < "$notes")
+done

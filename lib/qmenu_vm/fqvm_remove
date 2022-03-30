@@ -1,0 +1,18 @@
+if qvm-check -q --running "$qube"; then
+
+	echo Go back... | dmenu -p "$qube needs to be powered off, in order to be removed." > /dev/null 2>&1
+else
+	confirmation=$(: | dmenu -p "Enter the name of the qube '$qube' in order to remove it:")
+
+	if [ "$qube" = "$confirmation" ]; then
+
+		if nyprompt "Are you sure you want to remove '$qube' permanently?"; then
+
+				unset chosefrom
+
+				rm -f "$HOME/.local/share/qubes-notes/$qube"
+
+				$(qvm-remove -f "$qube" || notify-send -u normal "Error: Failed to remove "$qube"!")&
+		fi
+	fi
+fi

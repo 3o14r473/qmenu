@@ -1,0 +1,19 @@
+tags=1
+
+while [ -n "$tags" ]; do
+
+	tags=$(qvm-tags "$qube" list | dmenu -l 15 -p "$qube:" | cut -f1 -d\ )
+
+	if [ -n "$tags" ]; then
+
+		for tag in $tags; do
+
+			if qvm-tags "$qube" list | grep -q "^$tag$"; then
+
+				nyprompt "Remove tag '$tag' from $qube?" && qvm-tags "$qube" del "$tag"
+			else
+				qvm-tags "$qube" add "$tag"
+			fi
+		done
+	fi
+done

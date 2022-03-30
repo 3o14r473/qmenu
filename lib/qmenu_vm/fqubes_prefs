@@ -1,0 +1,109 @@
+property=1
+
+while [ -n "$property" ]; do
+
+	property=$(qubes-prefs | dmenu -l 16 -p "Global preferences:" | cut -f1 -d\ )
+
+	case $property in
+
+		check_updates_vm)
+
+			value=$(printf 'False\nTrue' | dmenu -i -p "Should the system periodically check for domU updates?");;
+
+		clockvm)
+
+			get_list netvm
+
+			value=$(printf "(None)\n$list" | dmenu -l 50 -p "Select ClockVM:");;
+
+		default_dispvm)
+
+			if [ -z "$LIST_DISPTEMP" ]; then
+
+				# [mediocre] Look up disposable templates in a very slow way because qvm-ls does not offer a flag for them
+				for n in $(qvm-ls --raw-data -O NAME,FLAGS | grep '|a.....-.$' | cut -d '|' -f1); do
+
+					qvm-prefs "$n" template_for_dispvms | grep -q True &&
+
+						LIST_DISPTEMP="$LIST_DISPTEMP\n$n"
+				done
+			fi
+
+			value=$(printf "(None)$LIST_DISPTEMP" | dmenu -l 50 -p "Select default dispvm:");;
+
+		default_kernel)
+
+			value=$(echo '(None)' | dmenu -l 2 -p "Enter default kernel:") &&
+
+				nyprompt "Set default kernel to $value?" || unset value;;
+
+		default_netvm)
+
+			get_list netvm
+
+			value=$(printf "(None)\n$list" | dmenu -l 50 -p "Select default netvm:");;
+
+		default_pool)
+
+			value=$(qvm-pool --list | sed '1d' | dmenu -i -l 30 -p "Select default storage pool:" | cut -f1 -d\ );;
+
+		default_pool_kernel)
+
+			value=$(qvm-pool --list | sed '1d' | dmenu -i -l 30 -p "Select default storage pool for kernel volumes:" | cut -f1 -d\ );;
+
+		default_pool_private)
+
+			value=$(qvm-pool --list | sed '1d' | dmenu -i -l 30 -p "Select default storage pool for private volumes:" | cut -f1 -d\ );;
+
+		default_pool_root)
+
+			value=$(qvm-pool --list | sed '1d' | dmenu -i -l 30 -p "Select default storage pool for root volumes:" | cut -f1 -d\ );;
+
+		default_pool_volatile)
+
+			value=$(qvm-pool --list | sed '1d' | dmenu -i -l 30 -p "Select default storage pool for volatile volumes:" | cut -f1 -d\ );;
+
+		default_qrexec_timeout)
+
+			value=$(qubes-prefs default_qrexec_timeout | dmenu -p "Enter the time in seconds, after which qrexec connection attempts are deemed a failure:");;
+
+		default_shutdown_timeout)
+
+			value=$(qubes-prefs default_shutdown_timeout | dmenu -p "Enter the default time in seconds for qube shutdowns to complete:");;
+
+		default_template)
+
+			get_list template
+
+			value=$(printf "(None)\n$list" | dmenu -l 50 -p "Select default template:");;
+
+		management_dispvm)
+
+			get_list mgmt_disptemp
+
+			value=$(printf "(None)\n$list" | dmenu -l 50 -p "Select management dispvm:");;
+
+		stats_interval)
+
+			value=$(: | dmenu -p "Enter interval in seconds for qube stats reporting:");;
+
+		updatevm)
+
+			get_list netvm
+
+			value=$(printf "(None)\n$list" | dmenu -l 50 -p "Select UpdateVM for dom0:");;
+
+		*)
+	esac
+
+	if [ -n "$value" ]; then
+
+		[ "$value" = '(None)' ] && value=''
+
+		qubes-prefs "$property" "$value" ||
+
+			echo Go back... | dmenu -p "Error: Failed to set $property to '$value'!" > /dev/null 2>&1
+
+		unset value
+	fi
+done

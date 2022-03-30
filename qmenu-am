@@ -1,0 +1,32 @@
+#!/bin/sh
+
+case $1 in
+
+	--all)
+
+		app_list=$(grep '^Name=\|^Exec=' "$HOME"/.local/share/applications/*.desktop /usr/share/applications/*.desktop)
+
+		chosen=$(printf =; echo "$app_list" | grep ':Name=' | cut -d= -f2- | dmenu) || exit 1;;
+
+	--focused)
+
+		qube=$(xprop -id "$(xdotool getwindowfocus)" _QUBES_VMNAME | cut -f2 -d\")
+
+		[ "$qube" = '_QUBES_VMNAME:  not found.' ] && exit 2
+
+		qube_label=$(grep -s "^$(qvm-prefs "$qube" label)=" "$HOME"/.config/qmenu.conf | cut -d= -f2)
+
+		[ -z "$qube_label" ] && qube_label='#000000'
+
+		app_list=$(grep '^Name=\|^Exec=' "$HOME/.local/share/qubes-appmenus/$qube"/apps/*.desktop)
+
+		chosen=$(echo "$app_list" | grep ':Name=' | cut -f3- -d: | dmenu -p "$qube:" -sb "$qube_label") || exit 1;;
+
+	*)
+
+		printf "Usage: $0 [OPTION]\nLaunch domU and dom0 applications via dmenu.\n\n --all\n --focused\n\n"
+
+		[ "$1" = --help ] && exit 0; exit 2
+esac
+
+$(echo "$app_list" | grep "$(echo "$app_list" | grep "$chosen$" | cut -d: -f1)" | grep ':Exec=' | cut -d= -f2-) || exit 2
